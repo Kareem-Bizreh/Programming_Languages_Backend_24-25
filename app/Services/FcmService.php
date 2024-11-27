@@ -11,8 +11,6 @@ class FcmService
 {
     protected $messaging;
 
-    protected $userRepository;
-
     public function __construct()
     {
         $firebase = (new Factory)

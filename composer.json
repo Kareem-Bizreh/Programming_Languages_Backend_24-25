@@ -13,6 +13,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "php-open-source-saver/jwt-auth": "^2.7",
+        "twilio/sdk": "^8.3",
         "zircote/swagger-php": "^4.11"
     },
     "require-dev": {

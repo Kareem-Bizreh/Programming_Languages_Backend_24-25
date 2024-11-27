@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "My API Docs",
-        "version": "0.2"
+        "version": "0.1"
     },
     "servers": [
         {
@@ -10,42 +10,35 @@
         }
     ],
     "paths": {
-        "/user/test": {
-            "get": {
+        "/users/register": {
+            "post": {
                 "tags": [
                     "Users"
                 ],
-                "summary": "add new Rating",
-                "operationId": "343e7a3fc5b09a5ebfb3a9a498d39d7d",
-                "parameters": [
-                    {
-                        "name": "product_id",
-                        "in": "path",
-                        "description": "Product id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "summary": "register users",
+                "operationId": "75ac4d6a6e8c8bdc865ea7806514679b",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "rating_value",
-                                    "comment"
+                                    "first_name",
+                                    "last_name",
+                                    "number"
                                 ],
                                 "properties": {
-                                    "rating_value": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "4.7"
-                                    },
-                                    "comment": {
+                                    "first_name": {
                                         "type": "string",
-                                        "example": "vary good!"
+                                        "example": "Harry"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "potter"
+                                    },
+                                    "number": {
+                                        "type": "string",
+                                        "example": "09xxxxxxxx"
                                     }
                                 },
                                 "type": "object"
@@ -54,23 +47,289 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "Successful added",
+                    "200": {
+                        "description": "Successful register and verification code send to user with id",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "rating added seccessfully"
+                                            "example": "Verification code sent"
                                         },
-                                        "rating": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/users/verifyNumber": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "verify users",
+                "operationId": "e213881f3a5758ae59d6965201fe29b9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "verify_code",
+                                    "id"
+                                ],
+                                "properties": {
+                                    "verify_code": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful verify",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "user has been verified"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "login user",
+                "operationId": "2bed00028ae8e20c4e21a4f7b8c6c281",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "number"
+                                ],
+                                "properties": {
+                                    "number": {
+                                        "type": "string",
+                                        "example": "09xxxxxxxx"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "user has been login successfuly"
+                                        },
+                                        "Bearer Token": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/users/logout": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "logout user",
+                "operationId": "e04092d0d4e79aa59108004b0e614d75",
+                "responses": {
+                    "200": {
+                        "description": "Successful logout",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "user has been logout successfuly"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/users/editUser": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "edit users",
+                "operationId": "cd188f8fc4d42354d95133ca32448619",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "first_name",
+                                    "last_name"
+                                ],
+                                "properties": {
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "Ron"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "Weasly"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully edit the user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "updated done"
+                                        },
+                                        "user": {
                                             "type": "string",
                                             "example": "[]"
                                         }
                                     },
                                     "type": "object"
                                 }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/users/refreshToken": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "refresh token",
+                "operationId": "9477bd120d56b92fe37a0675b684b813",
+                "responses": {
+                    "200": {
+                        "description": "return the new token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "new token set"
+                                        },
+                                        "Bearer Token": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/users/currentUser": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "current user information",
+                "operationId": "b4ef93685e1ef230f74f8b453c55cab5",
+                "responses": {
+                    "200": {
+                        "description": "return the user",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
                             }
                         }
                     },
