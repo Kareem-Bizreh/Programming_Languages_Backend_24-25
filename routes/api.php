@@ -8,16 +8,20 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::group(['prefix' => 'users'], function () {
+Route::prefix('users')->controller(UserController::class)->group(function () {
 
-    Route::post('/register', [UserController::class, 'register']);
-    Route::post('/verifyNumber', [UserController::class, 'verifyNumber']);
-    Route::post('/login', [UserController::class, 'login']);
+    Route::post('/register', 'register');
+    Route::post('/login', 'login');
+    Route::post('/verifyNumber', 'verifyNumber');
+    Route::post('/forgetPassword', 'forgetPassword');
+    Route::post('/verifyNewPassword', 'verifyNewPassword');
+    Route::put('/setPassword', 'setPassword');
+    Route::put('/refreshToken', 'refreshToken');
 
-    Route::group(['middleware' => 'auth:api'], function () {
-        Route::post('/logout', [UserController::class, 'logout']);
-        Route::get('/currentUser', [UserController::class, 'current']);
-        Route::put('/editUser', [UserController::class, 'edit']);
-        Route::put('/refreshToken', [UserController::class, 'refreshToken']);
+    Route::middleware('auth:api')->group(function () {
+        Route::post('/logout', 'logout');
+        Route::put('/resetPassword', 'resetPassword');
+        Route::get('/currentUser', 'current');
+        Route::put('/editUser', 'edit');
     });
 });

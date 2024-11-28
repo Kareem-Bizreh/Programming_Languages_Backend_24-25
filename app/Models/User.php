@@ -21,6 +21,7 @@ class User extends Authenticatable implements JWTSubject
         'first_name',
         'last_name',
         'number',
+        'password',
     ];
 
     /**
@@ -29,6 +30,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array<int, string>
      */
     protected $hidden = [
+        'password',
         'remember_token',
     ];
 
@@ -41,6 +43,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return [
             'number_verified_at' => 'datetime',
+            'password' => 'hashed',
         ];
     }
 

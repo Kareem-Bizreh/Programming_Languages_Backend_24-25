@@ -25,6 +25,8 @@ class StoreUserRequest extends FormRequest
             'first_name' => 'required|string|max:20',
             'last_name' => 'required|string|max:20',
             'number' => 'required|numeric|digits:10',
+            'email' => 'required|email',
+            'password' => 'required|string|min:8|confirmed',
         ];
     }
 
@@ -40,8 +42,16 @@ class StoreUserRequest extends FormRequest
             'last_name.max' => 'The last name cannot exceed 20 characters.',
 
             'number.required' => 'The number field is required.',
-            'number.numeric' => 'The input must contain only digits.',
-            'number.regex' => 'The input must be exactly 10 digits.',
+            'number.numeric' => 'The number must be a valid number.',
+            'number.digits' => 'The number must be exactly 10 digits.',
+
+            'email.required' => 'The email field is required.',
+            'email.email' => 'The email must be a valid email address.',
+
+            'password.required' => 'The password field is required.',
+            'password.string' => 'The password must be a valid string.',
+            'password.min' => 'The password must be at least 8 characters long.',
+            'password.confirmed' => 'The password confirmation does not match.',
         ];
     }
 }

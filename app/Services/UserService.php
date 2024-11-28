@@ -68,7 +68,7 @@ class UserService
     }
 
     /**
-     * Verify the user's email address.
+     * Verify the user's number.
      *
      * @param string $verificationCode
      * @param int $id
@@ -76,13 +76,13 @@ class UserService
     public function verifyNumber(string $verificationCode, int $id)
     {
         $code = Cache::get('user_id_' . $id);
-        $user = $this->findById($id);
         if (! $code) {
             return response()->json(['message' => 'Verification code dont exist'], 400);
         }
         if ($code != $verificationCode) {
             return response()->json(['message' => 'Verification code is not correct'], 400);
         }
+        $user = $this->findById($id);
         $user->number_verified_at = now();
         $user->save();
         return response()->json(['message' => 'user has been verified']);
@@ -126,8 +126,9 @@ class UserService
      *
      * @param string $verificationCode
      * @param int $id
+     * @param string $password
      */
-    public function verifyPassword(string $verificationCode, int $id)
+    public function verifyNewPassword(string $verificationCode, int $id, string $password)
     {
         $code = Cache::get('user_id_' . $id);
         if (! $code) {
@@ -136,6 +137,7 @@ class UserService
         if ($code != $verificationCode) {
             return response()->json(['message' => 'Verification code is not correct'], 400);
         }
-        return response()->json(['message' => 'user has been verified']);
+        $this->changeUserPassword($id, $password);
+        return response()->json(['message' => 'user has been verified and new password set']);
     }
 }

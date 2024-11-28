@@ -25,7 +25,10 @@
                                 "required": [
                                     "first_name",
                                     "last_name",
-                                    "number"
+                                    "number",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
                                 ],
                                 "properties": {
                                     "first_name": {
@@ -38,7 +41,19 @@
                                     },
                                     "number": {
                                         "type": "string",
-                                        "example": "09xxxxxxxx"
+                                        "example": "0912345678"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "password123"
                                     }
                                 },
                                 "type": "object"
@@ -48,7 +63,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Successful register and verification code send to user with id",
+                        "description": "Successful register and verification code send to email to verify user with id",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -140,12 +155,17 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "number"
+                                    "number",
+                                    "password"
                                 ],
                                 "properties": {
                                     "number": {
                                         "type": "string",
-                                        "example": "09xxxxxxxx"
+                                        "example": "0912345678"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
                                     }
                                 },
                                 "type": "object"
@@ -197,6 +217,251 @@
                                         "message": {
                                             "type": "string",
                                             "example": "user has been logout successfuly"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/users/forgetPassword": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "send check code to user for forget password",
+                "operationId": "3f464d87b22f7850714525ccfd5629bb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "number",
+                                    "email"
+                                ],
+                                "properties": {
+                                    "number": {
+                                        "type": "string",
+                                        "example": "0912345678"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "verification code send to user with id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Verification code sent"
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/users/verifyNewPassword": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "verify user to set new password",
+                "operationId": "1b968624266059a87efa5b2051c6756e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "verify_code",
+                                    "id",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "verify_code": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful verify and set new password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "user has been verified and new password set"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/users/setPassword": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "set new password",
+                "operationId": "cd36662d3ba59dc825526afa280d35eb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully set of password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "new password set"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/users/resetPassword": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "reset password",
+                "operationId": "42de47313002e71652fb55c0f1616d5e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "old_password",
+                                    "new_password",
+                                    "new_password_confirmation"
+                                ],
+                                "properties": {
+                                    "old_password": {
+                                        "type": "string",
+                                        "example": "password"
+                                    },
+                                    "new_password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "new_password_confirmation": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully set of password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "new password set"
                                         }
                                     },
                                     "type": "object"
@@ -284,7 +549,7 @@
                     "Users"
                 ],
                 "summary": "refresh token",
-                "operationId": "9477bd120d56b92fe37a0675b684b813",
+                "operationId": "f2efd740a4a74e84bbba4322c944eed2",
                 "responses": {
                     "200": {
                         "description": "return the new token",
