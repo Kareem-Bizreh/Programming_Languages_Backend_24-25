@@ -30,21 +30,17 @@
                                     "notes"
                                 ],
                                 "properties": {
-                                    "city": {
+                                    "name": {
                                         "type": "string",
-                                        "example": " Damascus"
+                                        "example": " potter"
                                     },
-                                    "address": {
+                                    "location": {
                                         "type": "string",
-                                        "example": "Al-Midan"
+                                        "example": "damascus Al-Midan"
                                     },
-                                    "building_number": {
+                                    "street": {
                                         "type": "string",
-                                        "example": "5"
-                                    },
-                                    "floor_number": {
-                                        "type": "string",
-                                        "example": "4"
+                                        "example": "long one"
                                     },
                                     "notes": {
                                         "type": "string",

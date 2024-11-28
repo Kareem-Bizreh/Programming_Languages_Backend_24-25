@@ -26,24 +26,19 @@ class LocationController extends Controller
      *           @OA\JsonContent(
      *               required={"city" , "address" , "building_number" , "floor_number" , "notes"},
      *               @OA\Property(
-     *                   property="city",
+     *                   property="name",
      *                   type="string",
-     *                   example=" Damascus"
+     *                   example=" potter"
      *               ),
      *               @OA\Property(
-     *                    property="address",
+     *                    property="location",
      *                     type="string",
-     *                     example="Al-Midan"
+     *                     example="damascus Al-Midan"
      *                ),
      *               @OA\Property(
-     *                    property="building_number",
+     *                    property="street",
      *                     type="string",
-     *                     example="5"
-     *                ),
-     *               @OA\Property(
-     *                    property="floor_number",
-     *                     type="string",
-     *                     example="4"
+     *                     example="long one"
      *                ),
      *               @OA\Property(
      *                    property="notes",

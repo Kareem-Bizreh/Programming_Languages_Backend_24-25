@@ -22,10 +22,9 @@ class StoreLocationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'city' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'building_number' => 'required|string|max:10',
-            'floor_number' => 'required|string|max:10',
+            'name' => 'required|string|unique:locations,name|max:255',
+            'location' => 'required|string|max:255',
+            'street' => 'required|string|max:255',
             'notes' => 'string|max:500',
         ];
     }
@@ -36,24 +35,21 @@ class StoreLocationRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'city.required' => 'The city field is required.',
-            'city.string' => 'The city must be a valid string.',
-            'city.max' => 'The city must not exceed 255 characters.',
+            'name.required' => 'The name field is required.',
+            'name.string' => 'The name must be a valid string.',
+            'name.unique' => 'The name has already been taken. Please choose a different name.',
+            'name.max' => 'The name cannot exceed 255 characters.',
 
-            'address.required' => 'The address field is required.',
-            'address.string' => 'The address must be a valid string.',
-            'address.max' => 'The address must not exceed 255 characters.',
+            'location.required' => 'The location field is required.',
+            'location.string' => 'The location must be a valid string.',
+            'location.max' => 'The location cannot exceed 255 characters.',
 
-            'building_number.required' => 'The building number is required.',
-            'building_number.string' => 'The building number must be a valid string.',
-            'building_number.max' => 'The building number must not exceed 10 characters.',
-
-            'floor_number.required' => 'The floor number is required.',
-            'floor_number.string' => 'The floor number must be a valid string.',
-            'floor_number.max' => 'The floor number must not exceed 10 characters.',
+            'street.required' => 'The street field is required.',
+            'street.string' => 'The street must be a valid string.',
+            'street.max' => 'The street cannot exceed 255 characters.',
 
             'notes.string' => 'The notes must be a valid string.',
-            'notes.max' => 'The notes must not exceed 500 characters.',
+            'notes.max' => 'The notes cannot exceed 500 characters.',
         ];
     }
 }

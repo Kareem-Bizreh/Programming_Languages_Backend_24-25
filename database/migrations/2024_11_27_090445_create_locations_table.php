@@ -16,10 +16,9 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->constrained('users')->cascadeOnDelete();
             // $table->foreignId('user_id')->constrained('users')->references('id')->cascadeOnDelete();
-            $table->string('city');
-            $table->string('address');
-            $table->string('building_number');
-            $table->string('floor_number');
+            $table->string('name');
+            $table->string('location');
+            $table->string('street');
             $table->string('notes');
             $table->timestamps();
         });
