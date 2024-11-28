@@ -150,9 +150,8 @@ class UserService
      *
      * @param string $verificationCode
      * @param int $id
-     * @param string $password
      */
-    public function verifyNewPassword(string $verificationCode, int $id, string $password)
+    public function verifyNewPassword(string $verificationCode, int $id)
     {
         $code = Cache::get('user_id_' . $id);
         if (! $code) {
@@ -161,7 +160,6 @@ class UserService
         if ($code != $verificationCode) {
             return response()->json(['message' => 'Verification code is not correct'], 400);
         }
-        $this->changeUserPassword($id, $password);
         return response()->json(['message' => 'user has been verified and new password set']);
     }
 

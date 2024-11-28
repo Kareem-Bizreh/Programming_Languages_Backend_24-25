@@ -486,9 +486,7 @@
                             "schema": {
                                 "required": [
                                     "verify_code",
-                                    "id",
-                                    "password",
-                                    "password_confirmation"
+                                    "id"
                                 ],
                                 "properties": {
                                     "verify_code": {
@@ -498,14 +496,6 @@
                                     "id": {
                                         "type": "integer",
                                         "example": 1
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "example": "password123"
-                                    },
-                                    "password_confirmation": {
-                                        "type": "string",
-                                        "example": "password123"
                                     }
                                 },
                                 "type": "object"
@@ -549,11 +539,8 @@
                             "schema": {
                                 "properties": {
                                     "image": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string",
-                                            "format": "binary"
-                                        }
+                                        "type": "string",
+                                        "format": "binary"
                                     }
                                 },
                                 "type": "object"

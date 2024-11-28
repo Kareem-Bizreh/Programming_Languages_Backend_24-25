@@ -340,7 +340,7 @@ class UserController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"verify_code", "id" , "password" , "password_confirmation"},
+     *             required={"verify_code", "id"},
      *             @OA\Property(
      *                 property="verify_code",
      *                 type="string",
@@ -350,17 +350,7 @@ class UserController extends Controller
      *                 property="id",
      *                 type="integer",
      *                 example=1
-     *             ),
-     *             @OA\Property(
-     *                 property="password",
-     *                 type="string",
-     *                 example="password123"
-     *             ),
-     *             @OA\Property(
-     *                 property="password_confirmation",
-     *                 type="string",
-     *                 example="password123"
-     *             ),
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -381,7 +371,6 @@ class UserController extends Controller
         $data = Validator::make($request->all(), [
             'verify_code' => 'required|string|min:6|max:6',
             'id' => 'required',
-            'password' => 'required|string|min:8|confirmed',
         ]);
 
         if ($data->fails()) {
@@ -392,7 +381,7 @@ class UserController extends Controller
         }
         $data = $data->validated();
 
-        return $this->userService->verifyNewPassword($data['verify_code'], $data['id'], $data['password']);
+        return $this->userService->verifyNewPassword($data['verify_code'], $data['id']);
     }
 
     /**
@@ -407,11 +396,8 @@ class UserController extends Controller
      *               type="object",
      *               @OA\Property(
      *                  property="image",
-     *                  type="array",
-     *                  @OA\Items(
-     *                       type="string",
-     *                       format="binary",
-     *                  ),
+     *                  type="string",
+     *                  format="binary",
      *               ),
      *           ),
      *       )
