@@ -21,9 +21,12 @@ Route::controller(UserController::class)->prefix('users')->group(function () {
 
     Route::middleware('auth:api')->group(function () {
         Route::post('/logout', 'logout');
+        Route::post('/uploadImage', 'uploadImage');
         Route::put('/resetPassword', 'resetPassword');
-        Route::get('/currentUser', 'current');
         Route::put('/editUser', 'edit');
+        Route::get('/currentUser', 'current');
+        Route::get('/getImage', 'getImage');
+        Route::delete('/deleteImage', 'deleteImage');
     });
 });
 

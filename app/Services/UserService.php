@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class UserService
@@ -162,5 +163,51 @@ class UserService
         }
         $this->changeUserPassword($id, $password);
         return response()->json(['message' => 'user has been verified and new password set']);
+    }
+
+    /**
+     * upload Image for user
+     *
+     * @param int $id
+     * @param $image
+     * @return bool
+     */
+    public function uploadImage(int $id, $image): bool
+    {
+        DB::beginTransaction();
+        try {
+            $user = $this->findById($id);
+            if ($user->image && Storage::disk('public')->exists($user->image)) {
+                Storage::disk('public')->delete($user->image);
+            }
+            $imagePath = $image->store('images', 'public');
+            $user->image = $imagePath;
+            $user->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * delete image for user
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function deleteImage(User $user): bool
+    {
+        DB::beginTransaction();
+        try {
+            $user->image = null;
+            $user->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return false;
+        }
+        return true;
     }
 }

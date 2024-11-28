@@ -536,6 +536,59 @@
                 }
             }
         },
+        "/users/uploadImage": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Upload user image",
+                "operationId": "c4d33abb3d313290279e0891c57462cd",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "image": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful uploaded an image",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "user has uploaded his image successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/users/setPassword": {
             "put": {
                 "tags": [
@@ -771,6 +824,60 @@
                 "responses": {
                     "200": {
                         "description": "return the user",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/users/getImage": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "image of current user",
+                "operationId": "2ff379f4108f962d6781f3a05dea7bfb",
+                "responses": {
+                    "200": {
+                        "description": "return the image of user",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/users/deleteImage": {
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "delete user image",
+                "operationId": "c6adc2561bff7fda010d4ba7fe80f394",
+                "responses": {
+                    "200": {
+                        "description": "delete the user image",
                         "content": {
                             "application/json": {
                                 "schema": {}

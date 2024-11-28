@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
@@ -395,6 +396,67 @@ class UserController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *     path="/users/uploadImage",
+     *     summary="Upload user image",
+     *     tags={"Users"},
+     *     @OA\RequestBody(
+     *       @OA\MediaType(
+     *           mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *               type="object",
+     *               @OA\Property(
+     *                  property="image",
+     *                  type="array",
+     *                  @OA\Items(
+     *                       type="string",
+     *                       format="binary",
+     *                  ),
+     *               ),
+     *           ),
+     *       )
+     *   ),
+     *     @OA\Response(
+     *      response=200, description="Successful uploaded an image",
+     *       @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="user has uploaded his image successfully"
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Invalid request"),
+     *     security={
+     *         {"bearer": {}}
+     *     }
+     * )
+     */
+    public function uploadImage(Request $request)
+    {
+        $data = Validator::make($request->all(), [
+            'image' => 'required|image|file'
+        ]);
+
+        if ($data->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $data->errors(),
+            ], 400);
+        }
+        $data = $data->validated();
+
+        if ($this->userService->uploadImage(Auth::id(), $request->file('image')))
+            return response()->json([
+                'message' => 'Image uploaded successfully.'
+            ], 200);
+
+        return response()->json([
+            'error' => 'No image uploaded.',
+        ], 400);
+    }
+
+    /**
      * @OA\Put(
      *     path="/users/setPassword",
      *     summary="set new password",
@@ -657,5 +719,43 @@ class UserController extends Controller
     public function current()
     {
         return response()->json(['user' => Auth::user()]);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/users/getImage",
+     *     summary="image of current user",
+     *     tags={"Users"},
+     *     @OA\Response(
+     *      response=200, description="return the image of user",@OA\JsonContent()),
+     *     @OA\Response(response=400, description="Invalid request"),
+     *     security={
+     *         {"bearer": {}}
+     *     }
+     * )
+     */
+    public function getImage()
+    {
+        return response()->json(['image_path' => Auth::user()->image]);
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/users/deleteImage",
+     *     summary="delete user image",
+     *     tags={"Users"},
+     *     @OA\Response(
+     *      response=200, description="delete the user image",@OA\JsonContent()),
+     *     @OA\Response(response=400, description="Invalid request"),
+     *     security={
+     *         {"bearer": {}}
+     *     }
+     * )
+     */
+    public function deleteImage()
+    {
+        if ($this->userService->deleteImage(Auth::user()))
+            return response()->json(['message' => 'image deleted successfuly']);
+        return response()->json(['message' => 'image deleted failed'], 400);
     }
 }
