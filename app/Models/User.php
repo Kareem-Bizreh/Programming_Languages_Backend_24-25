@@ -34,6 +34,11 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+    public function locations()
+    {
+        return $this->hasMany(Location::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

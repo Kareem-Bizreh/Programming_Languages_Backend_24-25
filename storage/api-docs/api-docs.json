@@ -10,6 +10,189 @@
         }
     ],
     "paths": {
+        "/locations/addLocation": {
+            "post": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "add new location",
+                "operationId": "7acbcf427d5bc898f7de567ffc816d91",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "city",
+                                    "address",
+                                    "building_number",
+                                    "floor_number",
+                                    "notes"
+                                ],
+                                "properties": {
+                                    "city": {
+                                        "type": "string",
+                                        "example": " Damascus"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "Al-Midan"
+                                    },
+                                    "building_number": {
+                                        "type": "string",
+                                        "example": "5"
+                                    },
+                                    "floor_number": {
+                                        "type": "string",
+                                        "example": "4"
+                                    },
+                                    "notes": {
+                                        "type": "string",
+                                        "example": "in front of the red building."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "location added seccessfully"
+                                        },
+                                        "location": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/locations/getLocations": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "get all locations for user",
+                "operationId": "aa7abb47c0ffb49a86a1b2007fea5896",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get locations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "locations get seccessfully"
+                                        },
+                                        "locations": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/locations/deleteLocation/{location_id}": {
+            "delete": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "delete location for user",
+                "operationId": "1376a1323958cff667929111fc73740b",
+                "parameters": [
+                    {
+                        "name": "location_id",
+                        "in": "path",
+                        "description": "id of location you want to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful delete location",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "locations delete seccessfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/users/register": {
             "post": {
                 "tags": [
@@ -611,6 +794,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Locations",
+            "description": "Locations"
+        },
         {
             "name": "Users",
             "description": "Users"

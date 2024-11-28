@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class UserService
@@ -24,7 +25,7 @@ class UserService
      */
     public function findById(int $id): User
     {
-        return User::find($id);
+        return User::findOrFail($id);
     }
 
     /**
@@ -42,10 +43,9 @@ class UserService
      * Create a new user.
      *
      * @param $data.
-     * @return User
-     * @throws ValidationException
+     * @return User|null
      */
-    public function createUser($data): User
+    public function createUser($data)
     {
         $user = User::create($data);
         return $user;
@@ -56,14 +56,21 @@ class UserService
      *
      * @param int $id
      * @param $data
-     * @return User
+     * @return User|null
      * @throws ModelNotFoundException
      */
-    public function updateUser(int $id, $data): User
+    public function updateUser(int $id, $data)
     {
-        $user = User::find($id);
-        $user->update($data);
-        $user->save();
+        DB::beginTransaction();
+        try {
+            $user = User::find($id);
+            $user->update($data);
+            $user->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return null;
+        }
         return $user;
     }
 
@@ -82,9 +89,16 @@ class UserService
         if ($code != $verificationCode) {
             return response()->json(['message' => 'Verification code is not correct'], 400);
         }
-        $user = $this->findById($id);
-        $user->number_verified_at = now();
-        $user->save();
+        DB::beginTransaction();
+        try {
+            $user = $this->findById($id);
+            $user->number_verified_at = now();
+            $user->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'failed'], 400);
+        }
         return response()->json(['message' => 'user has been verified']);
     }
 
@@ -94,12 +108,21 @@ class UserService
      * @param int $id
      * @param string $newPassword
      * @throws ModelNotFoundException
+     * @return bool
      */
-    public function changeUserPassword(int $id, string $newPassword)
+    public function changeUserPassword(int $id, string $newPassword): bool
     {
-        $user = $this->findById($id);
-        $user->password = bcrypt($newPassword);
-        $user->save();
+        DB::beginTransaction();
+        try {
+            $user = $this->findById($id);
+            $user->password = bcrypt($newPassword);
+            $user->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return false;
+        }
+        return true;
     }
 
     /**

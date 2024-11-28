@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginUserRequset;
+use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Mail\EmailVerify;
 use App\Mail\ResetPassword;
@@ -211,7 +211,7 @@ class UserController extends Controller
      *     @OA\Response(response=400, description="Invalid request")
      * )
      */
-    public function login(LoginUserRequset $request)
+    public function login(LoginUserRequest $request)
     {
         $data = $request->validated();
 
@@ -448,11 +448,13 @@ class UserController extends Controller
         }
         $data = $data->validated();
 
-        $this->userService->changeUserPassword($data['id'], $data['password']);
-
+        if ($this->userService->changeUserPassword($data['id'], $data['password']))
+            return response()->json([
+                'message' => 'new password set'
+            ], 200);
         return response()->json([
-            'message' => 'new password set'
-        ], 200);
+            'message' => 'failed'
+        ], 400);
     }
 
     /**
@@ -512,7 +514,15 @@ class UserController extends Controller
         }
         $data = $data->validated();
 
-        $user = $this->userService->findById(Auth::id());
+        $user = null;
+        try {
+            $user = $this->userService->findById(Auth::id());
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'failed'
+            ], 400);
+        }
+
 
         if (! Hash::check($data['old_password'], $user->password)) {
             return response()->json([
@@ -520,11 +530,13 @@ class UserController extends Controller
             ], 400);
         }
 
-        $this->userService->changeUserPassword($user->id, $data['new_password']);
-
+        if ($this->userService->changeUserPassword($user->id, $data['new_password']))
+            return response()->json([
+                'message' => 'new password set'
+            ], 200);
         return response()->json([
-            'message' => 'new password set'
-        ], 200);
+            'message' => 'failed'
+        ], 400);
     }
 
     /**
