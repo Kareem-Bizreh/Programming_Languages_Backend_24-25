@@ -55,16 +55,15 @@ class UserService
     /**
      * Update user information.
      *
-     * @param int $id
+     * @param User $user
      * @param $data
      * @return User|null
      * @throws ModelNotFoundException
      */
-    public function updateUser(int $id, $data)
+    public function updateUser(User $user, $data)
     {
         DB::beginTransaction();
         try {
-            $user = User::find($id);
             $user->update($data);
             $user->save();
             DB::commit();
@@ -166,20 +165,18 @@ class UserService
     /**
      * upload Image for user
      *
-     * @param int $id
+     * @param User $user
      * @param $image
      * @return bool
      */
-    public function uploadImage(int $id, $image): bool
+    public function uploadImage(User $user, $image): bool
     {
         DB::beginTransaction();
         try {
-            $user = $this->findById($id);
             if ($user->image && Storage::disk('public')->exists($user->image)) {
                 Storage::disk('public')->delete($user->image);
             }
-            $imagePath = $image->store('images', 'public');
-            $user->image = $imagePath;
+            $user->image = $image->store('images', 'public');
             $user->save();
             DB::commit();
         } catch (\Exception $e) {

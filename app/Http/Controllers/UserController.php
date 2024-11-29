@@ -432,9 +432,9 @@ class UserController extends Controller
         }
         $data = $data->validated();
 
-        if ($this->userService->uploadImage(Auth::id(), $request->file('image')))
+        if ($this->userService->uploadImage(Auth::user(), $request->file('image')))
             return response()->json([
-                'message' => 'Image uploaded successfully.'
+                'message' => 'user has uploaded his image successfully.'
             ], 200);
 
         return response()->json([
@@ -644,7 +644,7 @@ class UserController extends Controller
         }
         $data = $data->validated();
 
-        $user = $this->userService->updateUser(Auth::id(), $data);
+        $user = $this->userService->updateUser(Auth::user(), $data);
 
         if ($user)
             return response()->json([
@@ -722,7 +722,8 @@ class UserController extends Controller
      */
     public function getImage()
     {
-        return response()->json(['image_path' => Auth::user()->image]);
+        return response()->json(['image_path' => (Auth::user()->image ?
+            config('app.url') . '/storage/' . Auth::user()->image : null)]);
     }
 
     /**
