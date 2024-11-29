@@ -199,8 +199,11 @@ class UserService
     {
         DB::beginTransaction();
         try {
-            $user->image = null;
-            $user->save();
+            if ($user->image && Storage::disk('public')->exists($user->image)) {
+                Storage::disk('public')->delete($user->image);
+                $user->image = null;
+                $user->save();
+            }
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
