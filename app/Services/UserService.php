@@ -176,7 +176,7 @@ class UserService
             if ($user->image && Storage::disk('public')->exists($user->image)) {
                 Storage::disk('public')->delete($user->image);
             }
-            $user->image = $image->store('images', 'public');
+            $user->image = $image->store('images/users', 'public');
             $user->save();
             DB::commit();
         } catch (\Exception $e) {
