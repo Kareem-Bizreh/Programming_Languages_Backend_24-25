@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', [
                 Role::Admin->value,
-                Role::Saler->value
+                Role::Seller->value
             ]);
             $table->timestamps();
         });

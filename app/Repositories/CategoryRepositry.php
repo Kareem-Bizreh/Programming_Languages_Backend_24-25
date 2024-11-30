@@ -11,7 +11,7 @@ class CategoryRepositry
      */
     public function getAll()
     {
-        DB::table('categories')->get();
+        return DB::table('categories')->get();
     }
 
     /**
@@ -21,6 +21,6 @@ class CategoryRepositry
      */
     public function getById(int $id)
     {
-        DB::table('categories')->where('id', '=', $id)->get()->first();
+        return DB::table('categories')->where('id', '=', $id)->get()->first();
     }
 }

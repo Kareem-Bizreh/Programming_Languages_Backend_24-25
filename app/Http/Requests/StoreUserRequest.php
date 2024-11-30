@@ -24,7 +24,7 @@ class StoreUserRequest extends FormRequest
         return [
             'first_name' => 'required|string|max:20',
             'last_name' => 'required|string|max:20',
-            'number' => 'required|numeric|digits:10',
+            'number' => 'required|numeric|digits:10|unique:users,number',
             'email' => 'required|email',
             'password' => 'required|string|min:8|confirmed',
         ];
@@ -44,6 +44,7 @@ class StoreUserRequest extends FormRequest
             'number.required' => 'The number field is required.',
             'number.numeric' => 'The number must be a valid number.',
             'number.digits' => 'The number must be exactly 10 digits.',
+            'number.unique' => 'the number is already taken',
 
             'email.required' => 'The email field is required.',
             'email.email' => 'The email must be a valid email address.',

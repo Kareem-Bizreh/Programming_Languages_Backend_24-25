@@ -211,6 +211,202 @@
                 ]
             }
         },
+        "/managers/login": {
+            "post": {
+                "tags": [
+                    "Managers"
+                ],
+                "summary": "login manager",
+                "operationId": "745f2d02f6ad00bc8350231c433c062a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Admin"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "manager has been login successfuly"
+                                        },
+                                        "Bearer Token": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/managers/logout": {
+            "post": {
+                "tags": [
+                    "Managers"
+                ],
+                "summary": "logout manager",
+                "operationId": "7d72fc878295f4146454fce335a43f8a",
+                "responses": {
+                    "200": {
+                        "description": "Successful logout",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "manager has been logout successfuly"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/managers/refreshToken": {
+            "put": {
+                "tags": [
+                    "Managers"
+                ],
+                "summary": "refresh token",
+                "operationId": "15f57babc4c12db926d769bc926ed305",
+                "responses": {
+                    "200": {
+                        "description": "return the new token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "new token set"
+                                        },
+                                        "Bearer Token": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/managers/resetPassword": {
+            "put": {
+                "tags": [
+                    "Managers"
+                ],
+                "summary": "reset password",
+                "operationId": "6f2ec86e1759f659cb640822fd6153dc",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "old_password",
+                                    "new_password",
+                                    "new_password_confirmation"
+                                ],
+                                "properties": {
+                                    "old_password": {
+                                        "type": "string",
+                                        "example": "password"
+                                    },
+                                    "new_password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "new_password_confirmation": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully set new password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "new password set"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/statuses/getAll": {
             "get": {
                 "tags": [
@@ -549,14 +745,14 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Successful verify and set new password",
+                        "description": "Successful verify",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "user has been verified and new password set"
+                                            "example": "user has been verified"
                                         }
                                     },
                                     "type": "object"
@@ -717,7 +913,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Successfully set of password",
+                        "description": "Successfully set new password",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -935,6 +1131,10 @@
         {
             "name": "Locations",
             "description": "Locations"
+        },
+        {
+            "name": "Managers",
+            "description": "Managers"
         },
         {
             "name": "Statuses",

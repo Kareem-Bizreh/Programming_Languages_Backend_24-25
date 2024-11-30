@@ -208,4 +208,22 @@ class UserService
         }
         return true;
     }
+
+    /**
+     * refresh token
+     *
+     * @param $old_token
+     */
+    public function refreshToken($old_token)
+    {
+        DB::beginTransaction();
+        try {
+            $token = $old_token->parseToken()->refresh();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return null;
+        }
+        return $token;
+    }
 }

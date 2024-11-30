@@ -354,12 +354,12 @@ class UserController extends Controller
      *         )
      *     ),
      *     @OA\Response(
-     *      response=200, description="Successful verify and set new password",
+     *      response=200, description="Successful verify",
      *       @OA\JsonContent(
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="user has been verified and new password set"
+     *                 example="user has been verified"
      *             ),
      *         )
      *     ),
@@ -532,7 +532,7 @@ class UserController extends Controller
      *         )
      *     ),
      *     @OA\Response(
-     *      response=200, description="Successfully set of password",
+     *      response=200, description="Successfully set new password",
      *       @OA\JsonContent(
      *             @OA\Property(
      *                 property="message",
@@ -678,11 +678,16 @@ class UserController extends Controller
      */
     public function refreshToken()
     {
-        $token = auth('user-api')->parseToken()->refresh();
-        return response()->json([
-            'message' => 'new token set',
-            'Bearer Token' => $token
-        ], 200);
+        $token = $this->userService->refreshToken(auth('user-api'));
+        if ($token)
+            return response()->json([
+                'message' => 'new token set',
+                'Bearer Token' => $token
+            ], 200);
+        else
+            return response()->json([
+                'message' => 'failed'
+            ], 400);
     }
 
     /**
