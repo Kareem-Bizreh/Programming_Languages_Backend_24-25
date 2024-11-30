@@ -16,15 +16,15 @@ class CategoryController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/categories",
+     *     path="/categories/getAll",
      *     summary="get all categories",
      *     tags={"Categories"},
-     *     @OA\Response(
-     *      response=200, description="Successful get categories",@OA\JsonContent()),
+     *     @OA\Response(response=200, description="succesful get all categories",@OA\JsonContent()),
+     *     @OA\Response(response=400, description="Invalid request"),
      * )
      */
-    public function getCategories()
+    public function getAll()
     {
-        return response()->json(['categories: ' => $this->categoryRepositry->getAll()], 200);
+        return response()->json(['categories' => $this->categoryRepositry->getAll()], 200);
     }
 }

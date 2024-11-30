@@ -230,7 +230,7 @@ class UserController extends Controller
             ], 400);
         }
 
-        return $this->userService->createToken($user);
+        return $this->userService->createToken($data);
     }
 
     /**
@@ -257,7 +257,7 @@ class UserController extends Controller
     public function logout()
     {
         try {
-            Auth::logout();
+            auth('user-api')->logout();
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'user logout failed'
@@ -432,7 +432,7 @@ class UserController extends Controller
         }
         $data = $data->validated();
 
-        if ($this->userService->uploadImage(Auth::user(), $request->file('image')))
+        if ($this->userService->uploadImage(auth('user-api')->user(), $request->file('image')))
             return response()->json([
                 'message' => 'user has uploaded his image successfully.'
             ], 200);
@@ -562,14 +562,7 @@ class UserController extends Controller
         }
         $data = $data->validated();
 
-        $user = null;
-        try {
-            $user = $this->userService->findById(Auth::id());
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'failed'
-            ], 400);
-        }
+        $user = auth('user-api')->user();
 
 
         if (! Hash::check($data['old_password'], $user->password)) {
@@ -644,13 +637,16 @@ class UserController extends Controller
         }
         $data = $data->validated();
 
-        $user = $this->userService->updateUser(Auth::user(), $data);
+        $user = $this->userService->updateUser(auth('user-api')->user(), $data);
 
-        if ($user)
+        if ($user) {
+            $user->image = ($user->image ?
+                config('app.url') . '/storage/' . $user->image : null);
             return response()->json([
                 'message' => 'updated done',
                 'user' => $user
             ]);
+        }
         return response()->json(['message' => 'updated failed'], 400);
     }
 
@@ -682,7 +678,7 @@ class UserController extends Controller
      */
     public function refreshToken()
     {
-        $token = JWTAuth::parseToken()->refresh();
+        $token = auth('user-api')->parseToken()->refresh();
         return response()->json([
             'message' => 'new token set',
             'Bearer Token' => $token
@@ -704,7 +700,10 @@ class UserController extends Controller
      */
     public function current()
     {
-        return response()->json(['user' => Auth::user()]);
+        $user = auth('user-api')->user();
+        $user->image = ($user->image ?
+            config('app.url') . '/storage/' . $user->image : null);
+        return response()->json(['user' => $user]);
     }
 
     /**
@@ -722,8 +721,8 @@ class UserController extends Controller
      */
     public function getImage()
     {
-        return response()->json(['image_path' => (Auth::user()->image ?
-            config('app.url') . '/storage/' . Auth::user()->image : null)]);
+        return response()->json(['image_path' => (auth('user-api')->user()->image ?
+            config('app.url') . '/storage/' . auth('user-api')->user()->image : null)]);
     }
 
     /**
@@ -741,7 +740,7 @@ class UserController extends Controller
      */
     public function deleteImage()
     {
-        if ($this->userService->deleteImage(Auth::user()))
+        if ($this->userService->deleteImage(auth('user-api')->user()))
             return response()->json(['message' => 'image deleted successfuly']);
         return response()->json(['message' => 'image deleted failed'], 400);
     }

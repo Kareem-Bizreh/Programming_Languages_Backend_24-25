@@ -10,6 +10,28 @@
         }
     ],
     "paths": {
+        "/categories/getAll": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "get all categories",
+                "operationId": "5a8efe3efc0d2057f010a56341f37f86",
+                "responses": {
+                    "200": {
+                        "description": "succesful get all categories",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
         "/locations/addLocation": {
             "post": {
                 "tags": [
@@ -187,6 +209,28 @@
                         "bearer": []
                     }
                 ]
+            }
+        },
+        "/statuses/getAll": {
+            "get": {
+                "tags": [
+                    "Statuses"
+                ],
+                "summary": "get all statuses",
+                "operationId": "1a590f49e15a42a0462020623eb2a2f0",
+                "responses": {
+                    "200": {
+                        "description": "succesful get all statuses",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
             }
         },
         "/users/register": {
@@ -885,8 +929,16 @@
     },
     "tags": [
         {
+            "name": "Categories",
+            "description": "Categories"
+        },
+        {
             "name": "Locations",
             "description": "Locations"
+        },
+        {
+            "name": "Statuses",
+            "description": "Statuses"
         },
         {
             "name": "Users",

@@ -128,11 +128,11 @@ class UserService
     /**
      * Create token.
      *
-     * @param User $data
+     * @param array $data
      */
-    public function createToken(User $data)
+    public function createToken(array $data)
     {
-        $token = JWTAuth::fromUser($data);
+        $token = auth('user-api')->attempt($data);
         if (! $token) {
             return response()->json([
                 'message' => 'user login failed'

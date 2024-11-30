@@ -12,4 +12,9 @@ class Market extends Model
     {
         $this->hasMany(Product::class);
     }
+
+    public function manager()
+    {
+        $this->belongsTo(Manager::class);
+    }
 }

@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\Manager;
+use App\Enums\Role;
+use App\Models\Market;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,10 +13,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('markets', function (Blueprint $table) {
+        Schema::create('managers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignIdFor(Manager::class)->constrained('managers')->cascadeOnDelete();
+            $table->string('name')->unique();
+            $table->string('password');
+            $table->enum('role', [
+                Role::Admin->value,
+                Role::Saler->value
+            ]);
             $table->timestamps();
         });
     }
@@ -25,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('markets');
+        Schema::dropIfExists('managers');
     }
 };

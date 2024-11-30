@@ -16,14 +16,14 @@ class StatusController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/statuses/allStatuses",
+     *     path="/statuses/getAll",
      *     summary="get all statuses",
      *     tags={"Statuses"},
      *     @OA\Response(response=200, description="succesful get all statuses",@OA\JsonContent()),
      *     @OA\Response(response=400, description="Invalid request"),
      * )
      */
-    public function allStatuses()
+    public function getAll()
     {
         return response()->json($this->statusRepositry->getAllStatuses(), 200);
     }
