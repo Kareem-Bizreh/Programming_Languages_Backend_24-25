@@ -80,9 +80,12 @@ Route::middleware('auth:manager-api')->group(function () {
 
     Route::controller(SellerController::class)->prefix('sellers')->middleware('role:seller')->group(function () {
         Route::post('/addProduct', 'addProduct');
-        Route::put('/editProduct', 'editProduct');
-        Route::delete('/deleteProduct', 'deleteProduct');
+        Route::post('/uploadImage/{product}', 'uploadImage');
+        Route::put('/edit/{product}', 'editProduct');
+        Route::delete('/delete/{product}', 'deleteProduct');
         Route::get('/getProducts', 'getProductsForSeller');
         Route::get('/getTopProducts', 'getTopProductsForSeller');
+        Route::get('/getImage/{product}', 'getImage');
+        Route::delete('/deleteImage/{product}', 'deleteImage');
     });
 });

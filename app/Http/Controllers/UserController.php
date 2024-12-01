@@ -18,10 +18,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
-/**
- * @OA\Info(title="My API Docs", version="0.1")
- */
-
 class UserController extends Controller
 {
     protected $userService;

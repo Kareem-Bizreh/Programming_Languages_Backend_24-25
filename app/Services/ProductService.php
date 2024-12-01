@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Manager;
 use App\Models\Product;
 use App\Repositories\CategoryRepositry;
 use Illuminate\Support\Facades\DB;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 class ProductService
 {
     protected $categoryRepositry;
+    public $marketService;
 
     /**
      * Create a new class instance.
@@ -56,7 +58,7 @@ class ProductService
     }
 
     /**
-     * delete image for user
+     * delete image for product
      *
      * @param Product $product
      * @return bool
@@ -79,33 +81,34 @@ class ProductService
     }
 
     /**
-     * create Product
+     * create product
      *
      * @param array $data
-     * @return bool
+     * @param Manager $manager
      */
-    public function create(array $data): bool
+    public function createProduct(array $data, Manager $manager)
     {
         DB::beginTransaction();
         try {
-            Product::create($data);
+            $data['market_id'] = $manager->market->id;
+            $product = Product::create($data);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            return false;
+            return null;
         }
-        return true;
+        return $product;
     }
 
     /**
      * Update product information.
      *
      * @param Product $product
-     * @param $data
+     * @param array $data
      * @return Product|null
      * @throws ModelNotFoundException
      */
-    public function updateUser(Product $product, $data)
+    public function editProduct(Product $product, array $data)
     {
         DB::beginTransaction();
         try {
@@ -117,5 +120,27 @@ class ProductService
             return null;
         }
         return $product;
+    }
+
+    /**
+     * delete product
+     *
+     * @param Product $product
+     * @return bool
+     */
+    public function deleteProduct(Product $product): bool
+    {
+        DB::beginTransaction();
+        try {
+            $imagePath = $product->image;
+            $product->delete();
+            if ($imagePath && Storage::disk('public')->exists($imagePath))
+                Storage::disk('public')->delete($imagePath);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return false;
+        }
+        return true;
     }
 }

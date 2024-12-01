@@ -917,6 +917,472 @@
                 ]
             }
         },
+        "/sellers/addProduct": {
+            "post": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "add new product",
+                "operationId": "b9c99a8200f21acc65f5a7fa53c6d5b4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "category_id",
+                                    "quantity",
+                                    "price"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Choko Cake"
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "quantity": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "price": {
+                                        "type": "integer",
+                                        "example": 5000
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "for birthdays"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully create product"
+                                        },
+                                        "product": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/sellers/uploadImage/{product}": {
+            "post": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "Upload product image",
+                "operationId": "c8ecf276021a8638d39aaf35fb73039e",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful uploaded an image",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "uploaded product image successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/sellers/edit/{product}": {
+            "put": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "edit product",
+                "operationId": "a04e151acc71b1e2079cf07dbeee31ae",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "category_id",
+                                    "quantity",
+                                    "price"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Choko Cake"
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "quantity": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "price": {
+                                        "type": "integer",
+                                        "example": 10000
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "for birthdays"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful edited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully edit product"
+                                        },
+                                        "product": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/sellers/delete/{product}": {
+            "delete": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "delete product",
+                "operationId": "7996fd0519f1d32029f34a78e65b229b",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully delete product"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/sellers/deleteImage/{product}": {
+            "delete": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "delete product image",
+                "operationId": "ba7e9719141c56351fabe7a8104a0fa7",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "delete the product image",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/sellers/getProducts": {
+            "get": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "get all products for market",
+                "operationId": "eb001b786028f2278ff5f5b778c96f3e",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get all products for market",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get all products for market"
+                                        },
+                                        "products": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/sellers/getTopProducts": {
+            "get": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "get products order by number of purchases for market",
+                "operationId": "a8ca1632a0309f774e1fa9a3a7838447",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get products order by number of purchases for market",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get products order by number of purchases for market"
+                                        },
+                                        "products": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/sellers/getImage/{product}": {
+            "get": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "image for product",
+                "operationId": "5ebe36ba3d7ba91458a6d726c0073a4f",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "return the image of product",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/statuses/getAll": {
             "get": {
                 "tags": [
@@ -1649,6 +2115,10 @@
         {
             "name": "Managers",
             "description": "Managers"
+        },
+        {
+            "name": "Sellers",
+            "description": "Sellers"
         },
         {
             "name": "Statuses",
