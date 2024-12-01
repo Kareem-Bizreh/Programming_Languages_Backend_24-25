@@ -10,6 +10,6 @@ class Product extends Model
 
     public function market()
     {
-        $this->belongsTo(Market::class);
+        return $this->belongsTo(Market::class);
     }
 }

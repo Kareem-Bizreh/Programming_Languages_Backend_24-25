@@ -34,7 +34,7 @@ class Manager extends Authenticatable implements JWTSubject
 
     public function market()
     {
-        $this->hasOne(Market::class);
+        return $this->hasOne(Market::class);
     }
 
     /**
