@@ -40,6 +40,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Location::class);
     }
 
+    public function favorites()
+    {
+        return $this->belongsToMany(Product::class, 'favorites');
+    }
+
     public function getImageAttribute($value)
     {
         if ($value) {

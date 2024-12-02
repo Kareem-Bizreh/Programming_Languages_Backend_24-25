@@ -1191,6 +1191,111 @@
                 ]
             }
         },
+        "/products/toggleFavorite/{product}/": {
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "change status of favorite for user of some product",
+                "operationId": "5a0e37d28ae933f6eb0df1c5b9e37022",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful toggle",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully toggle"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/products/getFavoriteProducts": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "get favorite products with their id, name, market name, image, category and price for user",
+                "operationId": "c006c7e6e076f3992afa47f002e19461",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get products"
+                                        },
+                                        "products": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/products/getProducts": {
             "get": {
                 "tags": [
@@ -1323,7 +1428,7 @@
                 "tags": [
                     "Products"
                 ],
-                "summary": "get all information for product",
+                "summary": "get all information for product and if this product is favorite for user",
                 "operationId": "7c0447cb47dd4e1a7aa61e6b184ca5eb",
                 "parameters": [
                     {

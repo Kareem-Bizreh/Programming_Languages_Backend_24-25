@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Manager;
 use App\Models\Product;
+use App\Models\User;
 use App\Repositories\CategoryRepositry;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -215,6 +216,76 @@ class ProductService
         $products = Product::with('market')
             ->where('name', $name)
             ->select('id', 'name',  'category_id', 'image',  'price', 'market_id')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        $products->getCollection()->transform(function ($product) {
+            $product->market_name = $product->market->name;
+            unset($product->market);
+            return $product;
+        });
+
+        return [
+            'currentPageItems' => $products->items(),
+            'total' => $products->total(),
+            'perPage' => $products->perPage(),
+            'currentPage' => $products->currentPage(),
+            'lastPage' => $products->lastPage(),
+        ];
+    }
+
+    /**
+     * check if this product from favorites
+     *
+     * @param int $product_id
+     * @param int $user_id
+     * @return bool
+     */
+    public function isFavorite(int $product_id, int $user_id): bool
+    {
+        return (DB::table('favorites')
+            ->where('user_id', '=', $user_id)
+            ->where('product_id', '=', $product_id)
+            ->get()->first() != null);
+    }
+
+    /**
+     * change status of favorite for user of some product
+     *
+     * @param User $user
+     * @param int $product_id
+     * @param bool $exists
+     * @return bool
+     */
+    public function toggleFavorite(User $user, int $product_id, bool $exists): bool
+    {
+        DB::beginTransaction();
+        try {
+            if ($exists)
+                $user->favorites()->detach($product_id);
+            else
+                $user->favorites()->attach($product_id);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * get favorite products for user
+     *
+     * @param User $user
+     * @param int $perPage
+     * @param int $page
+     */
+    public function getFavoriteProducts(User $user, int $perPage, int $page)
+    {
+        $products = Product::with('market')
+            ->whereHas('favoritedBy', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->select('id', 'name', 'image', 'category_id', 'price', 'market_id')
             ->paginate($perPage, ['*'], 'page', $page);
 
         $products->getCollection()->transform(function ($product) {

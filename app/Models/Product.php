@@ -14,6 +14,11 @@ class Product extends Model
         return $this->belongsTo(Market::class);
     }
 
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(User::class, 'favorites');
+    }
+
     public function getImageAttribute($value)
     {
         if ($value) {

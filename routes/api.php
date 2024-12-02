@@ -40,7 +40,9 @@ Route::controller(UserController::class)->prefix('users')->group(function () {
 Route::middleware('auth:user-api')->group(function () {
 
     Route::controller(ProductController::class)->prefix('products')->group(function () {
+        Route::post('/toggleFavorite/{product}/', 'toggleFavorite');
         Route::get('/getProducts', 'getProducts');
+        Route::get('/getFavoriteProducts', 'getFavoriteProducts');
         Route::get('/getProductsByCategory/{category}', 'getProductsByCategory');
         Route::get('/getProduct/{product}', 'getProduct');
         Route::get('/getProductsByName/{product_name}', 'getProductsByName');

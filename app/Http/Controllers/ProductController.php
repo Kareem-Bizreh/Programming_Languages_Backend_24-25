@@ -16,6 +16,107 @@ class ProductController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *       path="/products/toggleFavorite/{product}/",
+     *       summary="change status of favorite for user of some product",
+     *       tags={"Products"},
+     *       @OA\Parameter(
+     *            name="product",
+     *            in="path",
+     *            required=true,
+     *            description="product id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful toggle",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="successfully toggle"
+     *               )
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function toggleFavorite(Product $product)
+    {
+        $user = auth('user-api')->user();
+
+        $exists = $this->productService->isFavorite($product->id, $user->id);
+
+        if ($this->productService->toggleFavorite($user, $product->id, $exists)) {
+            if ($exists) {
+                return response()->json(['message' => 'product removed from favorites.']);
+            } else {
+                return response()->json(['message' => 'product added to favorites.']);
+            }
+        }
+        return response()->json(['message' => 'failed'], 400);
+    }
+
+    /**
+     * @OA\Get(
+     *       path="/products/getFavoriteProducts",
+     *       summary="get favorite products with their id, name, market name, image, category and price for user",
+     *       tags={"Products"},
+     *       @OA\Parameter(
+     *            name="perPage",
+     *            in="query",
+     *            required=true,
+     *            description="number of records per page",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *       @OA\Parameter(
+     *            name="page",
+     *            in="query",
+     *            required=true,
+     *            description="number of page",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful get products",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="successfully get products"
+     *               ),
+     *               @OA\Property(
+     *                    property="products",
+     *                    type="string",
+     *                     example="[]"
+     *                ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getFavoriteProducts(Request $request)
+    {
+        $perPage = $request->query('perPage', 10);
+        $page = $request->query('page', 1);
+        return response()->json([
+            'message' => 'successfully get products',
+            'products' => $this->productService->getFavoriteProducts(auth('user-api')->user(), $perPage, $page)
+        ], 200);
+    }
+
+
+    /**
      * @OA\Get(
      *       path="/products/getProducts",
      *       summary="get all products with their id, name, market name, image, category and price",
@@ -135,7 +236,7 @@ class ProductController extends Controller
     /**
      * @OA\Get(
      *       path="/products/getProduct/{product}",
-     *       summary="get all information for product",
+     *       summary="get all information for product and if this product is favorite for user",
      *       tags={"Products"},
      *       @OA\Parameter(
      *            name="product",
@@ -171,7 +272,8 @@ class ProductController extends Controller
     {
         return response()->json([
             'message' => 'successfully get product',
-            'product' => $product
+            'product' => $product,
+            'isFavorite' => $this->productService->isFavorite($product->id, auth('user-api')->id()),
         ], 200);
     }
 
