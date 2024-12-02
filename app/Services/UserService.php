@@ -196,11 +196,13 @@ class UserService
     {
         DB::beginTransaction();
         try {
-            if ($user->image && Storage::disk('public')->exists($user->image)) {
-                Storage::disk('public')->delete($user->image);
+            $imagePath = $user->getAttributes()['image'];
+            if ($imagePath && Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
                 $user->image = null;
                 $user->save();
-            }
+            } else
+                throw new \Exception("no image to delete");
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

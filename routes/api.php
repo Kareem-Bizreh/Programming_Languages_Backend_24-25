@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\MarketController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\StatusController;
@@ -36,22 +37,37 @@ Route::controller(UserController::class)->prefix('users')->group(function () {
     });
 });
 
-Route::controller(LocationController::class)->prefix('locations')->middleware('auth:user-api')->group(function () {
-    Route::post('/addLocation', 'addLocation');
-    Route::get('/getLocations', 'getLocations');
-    Route::delete('/deleteLocation/{location_id}', 'deleteLocation');
+Route::middleware('auth:user-api')->group(function () {
+
+    Route::controller(ProductController::class)->prefix('products')->group(function () {
+        Route::get('/getProducts', 'getProducts');
+        Route::get('/getProductsByCategory/{category}', 'getProductsByCategory');
+        Route::get('/getProduct/{product}', 'getProduct');
+        Route::get('/getProductsByName/{product_name}', 'getProductsByName');
+        Route::get('/getImage/{product}', 'getImage');
+    });
+
+    Route::controller(MarketController::class)->prefix('markets')->group(function () {
+        Route::get('/getMarkets', 'getMarkets');
+        Route::get('/getMarketsByName/{market_name}', 'getMarketsByName');
+        Route::get('/getProductsForMarket/{market}', 'getProductsForMarket');
+    });
+
+    Route::controller(LocationController::class)->prefix('locations')->group(function () {
+        Route::post('/addLocation', 'addLocation');
+        Route::get('/getLocations', 'getLocations');
+        Route::delete('/deleteLocation/{location_id}', 'deleteLocation');
+    });
 });
 
 Route::controller(CategoryController::class)->prefix('categories')->group(function () {
     Route::get('/getAll', 'getAll');
+    Route::get('/get/{category}', 'getCategoryById');
 });
 
 Route::controller(StatusController::class)->prefix('statuses')->group(function () {
     Route::get('/getAll', 'getAll');
-});
-
-Route::controller(ProductController::class)->prefix('products')->middleware('auth:user-api')->group(function () {
-    //
+    Route::get('/get/{status}', 'getStatusById');
 });
 
 Route::controller(ManagerController::class)->prefix('managers')->group(function () {
@@ -72,6 +88,7 @@ Route::middleware('auth:manager-api')->group(function () {
         Route::post('/addAdmin', 'addAdmin');
         Route::put('/editMarket/{manager}', 'editMarket');
         Route::delete('/deleteMarket/{manager}', 'deleteMarket');
+        Route::delete('/delete/{product}', 'deleteProduct');
         Route::get('/getMarkets', 'getMarkets');
         Route::get('/getProducts/{market}', 'getProductsForMarket');
         Route::get('/getTopProducts', 'getTopProducts');

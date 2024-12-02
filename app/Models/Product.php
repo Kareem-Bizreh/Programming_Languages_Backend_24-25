@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -11,5 +12,13 @@ class Product extends Model
     public function market()
     {
         return $this->belongsTo(Market::class);
+    }
+
+    public function getImageAttribute($value)
+    {
+        if ($value) {
+            return config('app.url') . '/storage/' . $value;
+        }
+        return null;
     }
 }

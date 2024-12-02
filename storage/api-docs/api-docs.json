@@ -266,6 +266,52 @@
                 ]
             }
         },
+        "/admins/delete/{product}": {
+            "delete": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "delete product",
+                "operationId": "16654f50c925a313c8d317c154fd465d",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully delete product"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/admins/getMarkets": {
             "get": {
                 "tags": [
@@ -530,6 +576,39 @@
                 "responses": {
                     "200": {
                         "description": "succesful get all categories",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/categories/get/{category}": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "get category by id",
+                "operationId": "e546f5af868bcb9a05e81ad2cc03de8f",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "path",
+                        "description": "category id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succesful get category",
                         "content": {
                             "application/json": {
                                 "schema": {}
@@ -903,6 +982,484 @@
                                     },
                                     "type": "object"
                                 }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/markets/getMarkets": {
+            "get": {
+                "tags": [
+                    "Markets"
+                ],
+                "summary": "get all markets",
+                "operationId": "08ff5703f699fad70d44b2bd57927cae",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get markets",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get markets"
+                                        },
+                                        "markets": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/markets/getMarketsByName/{market_name}": {
+            "get": {
+                "tags": [
+                    "Markets"
+                ],
+                "summary": "get markets by name",
+                "operationId": "8a8d378270b3612cd13611b649de2e61",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "market_name",
+                        "in": "path",
+                        "description": "market name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get markets by name",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get markets by name"
+                                        },
+                                        "markets": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/markets/getProductsForMarket/{market}": {
+            "get": {
+                "tags": [
+                    "Markets"
+                ],
+                "summary": "get all products for market",
+                "operationId": "a93c2d374e15d632670bdbaab16bdd3f",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "market",
+                        "in": "path",
+                        "description": "market id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get products for market",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get products for market"
+                                        },
+                                        "products": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/products/getProducts": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "get all products with their id, name, market name, image, category and price",
+                "operationId": "19a33c0151734dd3d35481021b091ec6",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get products"
+                                        },
+                                        "products": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/products/getProductsByCategory/{category}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "get all products by category with their id, name, market name, image and price",
+                "operationId": "07fa865eca3f1d240c3e3550adfa1831",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "path",
+                        "description": "category id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get products by category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get products by category"
+                                        },
+                                        "products": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/products/getProduct/{product}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "get all information for product",
+                "operationId": "7c0447cb47dd4e1a7aa61e6b184ca5eb",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get product"
+                                        },
+                                        "product": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/products/getProductsByName/{product_name}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "get products by name",
+                "operationId": "594d91a8bff7d028599652e61234818d",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "product_name",
+                        "in": "path",
+                        "description": "product name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get products by name",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get products by name"
+                                        },
+                                        "products": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/products/getImage/{product}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "image for product",
+                "operationId": "ac6a49ffb066bb3f22520c11355d5de1",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "return the image of product",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
                             }
                         }
                     },
@@ -1292,7 +1849,7 @@
                     "Sellers"
                 ],
                 "summary": "get products order by number of purchases for market",
-                "operationId": "a8ca1632a0309f774e1fa9a3a7838447",
+                "operationId": "1972c1d9e19bfe0d32b7f44d45ce3d32",
                 "parameters": [
                     {
                         "name": "perPage",
@@ -1393,6 +1950,39 @@
                 "responses": {
                     "200": {
                         "description": "succesful get all statuses",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/statuses/get/{status}": {
+            "get": {
+                "tags": [
+                    "Statuses"
+                ],
+                "summary": "get status by id",
+                "operationId": "dc8bfc8603faa28b865d4f73c9185ec2",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "path",
+                        "description": "status id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "succesful get statuss",
                         "content": {
                             "application/json": {
                                 "schema": {}
@@ -2115,6 +2705,14 @@
         {
             "name": "Managers",
             "description": "Managers"
+        },
+        {
+            "name": "Markets",
+            "description": "Markets"
+        },
+        {
+            "name": "Products",
+            "description": "Products"
         },
         {
             "name": "Sellers",

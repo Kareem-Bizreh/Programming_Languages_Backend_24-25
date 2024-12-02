@@ -7,6 +7,7 @@ use App\Http\Requests\StoreManagerRequest;
 use App\Http\Requests\StoreMarketRequest;
 use App\Models\Manager;
 use App\Models\Market;
+use App\Models\Product;
 use App\Services\AdminService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -266,6 +267,48 @@ class AdminController extends Controller
     }
 
     /**
+     * @OA\Delete(
+     *       path="/admins/delete/{product}",
+     *       summary="delete product",
+     *       tags={"Admins"},
+     *       @OA\Parameter(
+     *            name="product",
+     *            in="path",
+     *            required=true,
+     *            description="product id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful deleted",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="successfully delete product"
+     *               )
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function deleteProduct(Product $product)
+    {
+        if (! $this->adminService->productService->deleteProduct($product)) {
+            return response()->json([
+                'message' => 'failed'
+            ], 400);
+        }
+        return response()->json([
+            'message' => 'successfully delete product'
+        ], 200);
+    }
+
+    /**
      * @OA\Get(
      *       path="/admins/getMarkets",
      *       summary="get all markets",
@@ -316,7 +359,7 @@ class AdminController extends Controller
         return response()->json([
             'message' => 'successfully get all markets',
             'markets' => $this->adminService->marketService->getAll($perPage, $page)
-        ], 400);
+        ], 200);
     }
 
     /**
@@ -379,7 +422,7 @@ class AdminController extends Controller
         return response()->json([
             'message' => 'successfully get all products for market',
             'products' => $this->adminService->marketService->getProductsForMarket($perPage, $page, $market)
-        ], 400);
+        ], 200);
     }
 
     /**
@@ -433,7 +476,7 @@ class AdminController extends Controller
         return response()->json([
             'message' => 'successfully get products order by number of purchases',
             'products' => $this->adminService->getTopProducts($perPage, $page)
-        ], 400);
+        ], 200);
     }
 
     /**
@@ -496,6 +539,6 @@ class AdminController extends Controller
         return response()->json([
             'message' => 'successfully get products order by number of purchases for market',
             'products' => $this->adminService->marketService->getTopProducts($perPage, $page, $market)
-        ], 400);
+        ], 200);
     }
 }

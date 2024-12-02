@@ -9,14 +9,15 @@ use Illuminate\Support\Facades\DB;
 
 class AdminService
 {
-    public $marketService;
+    public $marketService, $productService;
 
     /**
      * Create a new class instance.
      */
-    public function __construct(MarketService $marketService)
+    public function __construct(MarketService $marketService, ProductService $productService)
     {
         $this->marketService = $marketService;
+        $this->productService = $productService;
     }
 
     /**

@@ -44,8 +44,9 @@ class ProductService
     {
         DB::beginTransaction();
         try {
-            if ($product->image && Storage::disk('public')->exists($product->image)) {
-                Storage::disk('public')->delete($product->image);
+            $imagePath = $product->getAttributes()['image'];
+            if ($imagePath && Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
             }
             $product->image = $image->store('images/products', 'public');
             $product->save();
@@ -67,11 +68,13 @@ class ProductService
     {
         DB::beginTransaction();
         try {
-            if ($product->image && Storage::disk('public')->exists($product->image)) {
-                Storage::disk('public')->delete($product->image);
+            $imagePath = $product->getAttributes()['image'];
+            if ($imagePath && Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
                 $product->image = null;
                 $product->save();
-            }
+            } else
+                throw new \Exception("no image to delete");
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -132,7 +135,7 @@ class ProductService
     {
         DB::beginTransaction();
         try {
-            $imagePath = $product->image;
+            $imagePath = $product->getAttributes()['image'];
             $product->delete();
             if ($imagePath && Storage::disk('public')->exists($imagePath))
                 Storage::disk('public')->delete($imagePath);
@@ -142,5 +145,90 @@ class ProductService
             return false;
         }
         return true;
+    }
+
+    /**
+     * get all products with their id, name, market name, image, category and price
+     *
+     * @param int $perPage
+     * @param int $page
+     */
+    public function getProducts(int $perPage, int $page)
+    {
+        $products = Product::with('market')
+            ->select('id', 'name', 'image', 'category_id', 'price', 'market_id')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        $products->getCollection()->transform(function ($product) {
+            $product->market_name = $product->market->name;
+            unset($product->market);
+            return $product;
+        });
+
+        return [
+            'currentPageItems' => $products->items(),
+            'total' => $products->total(),
+            'perPage' => $products->perPage(),
+            'currentPage' => $products->currentPage(),
+            'lastPage' => $products->lastPage(),
+        ];
+    }
+
+    /**
+     * get all products by category with their id, name, market name, image and price
+     *
+     * @param int $perPage
+     * @param int $page
+     * @param int $category_id
+     */
+    public function getProductsByCategory(int $perPage, int $page, int $category_id)
+    {
+        $products = Product::with('market')
+            ->where('category_id', $category_id)
+            ->select('id', 'name', 'category_id', 'image', 'price', 'market_id')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        $products->getCollection()->transform(function ($product) {
+            $product->market_name = $product->market->name;
+            unset($product->market);
+            return $product;
+        });
+
+        return [
+            'currentPageItems' => $products->items(),
+            'total' => $products->total(),
+            'perPage' => $products->perPage(),
+            'currentPage' => $products->currentPage(),
+            'lastPage' => $products->lastPage(),
+        ];
+    }
+
+    /**
+     * get products by name
+     *
+     * @param int $perPage
+     * @param int $page
+     * @param string $name
+     */
+    public function getProductsByName(int $perPage, int $page, string $name)
+    {
+        $products = Product::with('market')
+            ->where('name', $name)
+            ->select('id', 'name',  'category_id', 'image',  'price', 'market_id')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        $products->getCollection()->transform(function ($product) {
+            $product->market_name = $product->market->name;
+            unset($product->market);
+            return $product;
+        });
+
+        return [
+            'currentPageItems' => $products->items(),
+            'total' => $products->total(),
+            'perPage' => $products->perPage(),
+            'currentPage' => $products->currentPage(),
+            'lastPage' => $products->lastPage(),
+        ];
     }
 }

@@ -150,6 +150,11 @@ class SellerController extends Controller
         }
         $data = $data->validated();
 
+        $seller = auth('manager-api')->user();
+
+        if ($product->market != $seller->market)
+            return response()->json(['message' => 'Forbidden'], 403);
+
         if ($this->productService->uploadImage($product, $request->file('image')))
             return response()->json([
                 'message' => 'uploaded product image successfully'
@@ -279,8 +284,6 @@ class SellerController extends Controller
      */
     public function deleteProduct(Product $product)
     {
-        $new_product = $this->productService->deleteProduct($product);
-
         $seller = auth('manager-api')->user();
         if ($product->market != $seller->market)
             return response()->json(['message' => 'Forbidden'], 403);
@@ -319,6 +322,11 @@ class SellerController extends Controller
      */
     public function deleteImage(Product $product)
     {
+        $seller = auth('manager-api')->user();
+
+        if ($product->market != $seller->market)
+            return response()->json(['message' => 'Forbidden'], 403);
+
         if ($this->productService->deleteImage($product))
             return response()->json(['message' => 'image deleted successfuly']);
         return response()->json(['message' => 'image deleted failed'], 400);
@@ -375,7 +383,7 @@ class SellerController extends Controller
         return response()->json([
             'message' => 'successfully get all products for market',
             'products' => $this->marketService->getProductsForMarket($perPage, $page, auth('manager-api')->user()->market)
-        ], 400);
+        ], 200);
     }
 
     /**
@@ -429,7 +437,7 @@ class SellerController extends Controller
         return response()->json([
             'message' => 'successfully get products order by number of purchases for market',
             'products' => $this->marketService->getTopProducts($perPage, $page, auth('manager-api')->user()->market)
-        ], 400);
+        ], 200);
     }
 
     /**
@@ -456,7 +464,11 @@ class SellerController extends Controller
      */
     public function getImage(Product $product)
     {
-        return response()->json(['image_path' => ($product->image ?
-            config('app.url') . '/storage/' . $product->image : null)]);
+        $seller = auth('manager-api')->user();
+
+        if ($product->market != $seller->market)
+            return response()->json(['message' => 'Forbidden'], 403);
+
+        return response()->json(['image_path' => $product->image]);
     }
 }

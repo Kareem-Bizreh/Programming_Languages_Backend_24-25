@@ -636,8 +636,6 @@ class UserController extends Controller
         $user = $this->userService->updateUser(auth('user-api')->user(), $data);
 
         if ($user) {
-            $user->image = ($user->image ?
-                config('app.url') . '/storage/' . $user->image : null);
             return response()->json([
                 'message' => 'updated done',
                 'user' => $user
@@ -702,8 +700,6 @@ class UserController extends Controller
     public function current()
     {
         $user = auth('user-api')->user();
-        $user->image = ($user->image ?
-            config('app.url') . '/storage/' . $user->image : null);
         return response()->json(['user' => $user]);
     }
 
@@ -722,8 +718,7 @@ class UserController extends Controller
      */
     public function getImage()
     {
-        return response()->json(['image_path' => (auth('user-api')->user()->image ?
-            config('app.url') . '/storage/' . auth('user-api')->user()->image : null)]);
+        return response()->json(['image_path' => auth('user-api')->user()->image]);
     }
 
     /**

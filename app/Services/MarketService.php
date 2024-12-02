@@ -126,4 +126,46 @@ class MarketService
             'lastPage' => $products->lastPage(),
         ];
     }
+
+    /**
+     * get all markets
+     *
+     * @param int $perPage
+     * @param int $page
+     */
+    public function getMarkets(int $perPage, int $page)
+    {
+        $markets = Market::select('id', 'name')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        return [
+            'currentPageItems' => $markets->items(),
+            'total' => $markets->total(),
+            'perPage' => $markets->perPage(),
+            'currentPage' => $markets->currentPage(),
+            'lastPage' => $markets->lastPage(),
+        ];
+    }
+
+    /**
+     * get markets by name
+     *
+     * @param int $perPage
+     * @param int $page
+     * @param string $name
+     */
+    public function getMarketsByName(int $perPage, int $page, string $name)
+    {
+        $markets = Market::where('name', $name)
+            ->select('id', 'name')
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        return [
+            'currentPageItems' => $markets->items(),
+            'total' => $markets->total(),
+            'perPage' => $markets->perPage(),
+            'currentPage' => $markets->currentPage(),
+            'lastPage' => $markets->lastPage(),
+        ];
+    }
 }
