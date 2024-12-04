@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use Symfony\Component\Mailer\Exception\TransportException;
 
 class UserController extends Controller
 {
@@ -105,6 +106,8 @@ class UserController extends Controller
             Cache::put('user_id_' . $user->id, $verificationCode, now()->addMinutes(5));
             Mail::to($validatedData['email'])->send(new EmailVerify($user->first_name, $verificationCode));
             DB::commit();
+        } catch (TransportException $e) {
+            return response()->json(['message' => 'Failed to send email.'], 400);
         } catch (\Exception $e) {
             DB::rollBack();
             return $e;

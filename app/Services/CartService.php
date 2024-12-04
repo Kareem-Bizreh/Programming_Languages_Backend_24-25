@@ -111,6 +111,7 @@ class CartService
 
         $products->getCollection()->transform(function ($product) {
             $product->count = $product->pivot->count;
+            $product->price = $product->price * $product->count;
             return $product;
         });
 

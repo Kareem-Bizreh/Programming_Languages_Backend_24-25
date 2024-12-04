@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\MarketController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\StatusController;
@@ -70,6 +71,15 @@ Route::middleware('auth:user-api')->group(function () {
         Route::delete('/deleteProduct/{product}', 'deleteProduct');
         Route::delete('/clearCart', 'clearCart');
         Route::get('/getCart', 'getCart');
+    });
+
+    Route::controller(OrderController::class)->prefix('orders')->group(function () {
+        Route::post('/createOrder', 'createOrder');
+        Route::put('/editOrder/{order}', 'editOrder');
+        Route::delete('/deleteOrder/{order}', 'deleteOrder');
+        Route::get('/getOrdersNotFinish', 'getOrdersNotFinish');
+        Route::get('/getOrdersByStatus/{status}', 'getOrdersByStatus');
+        Route::get('/getOrder/{order}', 'getOrder');
     });
 });
 

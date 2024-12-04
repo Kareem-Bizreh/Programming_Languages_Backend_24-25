@@ -31,4 +31,9 @@ class Product extends Model
     {
         $this->belongsToMany(Cart::class, 'cart_product')->withPivot('count');
     }
+
+    public function orders()
+    {
+        $this->belongsToMany(Order::class, 'order_product')->withPivot('quantity');
+    }
 }

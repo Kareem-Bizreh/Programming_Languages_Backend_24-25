@@ -1488,6 +1488,131 @@
                 ]
             }
         },
+        "/orders/createOrder": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "create order",
+                "operationId": "0cdd0caa29a39c9ccb323f8f4abdaa6c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "total_cost": {
+                                        "type": "integer",
+                                        "example": 25000
+                                    },
+                                    "location_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "products": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "product_id": {
+                                                    "type": "integer"
+                                                },
+                                                "quantity": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "example": [
+                                            {
+                                                "product_id": 1,
+                                                "quantity": 5
+                                            },
+                                            {
+                                                "product_id": 4,
+                                                "quantity": 3
+                                            }
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully order created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "order added successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/orders/deleteOrder/{order}": {
+            "delete": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "delete order",
+                "operationId": "4c6a9543bbb88d10acff81e7b48c59b9",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "order deleted seccessfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/products/toggleFavorite/{product}/": {
             "post": {
                 "tags": [
@@ -3276,6 +3401,10 @@
         {
             "name": "Markets",
             "description": "Markets"
+        },
+        {
+            "name": "Orders",
+            "description": "Orders"
         },
         {
             "name": "Products",
