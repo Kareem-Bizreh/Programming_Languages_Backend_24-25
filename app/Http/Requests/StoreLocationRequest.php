@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreLocationRequest extends FormRequest
 {
@@ -12,6 +14,21 @@ class StoreLocationRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     *
+     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @return void
+     */
+    public function failedValidation(Validator $validator)
+    {
+        $error = $validator->errors()->first();
+
+        throw new HttpResponseException(response()->json([
+            'message' => $error,
+        ], 400));
     }
 
     /**
