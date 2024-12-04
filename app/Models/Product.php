@@ -26,4 +26,9 @@ class Product extends Model
         }
         return null;
     }
+
+    public function carts()
+    {
+        $this->belongsToMany(Cart::class, 'cart_product')->withPivot('count');
+    }
 }

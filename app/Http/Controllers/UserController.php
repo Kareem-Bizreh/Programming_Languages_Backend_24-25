@@ -187,7 +187,12 @@ class UserController extends Controller
      *                 property="password",
      *                 type="string",
      *                 example="password123"
-     *             )
+     *             ),
+     *             @OA\Property(
+     *                 property="fcm_token",
+     *                 type="string",
+     *                 example="anything"
+     *             ),
      *         )
      *     ),
      *     @OA\Response(
@@ -224,6 +229,12 @@ class UserController extends Controller
             return response()->json([
                 'message' => 'user has not been verified',
             ], 400);
+        }
+
+        if ($request->has('fcm_token')) {
+            $user->update([
+                'fcm_token' => $request->input('fcm_token'),
+            ]);
         }
 
         return $this->userService->createToken($data);
@@ -272,16 +283,11 @@ class UserController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"number" , "email"},
+     *             required={"number"},
      *             @OA\Property(
      *                 property="number",
      *                 type="string",
      *                 example="0912345678"
-     *             ),
-     *             @OA\Property(
-     *                 property="email",
-     *                 type="string",
-     *                 example="test@example.com"
      *             ),
      *         )
      *     ),
@@ -306,8 +312,7 @@ class UserController extends Controller
     public function forgetPassword(Request $request)
     {
         $data = Validator::make($request->all(), [
-            'number' => 'required|exists:users,number',
-            'email' => 'required|email',
+            'number' => 'required|exists:users,number'
         ]);
 
         if ($data->fails()) {
@@ -321,7 +326,7 @@ class UserController extends Controller
         $user = $this->userService->findByNumber($data['number']);
         $verificationCode = Str::random(6);
         Cache::put('user_id_' . $user->id, $verificationCode, now()->addMinutes(5));
-        Mail::to($data['email'])->send(new ResetPassword($user->first_name, $verificationCode));
+        Mail::to($user->email)->send(new ResetPassword($user->first_name, $verificationCode));
         return response()->json([
             'message' => 'Verification code sent',
             'id' => $user->id
@@ -584,7 +589,7 @@ class UserController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"first_name" , "last_name"},
+     *             required={"first_name" , "last_name" , "email"},
      *             @OA\Property(
      *                 property="first_name",
      *                 type="string",
@@ -594,7 +599,12 @@ class UserController extends Controller
      *                 property="last_name",
      *                 type="string",
      *                 example="Weasly"
-     *             )
+     *             ),
+     *             @OA\Property(
+     *                 property="email",
+     *                 type="string",
+     *                 example="test@example.com"
+     *             ),
      *         )
      *     ),
      *     @OA\Response(
@@ -622,7 +632,8 @@ class UserController extends Controller
     {
         $data = Validator::make($request->all(), [
             'first_name' => 'required|string|max:20',
-            'last_name' => 'required|string|max:20'
+            'last_name' => 'required|string|max:20',
+            'email' => 'required|email',
         ]);
 
         if ($data->fails()) {

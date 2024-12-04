@@ -17,4 +17,12 @@ class Market extends Model
     {
         return $this->belongsTo(Manager::class);
     }
+
+    public function getImageAttribute($value)
+    {
+        if ($value) {
+            return config('app.url') . '/storage/' . $value;
+        }
+        return null;
+    }
 }

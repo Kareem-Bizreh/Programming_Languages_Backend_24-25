@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ManagerController;
@@ -60,6 +61,15 @@ Route::middleware('auth:user-api')->group(function () {
         Route::get('/getLocations', 'getLocations');
         Route::delete('/deleteLocation/{location_id}', 'deleteLocation');
     });
+
+    Route::controller(CartController::class)->prefix('carts')->group(function () {
+        Route::post('/addProduct/{product}', 'addProduct');
+        Route::put('/plusProductOne/{product}', 'plusProductOne');
+        Route::put('/minusProductOne/{product}', 'minusProductOne');
+        Route::delete('/deleteProduct/{product}', 'deleteProduct');
+        Route::delete('/clearCart', 'clearCart');
+        Route::get('/getCart', 'getCart');
+    });
 });
 
 Route::controller(CategoryController::class)->prefix('categories')->group(function () {
@@ -99,12 +109,15 @@ Route::middleware('auth:manager-api')->group(function () {
 
     Route::controller(SellerController::class)->prefix('sellers')->middleware('role:seller')->group(function () {
         Route::post('/addProduct', 'addProduct');
-        Route::post('/uploadImage/{product}', 'uploadImage');
+        Route::post('/uploadImage', 'uploadImageForMarket');
+        Route::post('/uploadImage/{product}', 'uploadImageForProduct');
         Route::put('/edit/{product}', 'editProduct');
         Route::delete('/delete/{product}', 'deleteProduct');
         Route::get('/getProducts', 'getProductsForSeller');
         Route::get('/getTopProducts', 'getTopProductsForSeller');
-        Route::get('/getImage/{product}', 'getImage');
-        Route::delete('/deleteImage/{product}', 'deleteImage');
+        Route::get('/getImage', 'getImageForMarket');
+        Route::get('/getImage/{product}', 'getImageForProduct');
+        Route::delete('/deleteImage', 'deleteImageForMarket');
+        Route::delete('/deleteImage/{product}', 'deleteImageForProduct');
     });
 });

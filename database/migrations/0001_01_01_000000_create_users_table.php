@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('number')->unique();
+            $table->string('email');
             $table->string('password');
             $table->string('image')->nullable();
             $table->string('fcm_token')->nullable();

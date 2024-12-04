@@ -566,6 +566,299 @@
                 ]
             }
         },
+        "/carts/addProduct/{product}": {
+            "post": {
+                "tags": [
+                    "Carts"
+                ],
+                "summary": "add product to cart",
+                "operationId": "35be230c12b68571aac4f746361fff33",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "count"
+                                ],
+                                "properties": {
+                                    "count": {
+                                        "type": "integer",
+                                        "example": 5
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful add product to cart",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully add product to cart"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/carts/plusProductOne/{product}": {
+            "put": {
+                "tags": [
+                    "Carts"
+                ],
+                "summary": "plus product count by one",
+                "operationId": "0bfbecd23318724996cb308acddc1230",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful plus product count",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully plus product count"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/carts/minusProductOne/{product}": {
+            "put": {
+                "tags": [
+                    "Carts"
+                ],
+                "summary": "minus product count by one",
+                "operationId": "7b56ef1b22243e7113af03a7c98bd06a",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful minus product count",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully minus product count"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/carts/deleteProduct/{product}": {
+            "delete": {
+                "tags": [
+                    "Carts"
+                ],
+                "summary": "delete product from cart",
+                "operationId": "fc84b3b978e3273cb00d3497e1f8f32a",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful delete product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully delete product"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/carts/clearCart": {
+            "delete": {
+                "tags": [
+                    "Carts"
+                ],
+                "summary": "clear cart",
+                "operationId": "967729effa9202ebfc7369e9c99ee074",
+                "responses": {
+                    "201": {
+                        "description": "Successful clear cart",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully clear cart"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/carts/getCart": {
+            "get": {
+                "tags": [
+                    "Carts"
+                ],
+                "summary": "get cart",
+                "operationId": "c9ac519a6b5786e3e3f7a05a0cbd8bc3",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get cart",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get cart"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/categories/getAll": {
             "get": {
                 "tags": [
@@ -1656,13 +1949,63 @@
                 ]
             }
         },
+        "/sellers/uploadImage": {
+            "post": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "Upload market image",
+                "operationId": "b38bb83d40bfe22b55e57947c592125b",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful uploaded an image",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "uploaded market image successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/sellers/uploadImage/{product}": {
             "post": {
                 "tags": [
                     "Sellers"
                 ],
                 "summary": "Upload product image",
-                "operationId": "c8ecf276021a8638d39aaf35fb73039e",
+                "operationId": "19c34fa377d92709238f742ca1258d9a",
                 "parameters": [
                     {
                         "name": "product",
@@ -1851,13 +2194,40 @@
                 ]
             }
         },
+        "/sellers/deleteImage": {
+            "delete": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "delete market image",
+                "operationId": "e8aa02b42afd11aaa2e323378850c941",
+                "responses": {
+                    "200": {
+                        "description": "delete the market image",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/sellers/deleteImage/{product}": {
             "delete": {
                 "tags": [
                     "Sellers"
                 ],
                 "summary": "delete product image",
-                "operationId": "ba7e9719141c56351fabe7a8104a0fa7",
+                "operationId": "9971b292d928726707ad998887da5ab1",
                 "parameters": [
                     {
                         "name": "product",
@@ -2007,13 +2377,40 @@
                 ]
             }
         },
+        "/sellers/getImage": {
+            "get": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "image for market",
+                "operationId": "d7ee893b1999a2700799fd7d12dbaace",
+                "responses": {
+                    "200": {
+                        "description": "return the image of market",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/sellers/getImage/{product}": {
             "get": {
                 "tags": [
                     "Sellers"
                 ],
                 "summary": "image for product",
-                "operationId": "5ebe36ba3d7ba91458a6d726c0073a4f",
+                "operationId": "b31a06f873405356df0d2d9f5a3a1b73",
                 "parameters": [
                     {
                         "name": "product",
@@ -2256,6 +2653,10 @@
                                     "password": {
                                         "type": "string",
                                         "example": "password123"
+                                    },
+                                    "fcm_token": {
+                                        "type": "string",
+                                        "example": "anything"
                                     }
                                 },
                                 "type": "object"
@@ -2338,17 +2739,12 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "number",
-                                    "email"
+                                    "number"
                                 ],
                                 "properties": {
                                     "number": {
                                         "type": "string",
                                         "example": "0912345678"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "example": "test@example.com"
                                     }
                                 },
                                 "type": "object"
@@ -2624,7 +3020,8 @@
                             "schema": {
                                 "required": [
                                     "first_name",
-                                    "last_name"
+                                    "last_name",
+                                    "email"
                                 ],
                                 "properties": {
                                     "first_name": {
@@ -2634,6 +3031,10 @@
                                     "last_name": {
                                         "type": "string",
                                         "example": "Weasly"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@example.com"
                                     }
                                 },
                                 "type": "object"
@@ -2798,6 +3199,10 @@
         {
             "name": "Admins",
             "description": "Admins"
+        },
+        {
+            "name": "Carts",
+            "description": "Carts"
         },
         {
             "name": "Categories",

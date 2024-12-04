@@ -95,6 +95,66 @@ class SellerController extends Controller
 
     /**
      * @OA\Post(
+     *     path="/sellers/uploadImage",
+     *     summary="Upload market image",
+     *     tags={"Sellers"},
+     *     @OA\RequestBody(
+     *       @OA\MediaType(
+     *           mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *               type="object",
+     *               @OA\Property(
+     *                  property="image",
+     *                  type="string",
+     *                  format="binary",
+     *               ),
+     *           ),
+     *       )
+     *   ),
+     *     @OA\Response(
+     *      response=200, description="Successful uploaded an image",
+     *       @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="uploaded market image successfully"
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Invalid request"),
+     *     security={
+     *         {"bearer": {}}
+     *     }
+     * )
+     */
+    public function uploadImageForMarket(Request $request)
+    {
+        $data = Validator::make($request->all(), [
+            'image' => 'required|image|file'
+        ]);
+
+        if ($data->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $data->errors(),
+            ], 400);
+        }
+        $data = $data->validated();
+
+        $seller = auth('manager-api')->user();
+
+        if ($this->marketService->uploadImage($seller->market, $request->file('image')))
+            return response()->json([
+                'message' => 'uploaded market image successfully'
+            ], 200);
+
+        return response()->json([
+            'error' => 'No image uploaded.',
+        ], 400);
+    }
+
+    /**
+     * @OA\Post(
      *     path="/sellers/uploadImage/{product}",
      *     summary="Upload product image",
      *     tags={"Sellers"},
@@ -136,7 +196,7 @@ class SellerController extends Controller
      *     }
      * )
      */
-    public function uploadImage(Request $request, Product $product)
+    public function uploadImageForProduct(Request $request, Product $product)
     {
         $data = Validator::make($request->all(), [
             'image' => 'required|image|file'
@@ -300,6 +360,28 @@ class SellerController extends Controller
 
     /**
      * @OA\Delete(
+     *     path="/sellers/deleteImage",
+     *     summary="delete market image",
+     *     tags={"Sellers"},
+     *     @OA\Response(
+     *      response=200, description="delete the market image",@OA\JsonContent()),
+     *     @OA\Response(response=400, description="Invalid request"),
+     *     security={
+     *         {"bearer": {}}
+     *     }
+     * )
+     */
+    public function deleteImageForMarket()
+    {
+        $seller = auth('manager-api')->user();
+
+        if ($this->marketService->deleteImage($seller->market))
+            return response()->json(['message' => 'image deleted successfuly']);
+        return response()->json(['message' => 'image deleted failed'], 400);
+    }
+
+    /**
+     * @OA\Delete(
      *     path="/sellers/deleteImage/{product}",
      *     summary="delete product image",
      *     tags={"Sellers"},
@@ -320,7 +402,7 @@ class SellerController extends Controller
      *     }
      * )
      */
-    public function deleteImage(Product $product)
+    public function deleteImageForProduct(Product $product)
     {
         $seller = auth('manager-api')->user();
 
@@ -442,6 +524,26 @@ class SellerController extends Controller
 
     /**
      * @OA\Get(
+     *     path="/sellers/getImage",
+     *     summary="image for market",
+     *     tags={"Sellers"},
+     *     @OA\Response(
+     *      response=200, description="return the image of market",@OA\JsonContent()),
+     *     @OA\Response(response=400, description="Invalid request"),
+     *     security={
+     *         {"bearer": {}}
+     *     }
+     * )
+     */
+    public function getImageForMarket()
+    {
+        $seller = auth('manager-api')->user();
+
+        return response()->json(['image_path' => $seller->market->image]);
+    }
+
+    /**
+     * @OA\Get(
      *     path="/sellers/getImage/{product}",
      *     summary="image for product",
      *     tags={"Sellers"},
@@ -462,7 +564,7 @@ class SellerController extends Controller
      *     }
      * )
      */
-    public function getImage(Product $product)
+    public function getImageForProduct(Product $product)
     {
         $seller = auth('manager-api')->user();
 

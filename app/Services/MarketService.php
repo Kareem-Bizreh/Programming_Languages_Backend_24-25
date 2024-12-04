@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Market;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class MarketService
 {
@@ -167,5 +168,55 @@ class MarketService
             'currentPage' => $markets->currentPage(),
             'lastPage' => $markets->lastPage(),
         ];
+    }
+
+    /**
+     * upload Image for market
+     *
+     * @param Market $market
+     * @param $image
+     * @return bool
+     */
+    public function uploadImage(Market $market, $image): bool
+    {
+        DB::beginTransaction();
+        try {
+            $imagePath = $market->getAttributes()['image'];
+            if ($imagePath && Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
+            }
+            $market->image = $image->store('images/markets', 'public');
+            $market->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * delete image for market
+     *
+     * @param Market $market
+     * @return bool
+     */
+    public function deleteImage(Market $market): bool
+    {
+        DB::beginTransaction();
+        try {
+            $imagePath = $market->getAttributes()['image'];
+            if ($imagePath && Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
+                $market->image = null;
+                $market->save();
+            } else
+                throw new \Exception("no image to delete");
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return false;
+        }
+        return true;
     }
 }

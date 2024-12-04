@@ -49,6 +49,7 @@ class UserService
     public function createUser($data)
     {
         $user = User::create($data);
+        DB::table('carts')->insert(['user_id' => $user->id]);
         return $user;
     }
 

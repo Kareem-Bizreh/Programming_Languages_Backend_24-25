@@ -24,6 +24,7 @@ class LoginUserRequest extends FormRequest
         return [
             'number' => 'required|exists:users,number|numeric|digits:10',
             'password' => 'required|string|min:8',
+            'fcm_token' => 'nullable|string',
         ];
     }
 
@@ -41,6 +42,8 @@ class LoginUserRequest extends FormRequest
             'password.required' => 'The password field is required.',
             'password.string' => 'The password must be a valid string.',
             'password.min' => 'The password must be at least 8 characters long.',
+
+            'fcm_token.string' => 'The FCM token must be a valid string.',
         ];
     }
 }

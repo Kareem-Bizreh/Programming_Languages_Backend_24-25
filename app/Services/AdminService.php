@@ -80,6 +80,7 @@ class AdminService
     {
         DB::beginTransaction();
         try {
+            $this->marketService->deleteImage($manager->market);
             $manager->delete();
             DB::commit();
         } catch (\Exception $e) {

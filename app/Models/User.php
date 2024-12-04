@@ -22,6 +22,7 @@ class User extends Authenticatable implements JWTSubject
         'first_name',
         'last_name',
         'number',
+        'email',
         'password',
     ];
 
@@ -51,6 +52,11 @@ class User extends Authenticatable implements JWTSubject
             return config('app.url') . '/storage/' . $value;
         }
         return null;
+    }
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
     }
 
     /**
