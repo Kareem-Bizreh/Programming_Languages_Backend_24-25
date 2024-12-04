@@ -56,7 +56,6 @@ class OrderService
                     'price' => $product->price,
                     'quantity' => $value['quantity']
                 ];
-                $globalOrder->products()->attach($product->id, ['quantity' => $value['quantity']]);
             }
 
             foreach ($marketsProduct as $market_id => $products) {

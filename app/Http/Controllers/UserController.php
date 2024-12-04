@@ -231,9 +231,13 @@ class UserController extends Controller
         }
 
         if (! $user->number_verified_at) {
+            $verificationCode = rand(100000, 999999);
+            Cache::put('user_id_' . $user->id, $verificationCode, now()->addMinutes(5));
+            Mail::to($user->email)->send(new EmailVerify($user->first_name, $verificationCode));
             return response()->json([
-                'message' => 'user has not been verified',
-            ], 400);
+                'message' => 'user not verified , verification code sent',
+                'id' => $user->id
+            ], 200);
         }
 
         if ($request->has('fcm_token')) {
