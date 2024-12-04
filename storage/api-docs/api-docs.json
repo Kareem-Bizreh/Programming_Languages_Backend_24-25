@@ -841,6 +841,10 @@
                                         "message": {
                                             "type": "string",
                                             "example": "successfully get cart"
+                                        },
+                                        "cart": {
+                                            "type": "string",
+                                            "example": "[]"
                                         }
                                     },
                                     "type": "object"
@@ -2881,6 +2885,59 @@
                         "bearer": []
                     }
                 ]
+            }
+        },
+        "/users/generateVerificationCode": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "send check code to user",
+                "operationId": "0a3aac18254c1821f647a7efc156a294",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "number"
+                                ],
+                                "properties": {
+                                    "number": {
+                                        "type": "string",
+                                        "example": "0912345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "verification code send to user with id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Verification code sent"
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
             }
         },
         "/users/setPassword": {

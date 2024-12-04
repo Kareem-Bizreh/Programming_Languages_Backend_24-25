@@ -95,11 +95,13 @@ class UserController extends Controller
                 'message' => 'this number already exist'
             ], 400);
         }
-        $verificationCode = Str::random(6);
+        $verificationCode = rand(100000, 999999);
         DB::beginTransaction();
         try {
             if (! $user)
                 $user = $this->userService->createUser($validatedData);
+            else
+                $user = $this->userService->updateUser($user, $validatedData);
             Cache::put('user_id_' . $user->id, $verificationCode, now()->addMinutes(5));
             Mail::to($validatedData['email'])->send(new EmailVerify($user->first_name, $verificationCode));
             DB::commit();
@@ -324,7 +326,7 @@ class UserController extends Controller
         $data = $data->validated();
 
         $user = $this->userService->findByNumber($data['number']);
-        $verificationCode = Str::random(6);
+        $verificationCode = rand(100000, 999999);
         Cache::put('user_id_' . $user->id, $verificationCode, now()->addMinutes(5));
         Mail::to($user->email)->send(new ResetPassword($user->first_name, $verificationCode));
         return response()->json([
@@ -441,6 +443,64 @@ class UserController extends Controller
         return response()->json([
             'error' => 'No image uploaded.',
         ], 400);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/users/generateVerificationCode",
+     *     summary="send check code to user",
+     *     tags={"Users"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"number"},
+     *             @OA\Property(
+     *                 property="number",
+     *                 type="string",
+     *                 example="0912345678"
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *      response=200, description="verification code send to user with id",
+     *       @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Verification code sent"
+     *             ),
+     *             @OA\Property(
+     *                 property="id",
+     *                 type="integer",
+     *                 example=1
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Invalid request")
+     * )
+     */
+    public function generateVerificationCode(Request $request)
+    {
+        $data = Validator::make($request->all(), [
+            'number' => 'required|exists:users,number'
+        ]);
+
+        if ($data->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $data->errors(),
+            ], 400);
+        }
+        $data = $data->validated();
+
+        $user = $this->userService->findByNumber($data['number']);
+        $verificationCode = rand(100000, 999999);
+        Cache::put('user_id_' . $user->id, $verificationCode, now()->addMinutes(5));
+        Mail::to($user->email)->send(new EmailVerify($user->first_name, $verificationCode));
+        return response()->json([
+            'message' => 'Verification code sent',
+            'id' => $user->id
+        ], 200);
     }
 
     /**

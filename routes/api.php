@@ -24,6 +24,7 @@ Route::controller(UserController::class)->prefix('users')->group(function () {
     Route::post('/verifyNumber', 'verifyNumber');
     Route::post('/forgetPassword', 'forgetPassword');
     Route::post('/verifyNewPassword', 'verifyNewPassword');
+    Route::post('/generateVerificationCode', 'generateVerificationCode');
     Route::put('/setPassword', 'setPassword');
     Route::put('/refreshToken', 'refreshToken');
 
