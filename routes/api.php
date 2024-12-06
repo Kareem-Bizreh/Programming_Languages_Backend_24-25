@@ -77,7 +77,7 @@ Route::middleware('auth:user-api')->group(function () {
         Route::post('/createOrder', 'createOrder');
         Route::put('/editOrder/{order}', 'editOrder');
         Route::delete('/deleteProduct/{order}/{product}', 'deleteProduct');
-        Route::delete('/cancelOrder/{order}', 'cancelOrder');
+        Route::put('/cancelOrder/{order}', 'cancelOrder');
         Route::get('/getOrders', 'getOrders');
         Route::get('/getOrdersByStatus/{status}', 'getOrdersByStatus');
         Route::get('/getOrder/{order}', 'getOrder');
@@ -117,6 +117,15 @@ Route::middleware('auth:manager-api')->group(function () {
         Route::get('/getProducts/{market}', 'getProductsForMarket');
         Route::get('/getTopProducts', 'getTopProducts');
         Route::get('/getTopProducts/{market}', 'getTopProductsForMarket');
+        Route::put('/completeOrder/{order}', 'completeOrder');
+        Route::put('/rejectOrder/{order}', 'rejectOrder');
+        Route::put('/deliverOrder/{order}', 'deliverOrder');
+        Route::get('/getAllOrders', 'getAllOrders');
+        Route::get('/getMarketOrders/{order}', 'getMarketOrders');
+        Route::get('/getMarketOrdersByStatus/{order}/{status}', 'getMarketOrdersByStatus');
+        Route::get('/getOrders/{market}', 'getOrdersOfMarket');
+        Route::get('/getOrdersByStatus/{status}', 'getOrdersByStatus');
+        Route::get('/getOrder/{order}', 'getOrder');
     });
 
     Route::controller(SellerController::class)->prefix('sellers')->middleware('role:seller')->group(function () {
@@ -131,5 +140,10 @@ Route::middleware('auth:manager-api')->group(function () {
         Route::get('/getImage/{product}', 'getImageForProduct');
         Route::delete('/deleteImage', 'deleteImageForMarket');
         Route::delete('/deleteImage/{product}', 'deleteImageForProduct');
+        Route::put('/completeOrder/{order}', 'completeOrder');
+        Route::put('/rejectOrder/{order}', 'rejectOrder');
+        Route::get('/getOrders', 'getOrders');
+        Route::get('/getOrdersByStatus/{status}', 'getOrdersByStatus');
+        Route::get('/getOrder/{order}', 'getOrder');
     });
 });

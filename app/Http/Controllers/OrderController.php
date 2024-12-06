@@ -137,6 +137,50 @@ class OrderController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *       path="/orders/cancelOrder/{order}",
+     *       summary="cancel order",
+     *       tags={"Orders"},
+     *       @OA\Parameter(
+     *            name="order",
+     *            in="path",
+     *            required=true,
+     *            description="order id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful canceled",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="order canceled seccessfully"
+     *               ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function cancelOrder(Order $order)
+    {
+        if (auth('user-api')->id() != $order->user_id || $order->status_id > 2)
+            return response()->json(['message' => 'Forbidden'], 403);
+
+        if ($this->orderService->cancelOrder($order, 5))
+            return response()->json([
+                'message' => 'order canceled successfully'
+            ], 200);
+        return response()->json([
+            'message' => 'order canceled failed'
+        ], 400);
+    }
+
+    /**
      * @OA\Delete(
      *       path="/orders/deleteProduct/{order}/{product}",
      *       summary="delete product",
@@ -177,7 +221,7 @@ class OrderController extends Controller
      */
     public function deleteProduct(Order $order, Product $product)
     {
-        if ($order->status_id != 1)
+        if (auth('user-api')->id() != $order->user_id || $order->status_id != 1)
             return response()->json(['message' => 'Forbidden'], 403);
 
         if ($this->orderService->deleteProduct($order, $product))
@@ -186,51 +230,7 @@ class OrderController extends Controller
             ], 200);
         return response()->json([
             'message' => 'product deleted failed'
-        ], 200);
-    }
-
-    /**
-     * @OA\Delete(
-     *       path="/orders/cancelOrder/{order}",
-     *       summary="cancel order",
-     *       tags={"Orders"},
-     *       @OA\Parameter(
-     *            name="order",
-     *            in="path",
-     *            required=true,
-     *            description="order id",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
-     *        @OA\Response(
-     *          response=201, description="Successful canceled",
-     *          @OA\JsonContent(
-     *               @OA\Property(
-     *                   property="message",
-     *                   type="string",
-     *                   example="order canceled seccessfully"
-     *               ),
-     *          )
-     *        ),
-     *        @OA\Response(response=400, description="Invalid request"),
-     *        security={
-     *            {"bearer": {}}
-     *        }
-     * )
-     */
-    public function cancelOrder(Order $order)
-    {
-        if ($order->status_id != 1)
-            return response()->json(['message' => 'Forbidden'], 403);
-
-        if ($this->orderService->cancelOrder($order))
-            return response()->json([
-                'message' => 'order canceled successfully'
-            ], 200);
-        return response()->json([
-            'message' => 'order canceled failed'
-        ], 200);
+        ], 400);
     }
 
     /**
@@ -263,7 +263,7 @@ class OrderController extends Controller
     {
         return response()->json([
             'message' => 'orders get successfully',
-            'orders' => $this->orderService->getOrders(auth('user-api')->user())
+            'orders' => $this->orderService->getOrdersForUser(auth('user-api')->user())
         ], 200);
     }
 
@@ -306,7 +306,7 @@ class OrderController extends Controller
     {
         return response()->json([
             'message' => 'orders get successfully',
-            'orders' => $this->orderService->getOrdersByStatus($status, true)
+            'orders' => $this->orderService->getOrdersByStatus($status, auth('manager-api')->id())
         ], 200);
     }
 
@@ -347,6 +347,9 @@ class OrderController extends Controller
      */
     public function getOrder(Request $request, Order $order)
     {
+        if (auth('user-api')->id() != $order->user_id)
+            return response()->json(['message' => 'Forbidden'], 403);
+
         return response()->json([
             'message' => 'order get successfully',
             'price' => $order->total_cost,

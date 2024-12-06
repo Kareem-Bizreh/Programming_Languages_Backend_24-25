@@ -25,4 +25,9 @@ class Market extends Model
         }
         return null;
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

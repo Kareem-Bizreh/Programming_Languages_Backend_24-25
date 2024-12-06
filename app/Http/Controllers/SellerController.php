@@ -4,20 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Models\Market;
+use App\Models\Order;
 use App\Models\Product;
 use App\Services\MarketService;
+use App\Services\OrderService;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class SellerController extends Controller
 {
-    protected $productService, $marketService;
+    protected $productService, $marketService, $orderService;
 
-    public function __construct(ProductService $productService, MarketService $marketService)
+    public function __construct(ProductService $productService, MarketService $marketService, OrderService $orderService)
     {
         $this->productService = $productService;
         $this->marketService = $marketService;
+        $this->orderService = $orderService;
     }
 
     /**
@@ -313,6 +316,96 @@ class SellerController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *       path="/sellers/completeOrder/{order}",
+     *       summary="complete order",
+     *       tags={"Sellers"},
+     *       @OA\Parameter(
+     *            name="order",
+     *            in="path",
+     *            required=true,
+     *            description="order id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful completed",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="order completed seccessfully"
+     *               ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function completeOrder(Order $order)
+    {
+        $seller = auth('manager-api')->user();
+        if ($order->status_id >= 3 || $order->market != $seller->market)
+            return response()->json(['message' => 'Forbidden'], 403);
+
+        if ($this->orderService->completeOrder($order))
+            return response()->json([
+                'message' => 'order completed successfully'
+            ], 200);
+        return response()->json([
+            'message' => 'order completed failed'
+        ], 400);
+    }
+
+    /**
+     * @OA\Put(
+     *       path="/sellers/rejectOrder/{order}",
+     *       summary="reject order",
+     *       tags={"Sellers"},
+     *       @OA\Parameter(
+     *            name="order",
+     *            in="path",
+     *            required=true,
+     *            description="order id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful rejected",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="order rejected seccessfully"
+     *               ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function rejectOrder(Order $order)
+    {
+        $seller = auth('manager-api')->user();
+        if ($order->status_id >= 3 || $order->market != $seller->market)
+            return response()->json(['message' => 'Forbidden'], 403);
+
+        if ($this->orderService->cancelOrder($order, 4))
+            return response()->json([
+                'message' => 'order rejected successfully'
+            ], 200);
+        return response()->json([
+            'message' => 'order rejected failed'
+        ], 400);
+    }
+
+    /**
      * @OA\Delete(
      *       path="/sellers/delete/{product}",
      *       summary="delete product",
@@ -572,5 +665,131 @@ class SellerController extends Controller
             return response()->json(['message' => 'Forbidden'], 403);
 
         return response()->json(['image_path' => $product->image]);
+    }
+
+    /**
+     * @OA\Get(
+     *       path="/sellers/getOrders",
+     *       summary="get orders for market",
+     *       tags={"Sellers"},
+     *        @OA\Response(
+     *          response=201, description="Successful get orders for market",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="orders get seccessfully"
+     *               ),
+     *               @OA\Property(
+     *                   property="orders",
+     *                   type="string",
+     *                   example="[]"
+     *               ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getOrders(Request $request)
+    {
+        return response()->json([
+            'message' => 'orders get successfully',
+            'orders' => $this->orderService->getOrdersForMarket(auth('manager-api')->user()->market)
+        ], 200);
+    }
+
+    /**
+     * @OA\Get(
+     *       path="/sellers/getOrdersByStatus/{status}",
+     *       summary="get orders by status",
+     *       tags={"Sellers"},
+     *       @OA\Parameter(
+     *            name="status",
+     *            in="path",
+     *            required=true,
+     *            description="status id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful get orders",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="orders get seccessfully"
+     *               ),
+     *               @OA\Property(
+     *                   property="orders",
+     *                   type="string",
+     *                   example="[]"
+     *               ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getOrdersByStatus(Request $request, int $status)
+    {
+        $seller = auth('manager-api')->user();
+        return response()->json([
+            'message' => 'orders get successfully',
+            'orders' => $this->orderService->getOrdersByStatus($status, $seller->market->id, true)
+        ], 200);
+    }
+
+    /**
+     * @OA\Get(
+     *       path="/sellers/getOrder/{order}",
+     *       summary="get order",
+     *       tags={"Sellers"},
+     *       @OA\Parameter(
+     *            name="order",
+     *            in="path",
+     *            required=true,
+     *            description="order id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful get order",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="order get seccessfully"
+     *               ),
+     *               @OA\Property(
+     *                   property="order",
+     *                   type="string",
+     *                   example="[]"
+     *               ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getOrder(Request $request, Order $order)
+    {
+        $seller = auth('manager-api')->user();
+        if ($seller->market != $order->market)
+            return response()->json(['message' => 'Forbidden'], 403);
+
+        return response()->json([
+            'message' => 'order get successfully',
+            'price' => $order->total_cost,
+            'products' => $this->orderService->getOrder($order)
+        ], 200);
     }
 }

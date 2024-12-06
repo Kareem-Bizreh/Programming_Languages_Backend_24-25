@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Cart;
+use App\Models\Market;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -164,9 +165,10 @@ class OrderService
      * cancel order
      *
      * @param Order $order
+     * @param int $status_id
      * @return bool
      */
-    public function cancelOrder(Order $order) //: bool
+    public function cancelOrder(Order $order, int $status_id): bool
     {
         DB::beginTransaction();
         try {
@@ -181,7 +183,7 @@ class OrderService
                 $product->save();
             }
             $data = [
-                'status_id' => 5
+                'status_id' => $status_id
             ];
             if (! $order->global_order_id) {
                 $marketOrders = Order::where('global_order_id', $order->id)->get();
@@ -295,14 +297,20 @@ class OrderService
     /**
      * get orders by status
      * @param int $status_id
-     * @param bool $user
+     * @param int $user_id
+     * @param bool $market
      */
-    public function getOrdersByStatus(int $status_id, bool $user)
+    public function getOrdersByStatus(int $status_id, int $user_id, bool $market = false)
     {
-        $orders = Order::where('status_id', $status_id)
-            ->whereNull('global_order_id')
-            ->get();
-
+        if (! $market)
+            $orders = Order::where('status_id', $status_id)
+                ->where('user_id', $user_id)
+                ->whereNull('global_order_id')
+                ->get();
+        else
+            $orders = Order::where('status_id', $status_id)
+                ->where('market_id', $user_id)
+                ->get();
         return $orders;
     }
 
@@ -310,12 +318,50 @@ class OrderService
      * get orders for user
      * @param User $user
      */
-    public function getOrders(User $user)
+    public function getOrdersForUser(User $user)
     {
         $orders = $user->orders()
             ->whereNull('global_order_id')
             ->get();
 
         return $orders;
+    }
+
+    /**
+     * get orders for market
+     * @param Market $market
+     */
+    public function getOrdersForMarket(Market $market)
+    {
+        $orders = $market->orders()->get();
+
+        return $orders;
+    }
+
+    /**
+     * complete order
+     *
+     * @param Order $order
+     * @return bool
+     */
+    public function completeOrder(Order $order): bool
+    {
+        DB::beginTransaction();
+        try {
+            $data = [
+                'status_id' => 3
+            ];
+            if (! $order->global_order_id) {
+                $marketOrders = Order::where('global_order_id', $order->id)->get();
+                foreach ($marketOrders as $marketOrder)
+                    $marketOrder->update($data);
+            }
+            $order->update($data);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return false;
+        }
+        return true;
     }
 }

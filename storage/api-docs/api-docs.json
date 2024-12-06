@@ -220,6 +220,144 @@
                 ]
             }
         },
+        "/admins/completeOrder/{order}": {
+            "put": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "complete order",
+                "operationId": "9a02d40fcc91583cf37543cb6690c721",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "order completed seccessfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/admins/deliverOrder/{order}": {
+            "put": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "deliver order",
+                "operationId": "76063a709f4109f4ac4939b34ffff99f",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful delivering",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "order delivering"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/admins/rejectOrder/{order}": {
+            "put": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "reject order",
+                "operationId": "f233878635a8c669b53b016fb19c8235",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful rejected",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "order rejected seccessfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/admins/deleteMarket/{manager}": {
             "delete": {
                 "tags": [
@@ -546,6 +684,304 @@
                                             "example": "successfully get products order by number of purchases for market"
                                         },
                                         "products": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/admins/getAllOrders": {
+            "get": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "get all orders",
+                "operationId": "369c4f62b0649255416bb863a6cd405d",
+                "responses": {
+                    "201": {
+                        "description": "Successful get all orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "orders get seccessfully"
+                                        },
+                                        "orders": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/admins/getMarketOrders/{order}": {
+            "get": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "get all market orders of global order",
+                "operationId": "b99a723a47afcf517be81b668e652d6e",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get all orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "orders get seccessfully"
+                                        },
+                                        "orders": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/admins/getMarketOrdersByStatus/{order}/{status}": {
+            "get": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "get all market orders of global order by status",
+                "operationId": "b78acb9bad05ab2f9a597805bd40ac7e",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "path",
+                        "description": "status id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get all orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "orders get seccessfully"
+                                        },
+                                        "orders": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/admins/getOrders/{market}": {
+            "get": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "get all orders of market",
+                "operationId": "f81a181db99268d4b54ff41b9219fd75",
+                "parameters": [
+                    {
+                        "name": "market",
+                        "in": "path",
+                        "description": "market id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get all orders of market",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "orders get seccessfully"
+                                        },
+                                        "orders": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/admins/getOrdersByStatus/{status}": {
+            "get": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "get orders by status",
+                "operationId": "000994cb9b0e235eb2b0886252028d88",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "path",
+                        "description": "status id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "orders get seccessfully"
+                                        },
+                                        "orders": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/admins/getOrder/{order}": {
+            "get": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "get order",
+                "operationId": "ef05f9cf6b0767e475b1deedfc3f9414",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get order",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "order get seccessfully"
+                                        },
+                                        "order": {
                                             "type": "string",
                                             "example": "[]"
                                         }
@@ -1585,6 +2021,52 @@
                 ]
             }
         },
+        "/orders/cancelOrder/{order}": {
+            "put": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "cancel order",
+                "operationId": "8ac115c5ece56edbfcee40e5761757c9",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful canceled",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "order canceled seccessfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/orders/deleteProduct/{order}/{product}": {
             "delete": {
                 "tags": [
@@ -1622,52 +2104,6 @@
                                         "message": {
                                             "type": "string",
                                             "example": "product deleted seccessfully"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/orders/cancelOrder/{order}": {
-            "delete": {
-                "tags": [
-                    "Orders"
-                ],
-                "summary": "cancel order",
-                "operationId": "c41d30187fb3a35d4be45dc614c31c49",
-                "parameters": [
-                    {
-                        "name": "order",
-                        "in": "path",
-                        "description": "order id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Successful canceled",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "order canceled seccessfully"
                                         }
                                     },
                                     "type": "object"
@@ -2489,6 +2925,98 @@
                 ]
             }
         },
+        "/sellers/completeOrder/{order}": {
+            "put": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "complete order",
+                "operationId": "0e7e957d60dcf33b772731b77a2fb2b5",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "order completed seccessfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/sellers/rejectOrder/{order}": {
+            "put": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "reject order",
+                "operationId": "2c6cd8e6be81c778bbea8c8956454cdb",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful rejected",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "order rejected seccessfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/sellers/delete/{product}": {
             "delete": {
                 "tags": [
@@ -2769,6 +3297,145 @@
                         "content": {
                             "application/json": {
                                 "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/sellers/getOrders": {
+            "get": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "get orders for market",
+                "operationId": "2531307fc6b27236fc95de4a2fa6cad5",
+                "responses": {
+                    "201": {
+                        "description": "Successful get orders for market",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "orders get seccessfully"
+                                        },
+                                        "orders": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/sellers/getOrdersByStatus/{status}": {
+            "get": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "get orders by status",
+                "operationId": "ac7ca929a05bb48d6e0908e7bbe7d17e",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "path",
+                        "description": "status id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "orders get seccessfully"
+                                        },
+                                        "orders": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/sellers/getOrder/{order}": {
+            "get": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "get order",
+                "operationId": "e28d280fce9a9842f61f07f49f579399",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get order",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "order get seccessfully"
+                                        },
+                                        "order": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
                             }
                         }
                     },
