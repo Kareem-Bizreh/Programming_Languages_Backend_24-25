@@ -24,23 +24,29 @@ class CartService
      * @param int $count
      * @return bool
      */
-    public function changeProduct(Product $product, Cart $cart, int $count) //: bool
+    public function changeProduct(Product $product, Cart $cart, int $count): bool
     {
         DB::beginTransaction();
         try {
             $existingProduct = $cart->products()->where('product_id', $product->id)->first();
             if ($existingProduct) {
-                $count = $existingProduct->pivot->count + $count;
-                if ($count <= $product->quantity && $count >= 0)
+                $newCount = $existingProduct->pivot->count + $count;
+                if ($newCount <= $product->quantity && $newCount >= 1) {
                     $cart->products()->updateExistingPivot($product->id, [
-                        'count' => $count,
+                        'count' => $newCount,
                     ]);
-                else
+                    $cart->total_cost += $count * $product->price;
+                    $cart->save();
+                } else
                     throw new \Exception("we dont have enough products");
             } else {
-                $cart->products()->attach($product->id, ['count' => $count]);
-                $cart->number = $cart->number + 1;
-                $cart->save();
+                if ($count <= $product->quantity && $count >= 1) {
+                    $cart->products()->attach($product->id, ['count' => $count]);
+                    $cart->count = $cart->count + 1;
+                    $cart->total_cost += $count * $product->price;
+                    $cart->save();
+                } else
+                    throw new \Exception("we dont have enough products");
             }
             DB::commit();
         } catch (\Exception $e) {
@@ -63,8 +69,9 @@ class CartService
         try {
             $existingProduct = $cart->products()->where('product_id', $product->id)->first();
             if ($existingProduct) {
+                $cart->total_cost -= $existingProduct->pivot->count * $product->price;
                 $cart->products()->detach($product->id);
-                $cart->number = $cart->number - 1;
+                $cart->count = $cart->count - 1;
                 $cart->save();
             } else {
                 throw new \Exception("nothing to delete");
@@ -87,7 +94,8 @@ class CartService
         DB::beginTransaction();
         try {
             $cart->products()->detach();
-            $cart->number = 0;
+            $cart->count = 0;
+            $cart->total_cost = 0;
             $cart->save();
             DB::commit();
         } catch (\Exception $e) {
@@ -100,27 +108,30 @@ class CartService
     /**
      * get cart
      * @param Cart $cart
-     * @param int $perPage
-     * @param int $page
      */
-    public function getCart(Cart $cart, int $perPage, int $page)
+    public function getCart(Cart $cart)
     {
         $products = $cart->products()
-            ->select('products.id', 'products.name', 'products.image', 'products.category_id', 'products.price', 'products.market_id')
-            ->paginate($perPage, ['*'], 'page', $page);
+            ->with('market')
+            ->select(
+                'products.id',
+                'products.name',
+                'products.image',
+                'products.category_id',
+                'products.price',
+                'products.market_id'
+            )
+            ->get();
 
-        $products->getCollection()->transform(function ($product) {
+        $products->transform(function ($product) {
             $product->count = $product->pivot->count;
             $product->price = $product->price * $product->count;
+            $product->market_name = $product->market->name;
+            unset($product->market);
+            unset($product->pivot);
             return $product;
         });
 
-        return [
-            'currentPageItems' => $products->items(),
-            'total' => $products->total(),
-            'perPage' => $products->perPage(),
-            'currentPage' => $products->currentPage(),
-            'lastPage' => $products->lastPage(),
-        ];
+        return $products;
     }
 }

@@ -13,24 +13,24 @@ class StatusSeeder extends Seeder
     public function run(): void
     {
         DB::table('statuses')->insert([
-            'name_en' => 'Order Being Prepared',
-            'name_ar' => 'يتم تجهيز الطلب'
+            'name_en' => 'pinding',
+            'name_ar' => 'قيد الانتظار'
         ]);
         DB::table('statuses')->insert([
             'name_en' => 'Delivering',
-            'name_ar' => 'جار التوصيل'
+            'name_ar' => 'قيد التوصيل'
         ]);
         DB::table('statuses')->insert([
-            'name_en' => 'Delivered',
-            'name_ar' => 'تم التوصيل'
+            'name_en' => 'completed',
+            'name_ar' => 'تم الطلب'
         ]);
         DB::table('statuses')->insert([
-            'name_en' => 'Order has been accepted',
-            'name_ar' => 'تم قبول الطلب'
-        ]);
-        DB::table('statuses')->insert([
-            'name_en' => 'Order has been rejected',
+            'name_en' => 'rejected',
             'name_ar' => 'تم رفض الطلب'
+        ]);
+        DB::table('statuses')->insert([
+            'name_en' => 'cancelled',
+            'name_ar' => 'تم الغاء الطلب'
         ]);
     }
 }

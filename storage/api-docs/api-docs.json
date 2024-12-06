@@ -811,26 +811,6 @@
                 ],
                 "summary": "get cart",
                 "operationId": "c9ac519a6b5786e3e3f7a05a0cbd8bc3",
-                "parameters": [
-                    {
-                        "name": "perPage",
-                        "in": "query",
-                        "description": "number of records per page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "number of page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
                 "responses": {
                     "201": {
                         "description": "Successful get cart",
@@ -1501,37 +1481,13 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "total_cost": {
-                                        "type": "integer",
-                                        "example": 25000
+                                    "date": {
+                                        "type": "string",
+                                        "example": "2024/12/20"
                                     },
                                     "location_id": {
                                         "type": "integer",
                                         "example": 1
-                                    },
-                                    "products": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "product_id": {
-                                                    "type": "integer"
-                                                },
-                                                "quantity": {
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "example": [
-                                            {
-                                                "product_id": 1,
-                                                "quantity": 5
-                                            },
-                                            {
-                                                "product_id": 4,
-                                                "quantity": 3
-                                            }
-                                        ]
                                     }
                                 },
                                 "type": "object"
@@ -1567,18 +1523,89 @@
                 ]
             }
         },
-        "/orders/deleteOrder/{order}": {
-            "delete": {
+        "/orders/editOrder/{order}": {
+            "put": {
                 "tags": [
                     "Orders"
                 ],
-                "summary": "delete order",
-                "operationId": "4c6a9543bbb88d10acff81e7b48c59b9",
+                "summary": "edit order",
+                "operationId": "9f0344863938f3471ebc1190c87cafe7",
                 "parameters": [
                     {
                         "name": "order",
                         "in": "path",
                         "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "location_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully order edited",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "order edited successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/orders/deleteProduct/{order}/{product}": {
+            "delete": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "delete product",
+                "operationId": "278489c439a6bd4659b060922f7685e0",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "product id",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1594,7 +1621,192 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "order deleted seccessfully"
+                                            "example": "product deleted seccessfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/orders/cancelOrder/{order}": {
+            "delete": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "cancel order",
+                "operationId": "c41d30187fb3a35d4be45dc614c31c49",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful canceled",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "order canceled seccessfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/orders/getOrders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "get orders for user",
+                "operationId": "765f5eb621420c3a7beb4a7b1d04f271",
+                "responses": {
+                    "201": {
+                        "description": "Successful get orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "orders get seccessfully"
+                                        },
+                                        "orders": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/orders/getOrdersByStatus/{status}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "get orders by status",
+                "operationId": "cf98f839a88da06f87045414d462cdb6",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "path",
+                        "description": "status id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "orders get seccessfully"
+                                        },
+                                        "orders": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/orders/getOrder/{order}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "get order",
+                "operationId": "d011c95207bb2bc99a1ed6b90815e4b9",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "order id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get order",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "order get seccessfully"
+                                        },
+                                        "order": {
+                                            "type": "string",
+                                            "example": "[]"
                                         }
                                     },
                                     "type": "object"

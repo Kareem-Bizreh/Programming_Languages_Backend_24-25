@@ -244,24 +244,6 @@ class CartController extends Controller
      *       path="/carts/getCart",
      *       summary="get cart",
      *       tags={"Carts"},
-     *       @OA\Parameter(
-     *            name="perPage",
-     *            in="query",
-     *            required=true,
-     *            description="number of records per page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
-     *       @OA\Parameter(
-     *            name="page",
-     *            in="query",
-     *            required=true,
-     *            description="number of page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
      *        @OA\Response(
      *          response=201, description="Successful get cart",
      *          @OA\JsonContent(
@@ -285,14 +267,15 @@ class CartController extends Controller
      */
     public function getCart(Request $request)
     {
-        $perPage = $request->query('perPage', 10);
-        $page = $request->query('page', 1);
+        // $perPage = $request->query('perPage', 10);
+        // $page = $request->query('page', 1);
         $cart = auth('user-api')->user()->cart;
         return response()->json([
             'message' => 'successfully get cart',
             'cart' => [
-                'number' => $cart->number,
-                'products' => $this->cartService->getCart($cart, $perPage, $page)
+                'count' => $cart->count,
+                'total_cost' => $cart->total_cost,
+                'products' => $this->cartService->getCart($cart/*, $perPage, $page*/)
             ]
         ], 200);
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Product;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -25,30 +26,8 @@ class OrderController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *         type="object",
-     *         @OA\Property(property="total_cost", type="integer", example=25000),
+     *         @OA\Property(property="date", type="string", example="2024/12/20"),
      *         @OA\Property(property="location_id", type="integer", example=1),
-     *         @OA\Property(
-     *           property="products",
-     *           type="array",
-     *           @OA\Items(
-     *              type="object",
-     *              @OA\Property(
-     *                  property="product_id",
-     *                  type="integer"
-     *              ),
-     *              @OA\Property(
-     *                  property="quantity",
-     *                  type="integer"
-     *              )
-     *           ),
-     *           example={{
-     *             "product_id": 1,
-     *             "quantity": 5
-     *              }, {
-     *             "product_id": 4,
-     *             "quantity": 3
-     *           }}
-     *         )
      *      )
      *     ),
      *     @OA\Response(
@@ -70,34 +49,20 @@ class OrderController extends Controller
     public function createOrder(Request $request)
     {
         $data = Validator::make($request->all(), [
-            'total_cost' => 'required|integer|min:0',
             'location_id' => 'required|exists:locations,id',
-            'products' => 'required|array'
+            'date' => 'required|string'
         ]);
 
         if ($data->fails()) {
             return response()->json([
-                'message' => 'Validation failed',
+                'message' => $data->errors()->first(),
                 'errors' => $data->errors(),
             ], 400);
         }
-
-        foreach (request('products') as $product) {
-            $product = Validator::make($product, [
-                'product_id' => 'required|min:1|exists:products,id',
-                'quantity' => 'required|min:1|integer'
-            ]);
-
-            if ($product->fails()) {
-                return response()->json([
-                    'message' => 'Validation failed',
-                    'errors' => $product->errors(),
-                ], 400);
-            }
-        }
-        if (! $this->orderService->createOrder($request->all(), auth('user-api')->id())) {
+        $data = $data->validated();
+        if (! $this->orderService->createOrder($data, auth('user-api')->user()->cart, auth('user-api')->id())) {
             return response()->json([
-                'message' => 'faild to add order , check the quantity of each product.'
+                'message' => 'faild to add order , check from each product.'
             ], 400);
         }
 
@@ -107,9 +72,127 @@ class OrderController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *     path="/orders/editOrder/{order}",
+     *     summary="edit order",
+     *     tags={"Orders"},
+     *       @OA\Parameter(
+     *            name="order",
+     *            in="path",
+     *            required=true,
+     *            description="order id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *         type="object",
+     *         @OA\Property(property="location_id", type="integer", example=1),
+     *      )
+     *     ),
+     *     @OA\Response(
+     *      response=200, description="Successfully order edited",
+     *       @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="order edited successfully"
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Invalid request"),
+     *     security={
+     *         {"bearer": {}}
+     *     }
+     * )
+     */
+    public function editOrder(Request $request, Order $order)
+    {
+        $data = Validator::make($request->all(), [
+            'location_id' => 'required|exists:locations,id'
+        ]);
+
+        if ($data->fails()) {
+            return response()->json([
+                'message' => $data->errors()->first(),
+                'errors' => $data->errors(),
+            ], 400);
+        }
+        $data = $data->validated();
+
+        if (auth('user-api')->id() != $order->user_id || $order->status_id != 1)
+            return response()->json(['message' => 'Forbidden'], 403);
+
+        if (! $this->orderService->editOrder($request->all(), auth('user-api')->id(), $order)) {
+            return response()->json([
+                'message' => 'faild to edit order'
+            ], 400);
+        }
+
+        return response()->json([
+            'message' => 'order edited successfully'
+        ], 200);
+    }
+
+    /**
      * @OA\Delete(
-     *       path="/orders/deleteOrder/{order}",
-     *       summary="delete order",
+     *       path="/orders/deleteProduct/{order}/{product}",
+     *       summary="delete product",
+     *       tags={"Orders"},
+     *       @OA\Parameter(
+     *            name="order",
+     *            in="path",
+     *            required=true,
+     *            description="order id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *       @OA\Parameter(
+     *            name="product",
+     *            in="path",
+     *            required=true,
+     *            description="product id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful deleted",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="product deleted seccessfully"
+     *               ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function deleteProduct(Order $order, Product $product)
+    {
+        if ($order->status_id != 1)
+            return response()->json(['message' => 'Forbidden'], 403);
+
+        if ($this->orderService->deleteProduct($order, $product))
+            return response()->json([
+                'message' => 'product deleted successfully'
+            ], 200);
+        return response()->json([
+            'message' => 'product deleted failed'
+        ], 200);
+    }
+
+    /**
+     * @OA\Delete(
+     *       path="/orders/cancelOrder/{order}",
+     *       summary="cancel order",
      *       tags={"Orders"},
      *       @OA\Parameter(
      *            name="order",
@@ -121,12 +204,12 @@ class OrderController extends Controller
      *            )
      *        ),
      *        @OA\Response(
-     *          response=201, description="Successful deleted",
+     *          response=201, description="Successful canceled",
      *          @OA\JsonContent(
      *               @OA\Property(
      *                   property="message",
      *                   type="string",
-     *                   example="order deleted seccessfully"
+     *                   example="order canceled seccessfully"
      *               ),
      *          )
      *        ),
@@ -136,14 +219,138 @@ class OrderController extends Controller
      *        }
      * )
      */
-    public function deleteOrder(Order $order)
+    public function cancelOrder(Order $order)
     {
-        if ($this->orderService->deleteOrder($order))
+        if ($order->status_id != 1)
+            return response()->json(['message' => 'Forbidden'], 403);
+
+        if ($this->orderService->cancelOrder($order))
             return response()->json([
-                'message' => 'order deleted successfully'
+                'message' => 'order canceled successfully'
             ], 200);
         return response()->json([
-            'message' => 'order deleted failed'
+            'message' => 'order canceled failed'
+        ], 200);
+    }
+
+    /**
+     * @OA\Get(
+     *       path="/orders/getOrders",
+     *       summary="get orders for user",
+     *       tags={"Orders"},
+     *        @OA\Response(
+     *          response=201, description="Successful get orders",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="orders get seccessfully"
+     *               ),
+     *               @OA\Property(
+     *                   property="orders",
+     *                   type="string",
+     *                   example="[]"
+     *               ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getOrders(Request $request)
+    {
+        return response()->json([
+            'message' => 'orders get successfully',
+            'orders' => $this->orderService->getOrders(auth('user-api')->user())
+        ], 200);
+    }
+
+    /**
+     * @OA\Get(
+     *       path="/orders/getOrdersByStatus/{status}",
+     *       summary="get orders by status",
+     *       tags={"Orders"},
+     *       @OA\Parameter(
+     *            name="status",
+     *            in="path",
+     *            required=true,
+     *            description="status id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful get orders",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="orders get seccessfully"
+     *               ),
+     *               @OA\Property(
+     *                   property="orders",
+     *                   type="string",
+     *                   example="[]"
+     *               ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getOrdersByStatus(Request $request, int $status)
+    {
+        return response()->json([
+            'message' => 'orders get successfully',
+            'orders' => $this->orderService->getOrdersByStatus($status, true)
+        ], 200);
+    }
+
+    /**
+     * @OA\Get(
+     *       path="/orders/getOrder/{order}",
+     *       summary="get order",
+     *       tags={"Orders"},
+     *       @OA\Parameter(
+     *            name="order",
+     *            in="path",
+     *            required=true,
+     *            description="order id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful get order",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="order get seccessfully"
+     *               ),
+     *               @OA\Property(
+     *                   property="order",
+     *                   type="string",
+     *                   example="[]"
+     *               ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getOrder(Request $request, Order $order)
+    {
+        return response()->json([
+            'message' => 'order get successfully',
+            'price' => $order->total_cost,
+            'products' => $this->orderService->getOrder($order)
         ], 200);
     }
 }

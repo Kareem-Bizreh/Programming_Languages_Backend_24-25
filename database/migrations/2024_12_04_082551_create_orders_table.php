@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('status_id')->constrained('statuses')->references('id')->cascadeOnDelete();
             $table->foreignId('location_id')->constrained('locations')->references('id')->cascadeOnDelete();
             $table->foreignId('global_order_id')->nullable()->constrained('orders')->references('id')->cascadeOnDelete();
+            $table->string('date');
             $table->unsignedInteger('total_cost')->default(0);
             $table->unsignedInteger('count')->default(0);
             $table->timestamps();

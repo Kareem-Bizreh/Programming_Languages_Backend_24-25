@@ -76,8 +76,9 @@ Route::middleware('auth:user-api')->group(function () {
     Route::controller(OrderController::class)->prefix('orders')->group(function () {
         Route::post('/createOrder', 'createOrder');
         Route::put('/editOrder/{order}', 'editOrder');
-        Route::delete('/deleteOrder/{order}', 'deleteOrder');
-        Route::get('/getOrdersNotFinish', 'getOrdersNotFinish');
+        Route::delete('/deleteProduct/{order}/{product}', 'deleteProduct');
+        Route::delete('/cancelOrder/{order}', 'cancelOrder');
+        Route::get('/getOrders', 'getOrders');
         Route::get('/getOrdersByStatus/{status}', 'getOrdersByStatus');
         Route::get('/getOrder/{order}', 'getOrder');
     });
