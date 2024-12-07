@@ -1350,8 +1350,7 @@
                                     "city",
                                     "address",
                                     "building_number",
-                                    "floor_number",
-                                    "notes"
+                                    "floor_number"
                                 ],
                                 "properties": {
                                     "name": {

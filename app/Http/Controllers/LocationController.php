@@ -24,7 +24,7 @@ class LocationController extends Controller
      *        @OA\RequestBody(
      *           required=true,
      *           @OA\JsonContent(
-     *               required={"city" , "address" , "building_number" , "floor_number" , "notes"},
+     *               required={"city" , "address" , "building_number" , "floor_number"},
      *               @OA\Property(
      *                   property="name",
      *                   type="string",
@@ -71,7 +71,7 @@ class LocationController extends Controller
     public function addLocation(StoreLocationRequest $request)
     {
         $data = $request->validated();
-        $data['user_id'] = Auth::id();
+        $data['user_id'] = auth('user-api')->id();
         return response()->json([
             'message' => 'location added seccessfully',
             'location' => $this->locationService->add($data)
@@ -126,7 +126,7 @@ class LocationController extends Controller
     {
         $perPage = $request->query('perPage', 10);
         $page = $request->query('page', 1);
-        $locations = $this->locationService->get(Auth::user(), $perPage, $page);
+        $locations = $this->locationService->get(auth('user-api')->user(), $perPage, $page);
         return response()->json([
             'message' => 'locations get seccessfully',
             'locations' => $locations
