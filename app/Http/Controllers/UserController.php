@@ -241,9 +241,10 @@ class UserController extends Controller
         }
 
         if ($request->has('fcm_token')) {
-            $user->update([
-                'fcm_token' => $request->input('fcm_token'),
-            ]);
+            $data = [
+                'fcm_token' => $request->input('fcm_token')
+            ];
+            $this->userService->updateUser($user, $data);
         }
 
         return $this->userService->createToken($data);
