@@ -306,7 +306,7 @@ class OrderController extends Controller
     {
         return response()->json([
             'message' => 'orders get successfully',
-            'orders' => $this->orderService->getOrdersByStatus($status, auth('manager-api')->id())
+            'orders' => $this->orderService->getOrdersByStatus($status, auth('user-api')->id())
         ], 200);
     }
 
