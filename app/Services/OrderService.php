@@ -280,18 +280,22 @@ class OrderService
         else {
             $products = $this->getGlobalOrder($order, true);
         }
-        $products = collect($products);
-
-        $products->transform(function ($product) {
+        $markets = [];
+        foreach ($products as $product) {
             $product->count = $product->pivot->quantity;
-            $product->price = $product->price * $product->count;
-            $product->market_name = $product->market->name;
-            unset($product->market);
+            $product->total = $product->price * $product->count;
+            if (!isset($markets[$product->id]))
+                $markets[$product->market_id] = [
+                    'name' => $product->market->name,
+                    'products' => []
+                ];
             unset($product->pivot);
-            return $product;
-        });
+            unset($product->market);
+            unset($product->image);
+            $markets[$product->market_id]['products'][] = $product;
+        }
 
-        return $products;
+        return collect($markets);
     }
 
     /**

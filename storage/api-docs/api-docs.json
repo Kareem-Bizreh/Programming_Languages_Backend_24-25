@@ -2239,7 +2239,11 @@
                                             "type": "string",
                                             "example": "order get seccessfully"
                                         },
-                                        "order": {
+                                        "price": {
+                                            "type": "integer",
+                                            "example": 50000
+                                        },
+                                        "markets": {
                                             "type": "string",
                                             "example": "[]"
                                         }

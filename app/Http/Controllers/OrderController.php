@@ -333,7 +333,11 @@ class OrderController extends Controller
      *                   example="order get seccessfully"
      *               ),
      *               @OA\Property(
-     *                   property="order",
+     *                   property="price",
+     *                   type="integer",
+     *                   example=50000
+     *               ),@OA\Property(
+     *                   property="markets",
      *                   type="string",
      *                   example="[]"
      *               ),
@@ -353,7 +357,7 @@ class OrderController extends Controller
         return response()->json([
             'message' => 'order get successfully',
             'price' => $order->total_cost,
-            'products' => $this->orderService->getOrder($order)
+            'markets' => $this->orderService->getOrder($order)
         ], 200);
     }
 }
