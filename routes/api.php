@@ -61,6 +61,7 @@ Route::middleware('auth:user-api')->group(function () {
     Route::controller(LocationController::class)->prefix('locations')->group(function () {
         Route::post('/addLocation', 'addLocation');
         Route::get('/getLocations', 'getLocations');
+        Route::get('/getLocation/{location}', 'getLocation');
         Route::delete('/deleteLocation/{location_id}', 'deleteLocation');
     });
 

@@ -22,4 +22,9 @@ class Order extends Model
     {
         return $this->belongsTo(Market::class);
     }
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
 }

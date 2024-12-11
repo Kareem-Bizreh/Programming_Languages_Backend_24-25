@@ -358,7 +358,7 @@ class OrderController extends Controller
             'message' => 'order get successfully',
             'price' => $order->total_cost,
             'date' => $order->date,
-            'location_id' => $order->location_id,
+            'location_name' => $order->location->name,
             'markets' => $this->orderService->getOrder($order)
         ], 200);
     }

@@ -24,17 +24,9 @@ class LocationService
      * @param int $page
      * @return array
      */
-    public function get(User $user, int $perPage, int $page): array
+    public function get(User $user)
     {
-        $locations = $user->locations()->paginate($perPage, ['*'], 'page', $page);
-
-        return [
-            'currentPageItems' => $locations->items(),
-            'total' => $locations->total(),
-            'perPage' => $locations->perPage(),
-            'currentPage' => $locations->currentPage(),
-            'lastPage' => $locations->lastPage(),
-        ];
+        return $user->locations()->get();
     }
 
     /**

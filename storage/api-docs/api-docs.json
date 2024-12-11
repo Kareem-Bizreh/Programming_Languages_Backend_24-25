@@ -1414,26 +1414,6 @@
                 ],
                 "summary": "get all locations for user",
                 "operationId": "aa7abb47c0ffb49a86a1b2007fea5896",
-                "parameters": [
-                    {
-                        "name": "perPage",
-                        "in": "query",
-                        "description": "number of records per page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "number of page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
                 "responses": {
                     "201": {
                         "description": "Successful get locations",
@@ -1446,6 +1426,56 @@
                                             "example": "locations get seccessfully"
                                         },
                                         "locations": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/locations/getLocation/{location}": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "get location for user",
+                "operationId": "cb07226553aef4aab220dd442da0696a",
+                "parameters": [
+                    {
+                        "name": "location",
+                        "in": "path",
+                        "description": "location id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get location",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "location get seccessfully"
+                                        },
+                                        "location": {
                                             "type": "string",
                                             "example": "[]"
                                         }

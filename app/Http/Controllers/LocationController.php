@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreLocationRequest;
+use App\Models\Location;
 use App\Services\LocationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,24 +84,6 @@ class LocationController extends Controller
      *       path="/locations/getLocations",
      *       summary="get all locations for user",
      *       tags={"Locations"},
-     *       @OA\Parameter(
-     *            name="perPage",
-     *            in="query",
-     *            required=true,
-     *            description="number of records per page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
-     *       @OA\Parameter(
-     *            name="page",
-     *            in="query",
-     *            required=true,
-     *            description="number of page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
      *        @OA\Response(
      *          response=201, description="Successful get locations",
      *          @OA\JsonContent(
@@ -124,12 +107,55 @@ class LocationController extends Controller
      */
     public function getLocations(Request $request)
     {
-        $perPage = $request->query('perPage', 10);
-        $page = $request->query('page', 1);
-        $locations = $this->locationService->get(auth('user-api')->user(), $perPage, $page);
+        // $perPage = $request->query('perPage', 10);
+        // $page = $request->query('page', 1);
+        $locations = $this->locationService->get(auth('user-api')->user());
         return response()->json([
             'message' => 'locations get seccessfully',
             'locations' => $locations
+        ]);
+    }
+
+    /**
+     * @OA\Get(
+     *       path="/locations/getLocation/{location}",
+     *       summary="get location for user",
+     *       tags={"Locations"},
+     *       @OA\Parameter(
+     *            name="location",
+     *            in="path",
+     *            required=true,
+     *            description="location id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful get location",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="location get seccessfully"
+     *               ),
+     *               @OA\Property(
+     *                    property="location",
+     *                    type="string",
+     *                     example="[]"
+     *                ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getLocation(Request $request, Location $location)
+    {
+        return response()->json([
+            'message' => 'location get seccessfully',
+            'location' => $location
         ]);
     }
 
