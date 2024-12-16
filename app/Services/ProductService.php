@@ -17,9 +17,10 @@ class ProductService
     /**
      * Create a new class instance.
      */
-    public function __construct(CategoryRepositry $categoryRepositry)
+    public function __construct(CategoryRepositry $categoryRepositry, MarketService $marketService)
     {
         $this->categoryRepositry = $categoryRepositry;
+        $this->marketService = $marketService;
     }
 
     /**
@@ -293,6 +294,26 @@ class ProductService
             unset($product->market);
             return $product;
         });
+
+        return [
+            'currentPageItems' => $products->items(),
+            'total' => $products->total(),
+            'perPage' => $products->perPage(),
+            'currentPage' => $products->currentPage(),
+            'lastPage' => $products->lastPage(),
+        ];
+    }
+
+    /**
+     * get all products order by number of purchases
+     *
+     * @param int $perPage
+     * @param int $page
+     */
+    public function getTopProducts(int $perPage, int $page)
+    {
+        $products = Product::orderBy('number_of_purchases', 'desc')
+            ->paginate($perPage, ['*'], 'page', $page);
 
         return [
             'currentPageItems' => $products->items(),

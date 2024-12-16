@@ -981,7 +981,19 @@
                                             "type": "string",
                                             "example": "order get seccessfully"
                                         },
-                                        "order": {
+                                        "price": {
+                                            "type": "integer",
+                                            "example": 50000
+                                        },
+                                        "date": {
+                                            "type": "string",
+                                            "example": "20/12/2024"
+                                        },
+                                        "location_name": {
+                                            "type": "string",
+                                            "example": "potter"
+                                        },
+                                        "markets": {
                                             "type": "string",
                                             "example": "[]"
                                         }
@@ -1738,6 +1750,33 @@
                 ]
             }
         },
+        "/managers/checkToken": {
+            "get": {
+                "tags": [
+                    "Managers"
+                ],
+                "summary": "current manager authenticated",
+                "operationId": "d183bfa600eeb0fa79b0f68e9ead01dc",
+                "responses": {
+                    "200": {
+                        "description": "check if manager authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/markets/getMarkets": {
             "get": {
                 "tags": [
@@ -2273,6 +2312,14 @@
                                             "type": "integer",
                                             "example": 50000
                                         },
+                                        "date": {
+                                            "type": "string",
+                                            "example": "20/12/2024"
+                                        },
+                                        "location_name": {
+                                            "type": "string",
+                                            "example": "potter"
+                                        },
                                         "markets": {
                                             "type": "string",
                                             "example": "[]"
@@ -2668,6 +2715,133 @@
                         "content": {
                             "application/json": {
                                 "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/products/getTopProducts": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "get products order by number of purchases",
+                "operationId": "8a94d100736675fe78db6505173f5a0a",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get products order by number of purchases",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get products order by number of purchases"
+                                        },
+                                        "products": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/products/getTopProducts/{market}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "get products order by number of purchases for market",
+                "operationId": "36afd75b06d2a2c85bce684898103672",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "market",
+                        "in": "path",
+                        "description": "market id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get products order by number of purchases for market",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get products order by number of purchases for market"
+                                        },
+                                        "products": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
                             }
                         }
                     },
@@ -4217,6 +4391,33 @@
                 "responses": {
                     "200": {
                         "description": "return the user",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/users/checkToken": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "current user authenticated",
+                "operationId": "3d0c0f43b9d75ffa78eed5862c6d7f1a",
+                "responses": {
+                    "200": {
+                        "description": "check if user authenticated",
                         "content": {
                             "application/json": {
                                 "schema": {}

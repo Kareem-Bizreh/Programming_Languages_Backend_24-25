@@ -336,7 +336,18 @@ class OrderController extends Controller
      *                   property="price",
      *                   type="integer",
      *                   example=50000
-     *               ),@OA\Property(
+     *               ),
+     *               @OA\Property(
+     *                   property="date",
+     *                   type="string",
+     *                   example="20/12/2024"
+     *               ),
+     *               @OA\Property(
+     *                   property="location_name",
+     *                   type="string",
+     *                   example="potter"
+     *               ),
+     *               @OA\Property(
      *                   property="markets",
      *                   type="string",
      *                   example="[]"

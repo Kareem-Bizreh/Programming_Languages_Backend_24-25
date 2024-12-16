@@ -782,6 +782,24 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
+     *     path="/users/checkToken",
+     *     summary="current user authenticated",
+     *     tags={"Users"},
+     *     @OA\Response(
+     *      response=200, description="check if user authenticated",@OA\JsonContent()),
+     *     @OA\Response(response=400, description="Invalid request"),
+     *     security={
+     *         {"bearer": {}}
+     *     }
+     * )
+     */
+    public function checkToken()
+    {
+        return response()->json(['message' => 'authenticated'], 200);
+    }
+
+    /**
+     * @OA\Get(
      *     path="/users/getImage",
      *     summary="image of current user",
      *     tags={"Users"},

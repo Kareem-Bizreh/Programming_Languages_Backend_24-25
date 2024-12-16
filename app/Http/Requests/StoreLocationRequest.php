@@ -42,7 +42,7 @@ class StoreLocationRequest extends FormRequest
             'name' => 'required|string|unique:locations,name|max:255',
             'location' => 'required|string|max:255',
             'street' => 'required|string|max:255',
-            'notes' => 'string|max:500',
+            'notes' => 'max:500',
         ];
     }
 
@@ -65,7 +65,6 @@ class StoreLocationRequest extends FormRequest
             'street.string' => 'The street must be a valid string.',
             'street.max' => 'The street cannot exceed 255 characters.',
 
-            'notes.string' => 'The notes must be a valid string.',
             'notes.max' => 'The notes cannot exceed 500 characters.',
         ];
     }

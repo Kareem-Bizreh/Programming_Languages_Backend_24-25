@@ -36,6 +36,7 @@ Route::controller(UserController::class)->prefix('users')->group(function () {
         Route::put('/editUser', 'edit');
         Route::get('/currentUser', 'current');
         Route::get('/getImage', 'getImage');
+        Route::get('/checkToken', 'checkToken');
         Route::delete('/deleteImage', 'deleteImage');
     });
 });
@@ -50,6 +51,8 @@ Route::middleware('auth:user-api')->group(function () {
         Route::get('/getProduct/{product}', 'getProduct');
         Route::get('/getProductsByName/{product_name}', 'getProductsByName');
         Route::get('/getImage/{product}', 'getImage');
+        Route::get('/getTopProducts', 'getTopProducts');
+        Route::get('/getTopProducts/{market}', 'getTopProductsForMarket');
     });
 
     Route::controller(MarketController::class)->prefix('markets')->group(function () {
@@ -103,6 +106,7 @@ Route::controller(ManagerController::class)->prefix('managers')->group(function 
     Route::middleware('auth:manager-api')->group(function () {
         Route::post('/logout', 'logout');
         Route::put('/resetPassword', 'resetPassword');
+        Route::get('/checkToken', 'checkToken');
     });
 });
 

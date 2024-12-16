@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Market;
 use App\Models\Product;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
@@ -365,5 +366,122 @@ class ProductController extends Controller
     public function getImage(Product $product)
     {
         return response()->json(['image_path' => $product->image]);
+    }
+
+    /**
+     * @OA\Get(
+     *       path="/products/getTopProducts",
+     *       summary="get products order by number of purchases",
+     *       tags={"Products"},
+     *       @OA\Parameter(
+     *            name="perPage",
+     *            in="query",
+     *            required=true,
+     *            description="number of records per page",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *       @OA\Parameter(
+     *            name="page",
+     *            in="query",
+     *            required=true,
+     *            description="number of page",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful get products order by number of purchases",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="successfully get products order by number of purchases"
+     *               ),
+     *               @OA\Property(
+     *                    property="products",
+     *                    type="string",
+     *                     example="[]"
+     *                ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getTopProducts(Request $request)
+    {
+        $perPage = $request->query('perPage', 10);
+        $page = $request->query('page', 1);
+        return response()->json([
+            'message' => 'successfully get products order by number of purchases',
+            'products' => $this->productService->getTopProducts($perPage, $page)
+        ], 200);
+    }
+
+    /**
+     * @OA\Get(
+     *       path="/products/getTopProducts/{market}",
+     *       summary="get products order by number of purchases for market",
+     *       tags={"Products"},
+     *       @OA\Parameter(
+     *            name="perPage",
+     *            in="query",
+     *            required=true,
+     *            description="number of records per page",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *       @OA\Parameter(
+     *            name="page",
+     *            in="query",
+     *            required=true,
+     *            description="number of page",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *       @OA\Parameter(
+     *            name="market",
+     *            in="path",
+     *            required=true,
+     *            description="market id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful get products order by number of purchases for market",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="successfully get products order by number of purchases for market"
+     *               ),
+     *               @OA\Property(
+     *                    property="products",
+     *                    type="string",
+     *                     example="[]"
+     *                ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getTopProductsForMarket(Request $request, Market $market)
+    {
+        $perPage = $request->query('perPage', 10);
+        $page = $request->query('page', 1);
+        return response()->json([
+            'message' => 'successfully get products order by number of purchases for market',
+            'products' => $this->productService->marketService->getTopProducts($perPage, $page, $market)
+        ], 200);
     }
 }

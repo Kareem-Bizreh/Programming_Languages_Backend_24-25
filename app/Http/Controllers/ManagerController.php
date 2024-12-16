@@ -220,4 +220,22 @@ class ManagerController extends Controller
             'message' => 'failed'
         ], 400);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/managers/checkToken",
+     *     summary="current manager authenticated",
+     *     tags={"Managers"},
+     *     @OA\Response(
+     *      response=200, description="check if manager authenticated",@OA\JsonContent()),
+     *     @OA\Response(response=400, description="Invalid request"),
+     *     security={
+     *         {"bearer": {}}
+     *     }
+     * )
+     */
+    public function checkToken()
+    {
+        return response()->json(['message' => 'authenticated'], 200);
+    }
 }

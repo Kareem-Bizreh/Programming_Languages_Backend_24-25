@@ -919,7 +919,22 @@ class AdminController extends Controller
      *                   example="order get seccessfully"
      *               ),
      *               @OA\Property(
-     *                   property="order",
+     *                   property="price",
+     *                   type="integer",
+     *                   example=50000
+     *               ),
+     *               @OA\Property(
+     *                   property="date",
+     *                   type="string",
+     *                   example="20/12/2024"
+     *               ),
+     *               @OA\Property(
+     *                   property="location_name",
+     *                   type="string",
+     *                   example="potter"
+     *               ),
+     *               @OA\Property(
+     *                   property="markets",
      *                   type="string",
      *                   example="[]"
      *               ),
@@ -933,10 +948,15 @@ class AdminController extends Controller
      */
     public function getOrder(Request $request, Order $order)
     {
+        if (auth('user-api')->id() != $order->user_id)
+            return response()->json(['message' => 'Forbidden'], 403);
+
         return response()->json([
             'message' => 'order get successfully',
             'price' => $order->total_cost,
-            'products' => $this->orderService->getOrder($order)
+            'date' => $order->date,
+            'location_name' => $order->location->name,
+            'markets' => $this->orderService->getOrder($order)
         ], 200);
     }
 }
