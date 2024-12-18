@@ -238,6 +238,14 @@ class OrderController extends Controller
      *       path="/orders/getOrders",
      *       summary="get orders for user",
      *       tags={"Orders"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *        @OA\Response(
      *          response=201, description="Successful get orders",
      *          @OA\JsonContent(
@@ -261,9 +269,10 @@ class OrderController extends Controller
      */
     public function getOrders(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
         return response()->json([
             'message' => 'orders get successfully',
-            'orders' => $this->orderService->getOrdersForUser(auth('user-api')->user())
+            'orders' => $this->orderService->getOrdersForUser(auth('user-api')->user(), $lang)
         ], 200);
     }
 
@@ -272,6 +281,14 @@ class OrderController extends Controller
      *       path="/orders/getOrdersByStatus/{status}",
      *       summary="get orders by status",
      *       tags={"Orders"},
+     *      @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="status",
      *            in="path",
@@ -304,9 +321,10 @@ class OrderController extends Controller
      */
     public function getOrdersByStatus(Request $request, int $status)
     {
+        $lang = $request->header('Accept-Language', 'en');
         return response()->json([
             'message' => 'orders get successfully',
-            'orders' => $this->orderService->getOrdersByStatus($status, auth('user-api')->id())
+            'orders' => $this->orderService->getOrdersByStatus($status, auth('user-api')->id(), $lang)
         ], 200);
     }
 
@@ -315,6 +333,14 @@ class OrderController extends Controller
      *       path="/orders/getOrder/{order}",
      *       summary="get order",
      *       tags={"Orders"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="order",
      *            in="path",
@@ -362,6 +388,7 @@ class OrderController extends Controller
      */
     public function getOrder(Request $request, Order $order)
     {
+        $lang = $request->header('Accept-Language', 'en');
         if (auth('user-api')->id() != $order->user_id)
             return response()->json(['message' => 'Forbidden'], 403);
 
@@ -370,7 +397,7 @@ class OrderController extends Controller
             'price' => $order->total_cost,
             'date' => $order->date,
             'location_name' => $order->location->name,
-            'markets' => $this->orderService->getOrder($order)
+            'markets' => $this->orderService->getOrder($order, $lang)
         ], 200);
     }
 }

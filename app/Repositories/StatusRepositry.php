@@ -8,18 +8,20 @@ class StatusRepositry
 {
     /**
      * get all status
+     * @param string $lang
      */
-    public function getAllStatuses()
+    public function getAllStatuses(string $lang)
     {
-        return DB::table('statuses')->get();
+        return DB::table('statuses')->select(['id', "name_{$lang} as name"])->get();
     }
 
     /**
      * get status by id
      * @param int $id
+     * @param string $lang
      */
-    public function getStatusById(int $id)
+    public function getStatusById(int $id, string $lang)
     {
-        return DB::table('statuses')->find($id);
+        return DB::table('statuses')->select(['id', "name_{$lang} as name"])->find($id);
     }
 }

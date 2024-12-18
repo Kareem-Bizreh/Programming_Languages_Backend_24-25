@@ -244,6 +244,14 @@ class CartController extends Controller
      *       path="/carts/getCart",
      *       summary="get cart",
      *       tags={"Carts"},
+     *       @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *        ),
      *        @OA\Response(
      *          response=201, description="Successful get cart",
      *          @OA\JsonContent(
@@ -267,15 +275,15 @@ class CartController extends Controller
      */
     public function getCart(Request $request)
     {
-        // $perPage = $request->query('perPage', 10);
-        // $page = $request->query('page', 1);
+        $lang = $request->header('Accept-Language', 'en');
+
         $cart = auth('user-api')->user()->cart;
         return response()->json([
             'message' => 'successfully get cart',
             'cart' => [
                 'count' => $cart->count,
                 'total_cost' => $cart->total_cost,
-                'products' => $this->cartService->getCart($cart/*, $perPage, $page*/)
+                'products' => $this->cartService->getCart($cart, $lang)
             ]
         ], 200);
     }

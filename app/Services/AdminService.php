@@ -36,7 +36,8 @@ class AdminService
             $manager = Manager::create($data);
             if ($role == Role::Seller->value) {
                 $market =  $this->marketService->create([
-                    'name' => $data['market_name'],
+                    'name_en' => $data['market_name_en'],
+                    'name_ar' => $data['market_name_ar'],
                     'manager_id' => $manager->id
                 ]);
                 if (! $market) {
@@ -54,15 +55,15 @@ class AdminService
     /**
      * edit market
      *
-     * @param string $name
+     * @param array $data
      * @param Manager $manager
      */
-    public function editMarket(string $name, Manager $manager)
+    public function editMarket(array $data, Manager $manager)
     {
         DB::beginTransaction();
         try {
             $market = $manager->market;
-            $market->update(['name' => $name]);
+            $market->update($data);
             $market->save();
             DB::commit();
         } catch (\Exception $e) {

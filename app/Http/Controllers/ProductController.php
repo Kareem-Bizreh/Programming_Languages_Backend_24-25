@@ -18,7 +18,7 @@ class ProductController extends Controller
 
     /**
      * @OA\Post(
-     *       path="/products/toggleFavorite/{product}/",
+     *       path="/products/toggleFavorite/{product}",
      *       summary="change status of favorite for user of some product",
      *       tags={"Products"},
      *       @OA\Parameter(
@@ -68,6 +68,14 @@ class ProductController extends Controller
      *       summary="get favorite products with their id, name, market name, image, category and price for user",
      *       tags={"Products"},
      *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
+     *       @OA\Parameter(
      *            name="perPage",
      *            in="query",
      *            required=true,
@@ -108,11 +116,12 @@ class ProductController extends Controller
      */
     public function getFavoriteProducts(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
         $perPage = $request->query('perPage', 10);
         $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get products',
-            'products' => $this->productService->getFavoriteProducts(auth('user-api')->user(), $perPage, $page)
+            'products' => $this->productService->getFavoriteProducts(auth('user-api')->user(), $perPage, $page, $lang)
         ], 200);
     }
 
@@ -122,6 +131,14 @@ class ProductController extends Controller
      *       path="/products/getProducts",
      *       summary="get all products with their id, name, market name, image, category and price",
      *       tags={"Products"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="perPage",
      *            in="query",
@@ -163,11 +180,12 @@ class ProductController extends Controller
      */
     public function getProducts(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
         $perPage = $request->query('perPage', 10);
         $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get products',
-            'products' => $this->productService->getProducts($perPage, $page)
+            'products' => $this->productService->getProducts($perPage, $page, $lang)
         ], 200);
     }
 
@@ -176,6 +194,14 @@ class ProductController extends Controller
      *       path="/products/getProductsByCategory/{category}",
      *       summary="get all products by category with their id, name, market name, image and price",
      *       tags={"Products"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="perPage",
      *            in="query",
@@ -226,11 +252,12 @@ class ProductController extends Controller
      */
     public function getProductsByCategory(Request $request, int $category)
     {
+        $lang = $request->header('Accept-Language', 'en');
         $perPage = $request->query('perPage', 10);
         $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get products by category',
-            'products' => $this->productService->getProductsByCategory($perPage, $page, $category)
+            'products' => $this->productService->getProductsByCategory($perPage, $page, $category, $lang)
         ], 200);
     }
 
@@ -239,6 +266,14 @@ class ProductController extends Controller
      *       path="/products/getProduct/{product}",
      *       summary="get all information for product and if this product is favorite for user",
      *       tags={"Products"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="product",
      *            in="path",
@@ -269,11 +304,12 @@ class ProductController extends Controller
      *        }
      * )
      */
-    public function getProduct(Product $product)
+    public function getProduct(Request $request, Product $product)
     {
+        $lang = $request->header('Accept-Language', 'en');
         return response()->json([
             'message' => 'successfully get product',
-            'product' => $product,
+            'product' => $this->productService->getProduct($product, $lang),
             'isFavorite' => $this->productService->isFavorite($product->id, auth('user-api')->id()),
         ], 200);
     }
@@ -283,6 +319,14 @@ class ProductController extends Controller
      *       path="/products/getProductsByName/{product_name}",
      *       summary="get products by name",
      *       tags={"Products"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="perPage",
      *            in="query",
@@ -333,11 +377,12 @@ class ProductController extends Controller
      */
     public function getProductsByName(Request $request, string $product_name)
     {
+        $lang = $request->header('Accept-Language', 'en');
         $perPage = $request->query('perPage', 10);
         $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get products by name',
-            'products' => $this->productService->getProductsByName($perPage, $page, $product_name)
+            'products' => $this->productService->getProductsByName($perPage, $page, $product_name, $lang)
         ], 200);
     }
 
@@ -373,6 +418,14 @@ class ProductController extends Controller
      *       path="/products/getTopProducts",
      *       summary="get products order by number of purchases",
      *       tags={"Products"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="perPage",
      *            in="query",
@@ -414,11 +467,12 @@ class ProductController extends Controller
      */
     public function getTopProducts(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
         $perPage = $request->query('perPage', 10);
         $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get products order by number of purchases',
-            'products' => $this->productService->getTopProducts($perPage, $page)
+            'products' => $this->productService->getTopProducts($perPage, $page, $lang)
         ], 200);
     }
 
@@ -427,6 +481,14 @@ class ProductController extends Controller
      *       path="/products/getTopProducts/{market}",
      *       summary="get products order by number of purchases for market",
      *       tags={"Products"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="perPage",
      *            in="query",
@@ -477,11 +539,13 @@ class ProductController extends Controller
      */
     public function getTopProductsForMarket(Request $request, Market $market)
     {
+        $lang = $request->header('Accept-Language', 'en');
         $perPage = $request->query('perPage', 10);
         $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get products order by number of purchases for market',
-            'products' => $this->productService->marketService->getTopProducts($perPage, $page, $market)
+            'market_name' => $market['name_' . $lang],
+            'products' => $this->productService->marketService->getTopProducts($perPage, $page, $market, $lang)
         ], 200);
     }
 }

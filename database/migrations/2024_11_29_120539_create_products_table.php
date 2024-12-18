@@ -15,11 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('market_id')->constrained('markets')->references('id')->cascadeOnDelete();
             $table->foreignId('category_id')->constrained('categories')->references('id')->cascadeOnDelete();
-            $table->string('name');
+            $table->string('name_en');
+            $table->string('name_ar');
             $table->unsignedInteger('quantity');
             $table->unsignedInteger('price');
             $table->string('image')->nullable();
-            $table->string('description')->nullable();
+            $table->string('description_en')->nullable();
+            $table->string('description_ar')->nullable();
             $table->unsignedInteger('number_of_purchases')->default(0);
             $table->timestamps();
         });

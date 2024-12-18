@@ -40,7 +40,8 @@ class StoreMarketRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:20|unique:managers,name',
-            'market_name' => 'required|string|max:20',
+            'market_name_en' => 'required|string|max:20',
+            'market_name_ar' => 'required|string|max:20',
             'password' => 'required|string|min:8|confirmed',
         ];
     }
@@ -53,9 +54,13 @@ class StoreMarketRequest extends FormRequest
             'name.string' => 'The name must be a valid string.',
             'name.max' => 'The name cannot exceed 20 characters.',
 
-            'market_name.required' => 'The name field is required.',
-            'market_name.string' => 'The name must be a valid string.',
-            'market_name.max' => 'The name cannot exceed 20 characters.',
+            'market_name_en.required' => 'The name field is required.',
+            'market_name_en.string' => 'The name must be a valid string.',
+            'market_name_en.max' => 'The name cannot exceed 20 characters.',
+
+            'market_name_ar.required' => 'The name field is required.',
+            'market_name_ar.string' => 'The name must be a valid string.',
+            'market_name_ar.max' => 'The name cannot exceed 20 characters.',
 
             'password.required' => 'The password field is required.',
             'password.string' => 'The password must be a valid string.',

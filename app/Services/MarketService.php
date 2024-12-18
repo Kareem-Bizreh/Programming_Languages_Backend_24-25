@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Market;
+use App\Repositories\CategoryRepositry;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,9 +14,9 @@ class MarketService
     /**
      * Create a new class instance.
      */
-    public function __construct()
+    public function __construct(CategoryRepositry $categoryRepositry)
     {
-        //
+        $this->categoryRepositry = $categoryRepositry;
     }
 
     /**
@@ -92,11 +93,31 @@ class MarketService
      *
      * @param int $perPage
      * @param int $page
+     * @param string $lang
      * @param Market $market
      */
-    public function getProductsForMarket(int $perPage, int $page, Market $market)
+    public function getProductsForMarket(int $perPage, int $page, Market $market, string $lang = null)
     {
-        $products = $market->products()->paginate($perPage, ['*'], 'page', $page);
+        if ($lang)
+            $products = $market->products()->select(
+                'id',
+                "name_{$lang} as name",
+                'category_id',
+                'price',
+                'quantity',
+                'image',
+                "description_{$lang} as description",
+                'number_of_purchases'
+            )->paginate($perPage, ['*'], 'page', $page);
+        else
+            $products = $market->products()->paginate($perPage, ['*'], 'page', $page);
+
+
+        $products->transform(function ($product) use ($lang) {
+            $product->category = $this->categoryRepositry->getById($product->category_id, $lang)->name;
+            unset($product->category_id);
+            return $product;
+        });
 
         return [
             'currentPageItems' => $products->items(),
@@ -113,11 +134,20 @@ class MarketService
      * @param int $perPage
      * @param int $page
      * @param Market $market
+     * @param string $lang
      */
-    public function getTopProducts(int $perPage, int $page, Market $market)
+    public function getTopProducts(int $perPage, int $page, Market $market, string $lang)
     {
         $products = $market->products()->orderBy('number_of_purchases', 'desc')
+            ->select('id', "products.name_{$lang} as name", 'image', 'category_id', 'price', 'market_id')
             ->paginate($perPage, ['*'], 'page', $page);
+
+        $products->getCollection()->transform(function ($product) use ($lang) {
+            $product->category = $this->categoryRepositry->getById($product->category_id, $lang)->name;
+            unset($product->market_id);
+            unset($product->category_id);
+            return $product;
+        });
 
         return [
             'currentPageItems' => $products->items(),
@@ -133,10 +163,11 @@ class MarketService
      *
      * @param int $perPage
      * @param int $page
+     * @param string $lang
      */
-    public function getMarkets(int $perPage, int $page)
+    public function getMarkets(int $perPage, int $page, string $lang)
     {
-        $markets = Market::select('id', 'name')
+        $markets = Market::select('id', "name_{$lang} as name")
             ->paginate($perPage, ['*'], 'page', $page);
 
         return [
@@ -154,11 +185,12 @@ class MarketService
      * @param int $perPage
      * @param int $page
      * @param string $name
+     * @param string $lang
      */
-    public function getMarketsByName(int $perPage, int $page, string $name)
+    public function getMarketsByName(int $perPage, int $page, string $name, string $lang)
     {
-        $markets = Market::where('name', $name)
-            ->select('id', 'name')
+        $markets = Market::where("name_{$lang}", 'LIKE', "%{$name}%")
+            ->select('id', "name_{$lang} as name")
             ->paginate($perPage, ['*'], 'page', $page);
 
         return [

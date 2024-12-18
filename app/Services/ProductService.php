@@ -154,16 +154,20 @@ class ProductService
      *
      * @param int $perPage
      * @param int $page
+     * @param string $lang
      */
-    public function getProducts(int $perPage, int $page)
+    public function getProducts(int $perPage, int $page, string $lang)
     {
         $products = Product::with('market')
-            ->select('id', 'name', 'image', 'category_id', 'price', 'market_id')
+            ->select('id', "products.name_{$lang} as name", 'image', 'category_id', 'price', 'market_id')
             ->paginate($perPage, ['*'], 'page', $page);
 
-        $products->getCollection()->transform(function ($product) {
-            $product->market_name = $product->market->name;
+        $products->getCollection()->transform(function ($product) use ($lang) {
+            $product->market_name = $product->market['name_' . $lang];
+            $product->category = $this->categoryRepositry->getById($product->category_id, $lang)->name;
             unset($product->market);
+            unset($product->market_id);
+            unset($product->category_id);
             return $product;
         });
 
@@ -182,17 +186,21 @@ class ProductService
      * @param int $perPage
      * @param int $page
      * @param int $category_id
+     * @param string $lang
      */
-    public function getProductsByCategory(int $perPage, int $page, int $category_id)
+    public function getProductsByCategory(int $perPage, int $page, int $category_id, string $lang)
     {
         $products = Product::with('market')
             ->where('category_id', $category_id)
-            ->select('id', 'name', 'category_id', 'image', 'price', 'market_id')
+            ->select('id', "products.name_{$lang} as name", 'image', 'category_id', 'price', 'market_id')
             ->paginate($perPage, ['*'], 'page', $page);
 
-        $products->getCollection()->transform(function ($product) {
-            $product->market_name = $product->market->name;
+        $products->getCollection()->transform(function ($product) use ($lang) {
+            $product->market_name = $product->market['name_' . $lang];
+            $product->category = $this->categoryRepositry->getById($product->category_id, $lang)->name;
             unset($product->market);
+            unset($product->market_id);
+            unset($product->category_id);
             return $product;
         });
 
@@ -211,17 +219,21 @@ class ProductService
      * @param int $perPage
      * @param int $page
      * @param string $name
+     * @param string $lang
      */
-    public function getProductsByName(int $perPage, int $page, string $name)
+    public function getProductsByName(int $perPage, int $page, string $name, string $lang)
     {
         $products = Product::with('market')
-            ->where('name', $name)
-            ->select('id', 'name',  'category_id', 'image',  'price', 'market_id')
+            ->where('name_' . $lang, 'LIKE', "%{$name}%")
+            ->select('id', "name_{$lang} as name",  'category_id', 'image',  'price', 'market_id')
             ->paginate($perPage, ['*'], 'page', $page);
 
-        $products->getCollection()->transform(function ($product) {
-            $product->market_name = $product->market->name;
+        $products->getCollection()->transform(function ($product) use ($lang) {
+            $product->market_name = $product->market['name_' . $lang];
+            $product->category = $this->categoryRepositry->getById($product->category_id, $lang)->name;
             unset($product->market);
+            unset($product->market_id);
+            unset($product->category_id);
             return $product;
         });
 
@@ -279,19 +291,23 @@ class ProductService
      * @param User $user
      * @param int $perPage
      * @param int $page
+     * @param string $lang
      */
-    public function getFavoriteProducts(User $user, int $perPage, int $page)
+    public function getFavoriteProducts(User $user, int $perPage, int $page, string $lang)
     {
         $products = Product::with('market')
             ->whereHas('favoritedBy', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
-            ->select('id', 'name', 'image', 'category_id', 'price', 'market_id')
+            ->select('id', "products.name_{$lang} as name", 'image', 'category_id', 'price', 'market_id')
             ->paginate($perPage, ['*'], 'page', $page);
 
-        $products->getCollection()->transform(function ($product) {
-            $product->market_name = $product->market->name;
+        $products->getCollection()->transform(function ($product) use ($lang) {
+            $product->market_name = $product->market['name_' . $lang];
+            $product->category = $this->categoryRepositry->getById($product->category_id, $lang)->name;
             unset($product->market);
+            unset($product->market_id);
+            unset($product->category_id);
             return $product;
         });
 
@@ -309,11 +325,23 @@ class ProductService
      *
      * @param int $perPage
      * @param int $page
+     * @param string $lang
      */
-    public function getTopProducts(int $perPage, int $page)
+    public function getTopProducts(int $perPage, int $page, string $lang)
     {
-        $products = Product::orderBy('number_of_purchases', 'desc')
+        $products = Product::with('market')
+            ->orderBy('number_of_purchases', 'desc')
+            ->select('id', "products.name_{$lang} as name", 'image', 'category_id', 'price', 'market_id')
             ->paginate($perPage, ['*'], 'page', $page);
+
+        $products->getCollection()->transform(function ($product) use ($lang) {
+            $product->market_name = $product->market['name_' . $lang];
+            $product->category = $this->categoryRepositry->getById($product->category_id, $lang)->name;
+            unset($product->market);
+            unset($product->market_id);
+            unset($product->category_id);
+            return $product;
+        });
 
         return [
             'currentPageItems' => $products->items(),
@@ -322,5 +350,27 @@ class ProductService
             'currentPage' => $products->currentPage(),
             'lastPage' => $products->lastPage(),
         ];
+    }
+
+    /**
+     * get product
+     *
+     * @param Product $product
+     * @param string $lang
+     */
+    public function getProduct(Product $product, string $lang)
+    {
+        $product->name = $product['name_' . $lang];
+        $product->description = $product['description_' . $lang];
+        $product->market_name = $product->market['name_' . $lang];
+        $product->category = $this->categoryRepositry->getById($product->category_id, $lang)->name;
+        unset($product->market);
+        unset($product->name_en);
+        unset($product->name_ar);
+        unset($product->description_en);
+        unset($product->description_ar);
+        unset($product->market_id);
+        unset($product->category_id);
+        return $product;
     }
 }

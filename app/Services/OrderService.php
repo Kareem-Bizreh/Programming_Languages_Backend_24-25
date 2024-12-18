@@ -7,17 +7,25 @@ use App\Models\Market;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use App\Repositories\CategoryRepositry;
+use App\Repositories\StatusRepositry;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
-    protected $productService, $cartService;
+    protected $productService, $cartService, $statusRepositry, $categoryRepositry;
 
-    public function __construct(ProductService $productService, CartService $cartService)
-    {
+    public function __construct(
+        ProductService $productService,
+        CartService $cartService,
+        StatusRepositry $statusRepositry,
+        CategoryRepositry $categoryRepositry
+    ) {
         $this->productService = $productService;
         $this->cartService = $cartService;
+        $this->statusRepositry = $statusRepositry;
+        $this->categoryRepositry = $categoryRepositry;
     }
 
     /**
@@ -173,9 +181,9 @@ class OrderService
         DB::beginTransaction();
         try {
             if ($order->global_order_id)
-                $products = $this->getMarketOrder($order);
+                $products = $this->getMarketOrder($order, 'en');
             else
-                $products = $this->getGlobalOrder($order);
+                $products = $this->getGlobalOrder($order, 'en');
             foreach ($products as $value) {
                 $product = $this->productService->findById($value['id']);
                 $product->quantity += $value['pivot']['quantity'];
@@ -203,16 +211,16 @@ class OrderService
      * get products of market Order
      *
      * @param Order $order
+     * @param string $lang
      * @param bool $withMarket
      */
-    public function getMarketOrder(Order $order, bool $withMarket = false)
+    public function getMarketOrder(Order $order, string $lang, bool $withMarket = false)
     {
         if (! $withMarket)
             return $order->products()
                 ->select(
                     'products.id',
-                    'products.name',
-                    'products.image',
+                    "products.name_{$lang} as name",
                     'products.category_id',
                     'products.price',
                     'products.market_id'
@@ -222,8 +230,7 @@ class OrderService
                 ->with('market')
                 ->select(
                     'products.id',
-                    'products.name',
-                    'products.image',
+                    "products.name_{$lang} as name",
                     'products.category_id',
                     'products.price',
                     'products.market_id'
@@ -234,9 +241,10 @@ class OrderService
      * get global order
      *
      * @param Order $order
+     * @param string $lang
      * @param bool $withMarket
      */
-    public function getGlobalOrder(Order $order, bool $withMarket = false)
+    public function getGlobalOrder(Order $order, string $lang, bool $withMarket = false)
     {
         $products = [];
         $marketOrders = Order::with('products')
@@ -246,8 +254,7 @@ class OrderService
                 $order = $marketOrder->products()
                     ->select(
                         'products.id',
-                        'products.name',
-                        'products.image',
+                        "products.name_{$lang} as name",
                         'products.category_id',
                         'products.price',
                         'products.market_id'
@@ -257,8 +264,7 @@ class OrderService
                     ->with('market')
                     ->select(
                         'products.id',
-                        'products.name',
-                        'products.image',
+                        "products.name_{$lang} as name",
                         'products.category_id',
                         'products.price',
                         'products.market_id'
@@ -272,27 +278,30 @@ class OrderService
     /**
      * get order
      * @param Order $order
+     * @param string $lang
      */
-    public function getOrder(Order $order)
+    public function getOrder(Order $order, string $lang)
     {
         if ($order->global_order_id)
-            $products = $this->getMarketOrder($order, true);
+            $products = $this->getMarketOrder($order, $lang, true);
         else {
-            $products = $this->getGlobalOrder($order, true);
+            $products = $this->getGlobalOrder($order, $lang, true);
         }
         $markets = [];
         foreach ($products as $product) {
             $product->count = $product->pivot->quantity;
             $product->total = $product->price * $product->count;
+            $product->category = $this->categoryRepositry->getById($product->category_id, $lang)->name;
             if (!isset($markets[$product->id]))
                 $markets[$product->market_id] = [
-                    'name' => $product->market->name,
+                    'name' => $product->market['name_' . $lang],
                     'products' => []
                 ];
-            unset($product->pivot);
-            unset($product->market);
-            unset($product->image);
             $markets[$product->market_id]['products'][] = $product;
+            unset($product->market);
+            unset($product->market_id);
+            unset($product->category_id);
+            unset($product->pivot);
         }
 
         return collect($markets);
@@ -303,8 +312,9 @@ class OrderService
      * @param int $status_id
      * @param int $user_id
      * @param bool $market
+     * @param string $lang
      */
-    public function getOrdersByStatus(int $status_id, int $user_id, bool $market = false)
+    public function getOrdersByStatus(int $status_id, int $user_id, string $lang, bool $market = false)
     {
         if (! $market)
             $orders = Order::where('status_id', $status_id)
@@ -315,18 +325,34 @@ class OrderService
             $orders = Order::where('status_id', $status_id)
                 ->where('market_id', $user_id)
                 ->get();
+
+        $orders->transform(function ($order) use ($lang) {
+            $order->status = $this->statusRepositry->getStatusById($order->status_id, $lang)->name;
+            unset($order->status_id);
+            unset($order->global_order_id);
+            return $order;
+        });
         return $orders;
     }
 
     /**
      * get orders for user
      * @param User $user
+     * @param string $lang
      */
-    public function getOrdersForUser(User $user)
+    public function getOrdersForUser(User $user, string $lang)
     {
         $orders = $user->orders()
             ->whereNull('global_order_id')
             ->get();
+
+        $orders->transform(function ($order) use ($lang) {
+            $order->status = $this->statusRepositry->getStatusById($order->status_id, $lang)->name;
+            unset($order->market_id);
+            unset($order->status_id);
+            unset($order->global_order_id);
+            return $order;
+        });
 
         return $orders;
     }
@@ -358,7 +384,8 @@ class OrderService
             if (! $order->global_order_id) {
                 $marketOrders = Order::where('global_order_id', $order->id)->get();
                 foreach ($marketOrders as $marketOrder)
-                    $marketOrder->update($data);
+                    if ($marketOrder->status_id != 3)
+                        return new \Exception("order not completed");
             }
             $order->update($data);
             DB::commit();

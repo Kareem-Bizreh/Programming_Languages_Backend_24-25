@@ -19,13 +19,22 @@ class StatusController extends Controller
      *     path="/statuses/getAll",
      *     summary="get all statuses",
      *     tags={"Statuses"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(response=200, description="succesful get all statuses",@OA\JsonContent()),
      *     @OA\Response(response=400, description="Invalid request"),
      * )
      */
-    public function getAll()
+    public function getAll(Request $request)
     {
-        return response()->json($this->statusRepositry->getAllStatuses(), 200);
+        $lang = $request->header('Accept-Language', 'en');
+        return response()->json($this->statusRepositry->getAllStatuses($lang), 200);
     }
 
     /**
@@ -33,6 +42,14 @@ class StatusController extends Controller
      *     path="/statuses/get/{status}",
      *     summary="get status by id",
      *     tags={"Statuses"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *       @OA\Parameter(
      *            name="status",
      *            in="path",
@@ -46,8 +63,9 @@ class StatusController extends Controller
      *     @OA\Response(response=400, description="Invalid request"),
      * )
      */
-    public function getStatusById(int $status)
+    public function getStatusById(int $status, Request $request)
     {
-        return response()->json(['status' => $this->statusRepositry->getStatusById($status)], 200);
+        $lang = $request->header('Accept-Language', 'en');
+        return response()->json(['status' => $this->statusRepositry->getStatusById($status, $lang)], 200);
     }
 }

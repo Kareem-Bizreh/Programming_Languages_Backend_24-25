@@ -39,20 +39,24 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name_en' => 'required|max:255',
+            'name_ar' => 'required|max:255',
             'quantity' => 'required|integer|min:1',
             'price' => 'required|numeric|min:0.01',
             'category_id' => 'required|exists:categories,id',
-            'description' => 'nullable|string|max:1000',
+            'description_en' => 'nullable|max:1000',
+            'description_ar' => 'nullable|max:1000',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'The product name is required.',
-            'name.string' => 'The product name must be a valid string.',
-            'name.max' => 'The product name must not exceed 255 characters.',
+            'name_en.required' => 'The product name is required.',
+            'name_en.max' => 'The product name must not exceed 255 characters.',
+
+            'name_ar.required' => 'The product name is required.',
+            'name_ar.max' => 'The product name must not exceed 255 characters.',
 
             'quantity.required' => 'The quantity is required.',
             'quantity.integer' => 'The quantity must be an integer.',
@@ -65,8 +69,8 @@ class StoreProductRequest extends FormRequest
             'category_id.required' => 'The category is required.',
             'category_id.exists' => 'The selected category does not exist.',
 
-            'description.string' => 'The description must be a valid string.',
-            'description.max' => 'The description must not exceed 1000 characters.',
+            'description_en.max' => 'The description must not exceed 1000 characters.',
+            'description_ar.max' => 'The description must not exceed 1000 characters.',
         ];
     }
 }

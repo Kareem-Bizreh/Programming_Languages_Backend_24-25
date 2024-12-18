@@ -21,6 +21,14 @@ class MarketController extends Controller
      *       summary="get all markets",
      *       tags={"Markets"},
      *       @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *       ),
+     *       @OA\Parameter(
      *            name="perPage",
      *            in="query",
      *            required=true,
@@ -61,11 +69,12 @@ class MarketController extends Controller
      */
     public function getMarkets(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
         $perPage = $request->query('perPage', 10);
         $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get markets',
-            'markets' => $this->marketService->getMarkets($perPage, $page)
+            'markets' => $this->marketService->getMarkets($perPage, $page, $lang)
         ], 200);
     }
 
@@ -74,6 +83,14 @@ class MarketController extends Controller
      *       path="/markets/getMarketsByName/{market_name}",
      *       summary="get markets by name",
      *       tags={"Markets"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="perPage",
      *            in="query",
@@ -124,11 +141,12 @@ class MarketController extends Controller
      */
     public function getMarketsByName(Request $request, string $market_name)
     {
+        $lang = $request->header('Accept-Language', 'en');
         $perPage = $request->query('perPage', 10);
         $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get markets by name',
-            'markets' => $this->marketService->getMarketsByName($perPage, $page, $market_name)
+            'markets' => $this->marketService->getMarketsByName($perPage, $page, $market_name, $lang)
         ], 200);
     }
 
@@ -137,6 +155,14 @@ class MarketController extends Controller
      *       path="/markets/getProductsForMarket/{market}",
      *       summary="get all products for market",
      *       tags={"Markets"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="perPage",
      *            in="query",
@@ -187,11 +213,12 @@ class MarketController extends Controller
      */
     public function getProductsForMarket(Request $request, Market $market)
     {
+        $lang = $request->header('Accept-Language', 'en');
         $perPage = $request->query('perPage', 10);
         $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get products for market',
-            'products' => $this->marketService->getProductsForMarket($perPage, $page, $market)
+            'products' => $this->marketService->getProductsForMarket($perPage, $page, $market, $lang)
         ], 200);
     }
 }

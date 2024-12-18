@@ -32,16 +32,21 @@ class AdminController extends Controller
      *        @OA\RequestBody(
      *           required=true,
      *           @OA\JsonContent(
-     *               required={"name", "market_name" , "password" , "password_confirmation"},
+     *               required={"name", "market_name_en" , "market_name_ar" , "password" , "password_confirmation"},
      *               @OA\Property(
      *                 property="name",
      *                 type="string",
      *                 example="Harry Potter"
      *             ),
      *             @OA\Property(
-     *                 property="market_name",
+     *                 property="market_name_en",
      *                 type="string",
      *                 example="be order"
+     *             ),
+     *             @OA\Property(
+     *                 property="market_name_ar",
+     *                 type="string",
+     *                 example="بي اوردر"
      *             ),
      *             @OA\Property(
      *                 property="password",
@@ -64,7 +69,7 @@ class AdminController extends Controller
      *                   example="successfully create market"
      *               ),
      *               @OA\Property(
-     *                    property="market",
+     *                    property="manager",
      *                    type="string",
      *                     example="[]"
      *                ),
@@ -80,15 +85,15 @@ class AdminController extends Controller
     {
         $data = $request->validated();
 
-        $market = $this->adminService->createManager($data, Role::Seller->value);
-        if (! $market) {
+        $manager = $this->adminService->createManager($data, Role::Seller->value);
+        if (! $manager) {
             return response()->json([
                 'message' => 'failed'
             ], 400);
         }
         return response()->json([
             'message' => 'successfully create market',
-            'market' => $market
+            'manager' => $manager
         ], 200);
     }
 
@@ -172,12 +177,17 @@ class AdminController extends Controller
      *        @OA\RequestBody(
      *           required=true,
      *           @OA\JsonContent(
-     *               required={"new_market_name"},
+     *               required={"name_en" , "name_ar"},
      *               @OA\Property(
-     *                   property="new_market_name",
+     *                   property="name_en",
      *                   type="string",
      *                   example="bee order"
-     *               )
+     *               ),
+     *               @OA\Property(
+     *                   property="name_ar",
+     *                   type="string",
+     *                   example="بي أوردر"
+     *                ),
      *           )
      *        ),
      *        @OA\Response(
@@ -204,7 +214,8 @@ class AdminController extends Controller
     public function editMarket(Request $request, Manager $manager)
     {
         $data = Validator::make($request->all(), [
-            'new_market_name' => 'required|string|max:20'
+            'name_en' => 'required|string|max:20',
+            'name_ar' => 'required|string|max:20'
         ]);
 
         if ($data->fails()) {
@@ -215,7 +226,7 @@ class AdminController extends Controller
         }
         $data = $data->validated();
 
-        $market = $this->adminService->editMarket($data['new_market_name'], $manager);
+        $market = $this->adminService->editMarket($data, $manager);
         if (! $market) {
             return response()->json([
                 'message' => 'failed'
@@ -673,7 +684,7 @@ class AdminController extends Controller
         $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get products order by number of purchases for market',
-            'products' => $this->adminService->marketService->getTopProducts($perPage, $page, $market)
+            'products' => $this->adminService->marketService->getTopProducts($perPage, $page, $market, 'en')
         ], 200);
     }
 
@@ -956,7 +967,7 @@ class AdminController extends Controller
             'price' => $order->total_cost,
             'date' => $order->date,
             'location_name' => $order->location->name,
-            'markets' => $this->orderService->getOrder($order)
+            'markets' => $this->orderService->getOrder($order, 'en')
         ], 200);
     }
 }

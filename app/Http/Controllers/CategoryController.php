@@ -19,13 +19,22 @@ class CategoryController extends Controller
      *     path="/categories/getAll",
      *     summary="get all categories",
      *     tags={"Categories"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(response=200, description="succesful get all categories",@OA\JsonContent()),
      *     @OA\Response(response=400, description="Invalid request"),
      * )
      */
-    public function getAll()
+    public function getAll(Request $request)
     {
-        return response()->json(['categories' => $this->categoryRepositry->getAll()], 200);
+        $lang = $request->header('Accept-Language', 'en');
+        return response()->json(['categories' => $this->categoryRepositry->getAll($lang)], 200);
     }
 
     /**
@@ -42,12 +51,21 @@ class CategoryController extends Controller
      *                type="integer"
      *            )
      *        ),
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(response=200, description="succesful get category",@OA\JsonContent()),
      *     @OA\Response(response=400, description="Invalid request"),
      * )
      */
-    public function getCategoryById(int $category)
+    public function getCategoryById(Request $request, int $category)
     {
-        return response()->json(['category' => $this->categoryRepositry->getById($category)], 200);
+        $lang = $request->header('Accept-Language', 'en');
+        return response()->json(['category' => $this->categoryRepositry->getById($category, $lang)], 200);
     }
 }

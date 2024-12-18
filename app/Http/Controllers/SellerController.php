@@ -31,11 +31,16 @@ class SellerController extends Controller
      *        @OA\RequestBody(
      *           required=true,
      *           @OA\JsonContent(
-     *               required={"name", "category_id" , "quantity" , "price"},
+     *               required={"name_en" , "name_ar" , "category_id" , "quantity" , "price"},
      *               @OA\Property(
-     *                 property="name",
+     *                 property="name_en",
      *                 type="string",
      *                 example="Choko Cake"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_ar",
+     *                 type="string",
+     *                 example="كعكة شوكولا"
      *             ),
      *             @OA\Property(
      *                 property="category_id",
@@ -53,9 +58,14 @@ class SellerController extends Controller
      *                 example=5000
      *             ),
      *             @OA\Property(
-     *                 property="description",
+     *                 property="description_en",
      *                 type="string",
      *                 example="for birthdays"
+     *             ),
+     *             @OA\Property(
+     *                 property="description_ar",
+     *                 type="string",
+     *                 example="من اجل اعياد الميلاد"
      *             )
      *           )
      *        ),
@@ -245,11 +255,16 @@ class SellerController extends Controller
      *        @OA\RequestBody(
      *           required=true,
      *           @OA\JsonContent(
-     *               required={"name", "category_id" , "quantity" , "price"},
+     *               required={"name_en" , "name_ar" , "category_id" , "quantity" , "price"},
      *               @OA\Property(
-     *                 property="name",
+     *                 property="name_en",
      *                 type="string",
      *                 example="Choko Cake"
+     *             ),
+     *             @OA\Property(
+     *                 property="name_ar",
+     *                 type="string",
+     *                 example="كعكة شوكولا"
      *             ),
      *             @OA\Property(
      *                 property="category_id",
@@ -267,9 +282,14 @@ class SellerController extends Controller
      *                 example=10000
      *             ),
      *             @OA\Property(
-     *                 property="description",
+     *                 property="description_en",
      *                 type="string",
      *                 example="for birthdays"
+     *             ),
+     *             @OA\Property(
+     *                 property="description_ar",
+     *                 type="string",
+     *                 example="من اجل اعياد الميلاد"
      *             )
      *           )
      *        ),
@@ -309,6 +329,7 @@ class SellerController extends Controller
                 'message' => 'failed'
             ], 400);
         }
+        unset($new_product->market);
         return response()->json([
             'message' => 'successfully edit product',
             'product' => $new_product
@@ -611,7 +632,7 @@ class SellerController extends Controller
         $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get products order by number of purchases for market',
-            'products' => $this->marketService->getTopProducts($perPage, $page, auth('manager-api')->user()->market)
+            'products' => $this->marketService->getTopProducts($perPage, $page, auth('manager-api')->user()->market, 'en')
         ], 200);
     }
 
@@ -789,7 +810,7 @@ class SellerController extends Controller
         return response()->json([
             'message' => 'order get successfully',
             'price' => $order->total_cost,
-            'products' => $this->orderService->getOrder($order)
+            'products' => $this->orderService->getOrder($order, 'en')
         ], 200);
     }
 }

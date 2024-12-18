@@ -4,16 +4,18 @@ namespace App\Services;
 
 use App\Models\Cart;
 use App\Models\Product;
+use App\Repositories\CategoryRepositry;
 use Illuminate\Support\Facades\DB;
 
 class CartService
 {
+    protected $categoryRepositry;
     /**
      * Create a new class instance.
      */
-    public function __construct()
+    public function __construct(CategoryRepositry $categoryRepositry)
     {
-        //
+        $this->categoryRepositry = $categoryRepositry;
     }
 
     /**
@@ -108,26 +110,29 @@ class CartService
     /**
      * get cart
      * @param Cart $cart
+     * @param string $lang
      */
-    public function getCart(Cart $cart)
+    public function getCart(Cart $cart, string $lang = 'en')
     {
         $products = $cart->products()
             ->with('market')
             ->select(
                 'products.id',
-                'products.name',
-                'products.image',
+                "products.name_{$lang} as name",
                 'products.category_id',
                 'products.price',
                 'products.market_id'
             )
             ->get();
 
-        $products->transform(function ($product) {
+        $products->transform(function ($product) use ($lang) {
             $product->count = $product->pivot->count;
-            $product->price = $product->price * $product->count;
-            $product->market_name = $product->market->name;
+            $product->total_cost = $product->price * $product->count;
+            $product->market_name = $product->market['name_' . $lang];
+            $product->category = $this->categoryRepositry->getById($product->category_id, $lang)->name;
             unset($product->market);
+            unset($product->market_id);
+            unset($product->category_id);
             unset($product->pivot);
             return $product;
         });

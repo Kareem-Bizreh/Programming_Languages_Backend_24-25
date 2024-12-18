@@ -24,7 +24,8 @@
                             "schema": {
                                 "required": [
                                     "name",
-                                    "market_name",
+                                    "market_name_en",
+                                    "market_name_ar",
                                     "password",
                                     "password_confirmation"
                                 ],
@@ -33,9 +34,13 @@
                                         "type": "string",
                                         "example": "Harry Potter"
                                     },
-                                    "market_name": {
+                                    "market_name_en": {
                                         "type": "string",
                                         "example": "be order"
+                                    },
+                                    "market_name_ar": {
+                                        "type": "string",
+                                        "example": "بي اوردر"
                                     },
                                     "password": {
                                         "type": "string",
@@ -62,7 +67,7 @@
                                             "type": "string",
                                             "example": "successfully create market"
                                         },
-                                        "market": {
+                                        "manager": {
                                             "type": "string",
                                             "example": "[]"
                                         }
@@ -175,12 +180,17 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "new_market_name"
+                                    "name_en",
+                                    "name_ar"
                                 ],
                                 "properties": {
-                                    "new_market_name": {
+                                    "name_en": {
                                         "type": "string",
                                         "example": "bee order"
+                                    },
+                                    "name_ar": {
+                                        "type": "string",
+                                        "example": "بي أوردر"
                                     }
                                 },
                                 "type": "object"
@@ -1259,6 +1269,16 @@
                 ],
                 "summary": "get cart",
                 "operationId": "c9ac519a6b5786e3e3f7a05a0cbd8bc3",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Successful get cart",
@@ -1298,6 +1318,16 @@
                 ],
                 "summary": "get all categories",
                 "operationId": "5a8efe3efc0d2057f010a56341f37f86",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "succesful get all categories",
@@ -1328,6 +1358,14 @@
                         "required": true,
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
@@ -1786,6 +1824,14 @@
                 "operationId": "08ff5703f699fad70d44b2bd57927cae",
                 "parameters": [
                     {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "perPage",
                         "in": "query",
                         "description": "number of records per page",
@@ -1844,6 +1890,14 @@
                 "summary": "get markets by name",
                 "operationId": "8a8d378270b3612cd13611b649de2e61",
                 "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "perPage",
                         "in": "query",
@@ -1912,6 +1966,14 @@
                 "summary": "get all products for market",
                 "operationId": "a93c2d374e15d632670bdbaab16bdd3f",
                 "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "perPage",
                         "in": "query",
@@ -2197,6 +2259,16 @@
                 ],
                 "summary": "get orders for user",
                 "operationId": "765f5eb621420c3a7beb4a7b1d04f271",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Successful get orders",
@@ -2237,6 +2309,14 @@
                 "summary": "get orders by status",
                 "operationId": "cf98f839a88da06f87045414d462cdb6",
                 "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "status",
                         "in": "path",
@@ -2287,6 +2367,14 @@
                 "summary": "get order",
                 "operationId": "d011c95207bb2bc99a1ed6b90815e4b9",
                 "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "order",
                         "in": "path",
@@ -2341,13 +2429,13 @@
                 ]
             }
         },
-        "/products/toggleFavorite/{product}/": {
+        "/products/toggleFavorite/{product}": {
             "post": {
                 "tags": [
                     "Products"
                 ],
                 "summary": "change status of favorite for user of some product",
-                "operationId": "5a0e37d28ae933f6eb0df1c5b9e37022",
+                "operationId": "bbd79da8ae0b3e88f4fe0df5862c3bd1",
                 "parameters": [
                     {
                         "name": "product",
@@ -2395,6 +2483,14 @@
                 "summary": "get favorite products with their id, name, market name, image, category and price for user",
                 "operationId": "c006c7e6e076f3992afa47f002e19461",
                 "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "perPage",
                         "in": "query",
@@ -2455,6 +2551,14 @@
                 "operationId": "19a33c0151734dd3d35481021b091ec6",
                 "parameters": [
                     {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "perPage",
                         "in": "query",
                         "description": "number of records per page",
@@ -2513,6 +2617,14 @@
                 "summary": "get all products by category with their id, name, market name, image and price",
                 "operationId": "07fa865eca3f1d240c3e3550adfa1831",
                 "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "perPage",
                         "in": "query",
@@ -2582,6 +2694,14 @@
                 "operationId": "7c0447cb47dd4e1a7aa61e6b184ca5eb",
                 "parameters": [
                     {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "product",
                         "in": "path",
                         "description": "product id",
@@ -2631,6 +2751,14 @@
                 "summary": "get products by name",
                 "operationId": "594d91a8bff7d028599652e61234818d",
                 "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "perPage",
                         "in": "query",
@@ -2738,6 +2866,14 @@
                 "operationId": "8a94d100736675fe78db6505173f5a0a",
                 "parameters": [
                     {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "perPage",
                         "in": "query",
                         "description": "number of records per page",
@@ -2796,6 +2932,14 @@
                 "summary": "get products order by number of purchases for market",
                 "operationId": "36afd75b06d2a2c85bce684898103672",
                 "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "perPage",
                         "in": "query",
@@ -2869,15 +3013,20 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "name",
+                                    "name_en",
+                                    "name_ar",
                                     "category_id",
                                     "quantity",
                                     "price"
                                 ],
                                 "properties": {
-                                    "name": {
+                                    "name_en": {
                                         "type": "string",
                                         "example": "Choko Cake"
+                                    },
+                                    "name_ar": {
+                                        "type": "string",
+                                        "example": "كعكة شوكولا"
                                     },
                                     "category_id": {
                                         "type": "integer",
@@ -2891,9 +3040,13 @@
                                         "type": "integer",
                                         "example": 5000
                                     },
-                                    "description": {
+                                    "description_en": {
                                         "type": "string",
                                         "example": "for birthdays"
+                                    },
+                                    "description_ar": {
+                                        "type": "string",
+                                        "example": "من اجل اعياد الميلاد"
                                     }
                                 },
                                 "type": "object"
@@ -3068,15 +3221,20 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "name",
+                                    "name_en",
+                                    "name_ar",
                                     "category_id",
                                     "quantity",
                                     "price"
                                 ],
                                 "properties": {
-                                    "name": {
+                                    "name_en": {
                                         "type": "string",
                                         "example": "Choko Cake"
+                                    },
+                                    "name_ar": {
+                                        "type": "string",
+                                        "example": "كعكة شوكولا"
                                     },
                                     "category_id": {
                                         "type": "integer",
@@ -3090,9 +3248,13 @@
                                         "type": "integer",
                                         "example": 10000
                                     },
-                                    "description": {
+                                    "description_en": {
                                         "type": "string",
                                         "example": "for birthdays"
+                                    },
+                                    "description_ar": {
+                                        "type": "string",
+                                        "example": "من اجل اعياد الميلاد"
                                     }
                                 },
                                 "type": "object"
@@ -3664,6 +3826,16 @@
                 ],
                 "summary": "get all statuses",
                 "operationId": "1a590f49e15a42a0462020623eb2a2f0",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "succesful get all statuses",
@@ -3687,6 +3859,14 @@
                 "summary": "get status by id",
                 "operationId": "dc8bfc8603faa28b865d4f73c9185ec2",
                 "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "status",
                         "in": "path",
