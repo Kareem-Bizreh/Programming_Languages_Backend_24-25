@@ -85,10 +85,10 @@ class UserService
     {
         $code = Cache::get('user_id_' . $id);
         if (! $code) {
-            return response()->json(['message' => 'Verification code dont exist'], 400);
+            return response()->json(['message' => __('messages.code_not_exist')], 400);
         }
         if ($code != $verificationCode) {
-            return response()->json(['message' => 'Verification code is not correct'], 400);
+            return response()->json(['message' => __('messages.code_not_correct')], 400);
         }
         DB::beginTransaction();
         try {
@@ -98,9 +98,9 @@ class UserService
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => 'failed'], 400);
+            return response()->json(['message' => __('messages.failed')], 400);
         }
-        return response()->json(['message' => 'user has been verified']);
+        return response()->json(['message' => __('messages.user_verified')]);
     }
 
     /**
@@ -136,11 +136,11 @@ class UserService
         $token = auth('user-api')->attempt($data);
         if (! $token) {
             return response()->json([
-                'message' => 'user login failed'
+                'message' => __('messages.user_login_failed')
             ], 400);
         }
         return response()->json([
-            'message' => 'user has been login successfuly',
+            'message' => __('messages.user_login_success'),
             'Bearer Token' => $token
         ], 200);
     }
@@ -155,12 +155,12 @@ class UserService
     {
         $code = Cache::get('user_id_' . $id);
         if (! $code) {
-            return response()->json(['message' => 'Verification code dont exist'], 400);
+            return response()->json(['message' => __('messages.code_not_exist')], 400);
         }
         if ($code != $verificationCode) {
-            return response()->json(['message' => 'Verification code is not correct'], 400);
+            return response()->json(['message' => __('messages.code_not_correct')], 400);
         }
-        return response()->json(['message' => 'user has been verified and new password set']);
+        return response()->json(['message' => __('messages.new_password_set')]);
     }
 
     /**

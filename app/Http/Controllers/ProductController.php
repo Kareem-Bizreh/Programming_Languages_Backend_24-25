@@ -22,6 +22,14 @@ class ProductController extends Controller
      *       summary="change status of favorite for user of some product",
      *       tags={"Products"},
      *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
+     *       @OA\Parameter(
      *            name="product",
      *            in="path",
      *            required=true,
@@ -46,20 +54,23 @@ class ProductController extends Controller
      *        }
      * )
      */
-    public function toggleFavorite(Product $product)
+    public function toggleFavorite(Request $request, Product $product)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $user = auth('user-api')->user();
 
         $exists = $this->productService->isFavorite($product->id, $user->id);
 
         if ($this->productService->toggleFavorite($user, $product->id, $exists)) {
             if ($exists) {
-                return response()->json(['message' => 'product removed from favorites.']);
+                return response()->json(['message' => __('messages.favorite_removed')]);
             } else {
-                return response()->json(['message' => 'product added to favorites.']);
+                return response()->json(['message' => __('messages.favorite_added')]);
             }
         }
-        return response()->json(['message' => 'failed'], 400);
+        return response()->json(['message' => __('messages.failed')], 400);
     }
 
     /**

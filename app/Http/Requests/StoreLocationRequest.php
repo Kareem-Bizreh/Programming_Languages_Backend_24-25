@@ -17,6 +17,15 @@ class StoreLocationRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation()
+    {
+        $lang = $this->header('Accept-Language', 'en');
+        app()->setLocale($lang);
+    }
+
+    /**
      * Handle a failed validation attempt.
      *
      * @param  \Illuminate\Contracts\Validation\Validator  $validator
@@ -52,20 +61,20 @@ class StoreLocationRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'The name field is required.',
-            'name.string' => 'The name must be a valid string.',
-            'name.unique' => 'The name has already been taken. Please choose a different name.',
-            'name.max' => 'The name cannot exceed 255 characters.',
+            'name.required' => __('validation.required', ['attribute' => __('messages.name')]),
+            'name.unique' => __('validation.unique', ['attribute' => __('messages.name')]),
+            'name.string' => __('validation.string', ['attribute' => __('messages.name')]),
+            'name.max' => __('validation.max', ['attribute' => __('messages.name')]),
 
-            'location.required' => 'The location field is required.',
-            'location.string' => 'The location must be a valid string.',
-            'location.max' => 'The location cannot exceed 255 characters.',
+            'location.required' => __('validation.required', ['attribute' => __('messages.location')]),
+            'location.string' => __('validation.string', ['attribute' => __('messages.location')]),
+            'location.max' => __('validation.max', ['attribute' => __('messages.location')]),
 
-            'street.required' => 'The street field is required.',
-            'street.string' => 'The street must be a valid string.',
-            'street.max' => 'The street cannot exceed 255 characters.',
+            'street.required' => __('validation.required', ['attribute' => __('messages.street')]),
+            'street.string' => __('validation.string', ['attribute' => __('messages.street')]),
+            'street.max' => __('validation.max', ['attribute' => __('messages.street')]),
 
-            'notes.max' => 'The notes cannot exceed 500 characters.',
+            'notes.max' => __('validation.max', ['attribute' => __('messages.notes')]),
         ];
     }
 }

@@ -22,6 +22,14 @@ class OrderController extends Controller
      *     path="/orders/createOrder",
      *     summary="create order",
      *     tags={"Orders"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -48,6 +56,9 @@ class OrderController extends Controller
      */
     public function createOrder(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $data = Validator::make($request->all(), [
             'location_id' => 'required|exists:locations,id',
             'date' => 'required|string'
@@ -62,12 +73,12 @@ class OrderController extends Controller
         $data = $data->validated();
         if (! $this->orderService->createOrder($data, auth('user-api')->user()->cart, auth('user-api')->id())) {
             return response()->json([
-                'message' => 'faild to add order , check from each product.'
+                'message' => __('messages.order_failed')
             ], 400);
         }
 
         return response()->json([
-            'message' => 'order added successfully'
+            'message' => __('messages.order_success')
         ], 200);
     }
 
@@ -76,6 +87,14 @@ class OrderController extends Controller
      *     path="/orders/editOrder/{order}",
      *     summary="edit order",
      *     tags={"Orders"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="order",
      *            in="path",
@@ -110,6 +129,9 @@ class OrderController extends Controller
      */
     public function editOrder(Request $request, Order $order)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $data = Validator::make($request->all(), [
             'location_id' => 'required|exists:locations,id'
         ]);
@@ -123,16 +145,16 @@ class OrderController extends Controller
         $data = $data->validated();
 
         if (auth('user-api')->id() != $order->user_id || $order->status_id != 1)
-            return response()->json(['message' => 'Forbidden'], 403);
+            return response()->json(['message' => __('messages.forbidden')], 403);
 
         if (! $this->orderService->editOrder($request->all(), auth('user-api')->id(), $order)) {
             return response()->json([
-                'message' => 'faild to edit order'
+                'message' => __('messages.failed')
             ], 400);
         }
 
         return response()->json([
-            'message' => 'order edited successfully'
+            'message' => __('messages.success')
         ], 200);
     }
 
@@ -141,6 +163,14 @@ class OrderController extends Controller
      *       path="/orders/cancelOrder/{order}",
      *       summary="cancel order",
      *       tags={"Orders"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="order",
      *            in="path",
@@ -166,17 +196,20 @@ class OrderController extends Controller
      *        }
      * )
      */
-    public function cancelOrder(Order $order)
+    public function cancelOrder(Request $request, Order $order)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         if (auth('user-api')->id() != $order->user_id || $order->status_id > 2)
-            return response()->json(['message' => 'Forbidden'], 403);
+            return response()->json(['message' => __('messages.forbidden')], 403);
 
         if ($this->orderService->cancelOrder($order, 5))
             return response()->json([
-                'message' => 'order canceled successfully'
+                'message' => __('messages.order_cancel_success')
             ], 200);
         return response()->json([
-            'message' => 'order canceled failed'
+            'message' => __('messages.order_cancel_failed')
         ], 400);
     }
 
@@ -185,6 +218,14 @@ class OrderController extends Controller
      *       path="/orders/deleteProduct/{order}/{product}",
      *       summary="delete product",
      *       tags={"Orders"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="order",
      *            in="path",
@@ -219,17 +260,20 @@ class OrderController extends Controller
      *        }
      * )
      */
-    public function deleteProduct(Order $order, Product $product)
+    public function deleteProduct(Request $request, Order $order, Product $product)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         if (auth('user-api')->id() != $order->user_id || $order->status_id != 1)
-            return response()->json(['message' => 'Forbidden'], 403);
+            return response()->json(['message' => __('messages.forbidden')], 403);
 
         if ($this->orderService->deleteProduct($order, $product))
             return response()->json([
-                'message' => 'product deleted successfully'
+                'message' => __('messages.product_delete_success')
             ], 200);
         return response()->json([
-            'message' => 'product deleted failed'
+            'message' => __('messages.product_delete_failed')
         ], 400);
     }
 

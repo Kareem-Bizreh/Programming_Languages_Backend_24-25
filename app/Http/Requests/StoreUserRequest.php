@@ -17,6 +17,15 @@ class StoreUserRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation()
+    {
+        $lang = $this->header('Accept-Language', 'en');
+        app()->setLocale($lang);
+    }
+
+    /**
      * Handle a failed validation attempt.
      *
      * @param  \Illuminate\Contracts\Validation\Validator  $validator
@@ -41,35 +50,33 @@ class StoreUserRequest extends FormRequest
         return [
             'first_name' => 'required|string|max:20',
             'last_name' => 'required|string|max:20',
-            'number' => 'required|numeric|digits:10|unique:users,number',
+            'number' => 'required|numeric|digits:10',
             'email' => 'required|email',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|min:8|confirmed',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'first_name.required' => 'The first name field is required.',
-            'first_name.string' => 'The first name must be a valid string.',
-            'first_name.max' => 'The first name cannot exceed 20 characters.',
+            'first_name.required' => __('validation.required', ['attribute' => __('messages.first_name')]),
+            'first_name.string' => __('validation.string', ['attribute' => __('messages.first_name')]),
+            'first_name.max' => __('validation.max', ['attribute' => __('messages.first_name')]),
 
-            'last_name.required' => 'The last name field is required.',
-            'last_name.string' => 'The last name must be a valid string.',
-            'last_name.max' => 'The last name cannot exceed 20 characters.',
+            'last_name.required' => __('validation.required', ['attribute' => __('messages.last_name')]),
+            'last_name.string' => __('validation.string', ['attribute' => __('messages.last_name')]),
+            'last_name.max' => __('validation.max', ['attribute' => __('messages.last_name')]),
 
-            'number.required' => 'The number field is required.',
-            'number.numeric' => 'The number must be a valid number.',
-            'number.digits' => 'The number must be exactly 10 digits.',
-            'number.unique' => 'the number is already taken',
+            'number.required' => __('validation.required', ['attribute' => __('messages.number')]),
+            'number.numeric' => __('validation.numeric', ['attribute' => __('messages.number')]),
+            'number.digits' => __('validation.digits', ['attribute' => __('messages.number')]),
 
-            'email.required' => 'The email field is required.',
-            'email.email' => 'The email must be a valid email address.',
+            'email.required' => __('validation.required', ['attribute' => __('messages.email')]),
+            'email.email' => __('validation.email', ['attribute' => __('messages.email')]),
 
-            'password.required' => 'The password field is required.',
-            'password.string' => 'The password must be a valid string.',
-            'password.min' => 'The password must be at least 8 characters long.',
-            'password.confirmed' => 'The password confirmation does not match.',
+            'password.required' => __('validation.required', ['attribute' => __('messages.password')]),
+            'password.min' => __('validation.min', ['attribute' => __('messages.password')]),
+            'password.confirmed' => __('validation.confirmed', ['attribute' => __('messages.password')]),
         ];
     }
 }

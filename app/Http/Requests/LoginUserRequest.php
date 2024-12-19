@@ -17,6 +17,15 @@ class LoginUserRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation()
+    {
+        $lang = $this->header('Accept-Language', 'en');
+        app()->setLocale($lang);
+    }
+
+    /**
      * Handle a failed validation attempt.
      *
      * @param  \Illuminate\Contracts\Validation\Validator  $validator
@@ -40,8 +49,7 @@ class LoginUserRequest extends FormRequest
     {
         return [
             'number' => 'required|exists:users,number|numeric|digits:10',
-            'password' => 'required|string|min:8',
-            'fcm_token' => 'nullable|string',
+            'password' => 'required|min:8',
         ];
     }
 
@@ -51,16 +59,13 @@ class LoginUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'number.required' => 'The phone number is required.',
-            'number.exists' => 'The phone number does not exist in our records.',
-            'number.numeric' => 'The phone number must be a valid number.',
-            'number.digits' => 'The phone number must be exactly 10 digits.',
+            'number.required' => __('validation.required', ['attribute' => __('messages.number')]),
+            'number.exists' => __('validation.exists', ['attribute' => __('messages.number')]),
+            'number.numeric' => __('validation.numeric', ['attribute' => __('messages.number')]),
+            'number.digits' => __('validation.digits', ['attribute' => __('messages.number')]),
 
-            'password.required' => 'The password field is required.',
-            'password.string' => 'The password must be a valid string.',
-            'password.min' => 'The password must be at least 8 characters long.',
-
-            'fcm_token.string' => 'The FCM token must be a valid string.',
+            'password.required' => __('validation.required', ['attribute' => __('messages.password')]),
+            'password.min' => __('validation.min', ['attribute' => __('messages.password')]),
         ];
     }
 }

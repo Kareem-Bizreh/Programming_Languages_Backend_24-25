@@ -22,6 +22,14 @@ class CartController extends Controller
      *       summary="add product to cart",
      *       tags={"Carts"},
      *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
+     *       @OA\Parameter(
      *            name="product",
      *            in="path",
      *            required=true,
@@ -59,6 +67,9 @@ class CartController extends Controller
      */
     public function addProduct(Request $request, Product $product)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $data = Validator::make($request->all(), [
             'count' => 'required|integer'
         ]);
@@ -72,11 +83,11 @@ class CartController extends Controller
         $data = $data->validated();
         if ($this->cartService->changeProduct($product, auth('user-api')->user()->cart, $data['count']))
             return response()->json([
-                'message' => 'successfully add product to cart'
+                'message' => __('messages.product_add_success')
             ], 200);
         else
             return response()->json([
-                'message' => 'failed'
+                'message' => __('messages.product_add_failed')
             ], 400);
     }
 
@@ -85,6 +96,14 @@ class CartController extends Controller
      *       path="/carts/plusProductOne/{product}",
      *       summary="plus product count by one",
      *       tags={"Carts"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="product",
      *            in="path",
@@ -110,15 +129,18 @@ class CartController extends Controller
      *        }
      * )
      */
-    public function plusProductOne(Product $product)
+    public function plusProductOne(Request $request, Product $product)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         if ($this->cartService->changeProduct($product, auth('user-api')->user()->cart, 1))
             return response()->json([
-                'message' => 'successfully plus product count'
+                'message' => __('messages.product_add_success')
             ], 200);
         else
             return response()->json([
-                'message' => 'failed'
+                'message' => __('messages.product_add_failed')
             ], 400);
     }
 
@@ -127,6 +149,14 @@ class CartController extends Controller
      *       path="/carts/minusProductOne/{product}",
      *       summary="minus product count by one",
      *       tags={"Carts"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="product",
      *            in="path",
@@ -152,15 +182,18 @@ class CartController extends Controller
      *        }
      * )
      */
-    public function minusProductOne(Product $product)
+    public function minusProductOne(Request $request, Product $product)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         if ($this->cartService->changeProduct($product, auth('user-api')->user()->cart, -1))
             return response()->json([
-                'message' => 'successfully minus product count'
+                'message' => __('messages.product_delete_success')
             ], 200);
         else
             return response()->json([
-                'message' => 'failed'
+                'message' => __('messages.product_delete_failed')
             ], 400);
     }
 
@@ -169,6 +202,14 @@ class CartController extends Controller
      *       path="/carts/deleteProduct/{product}",
      *       summary="delete product from cart",
      *       tags={"Carts"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *       @OA\Parameter(
      *            name="product",
      *            in="path",
@@ -194,15 +235,18 @@ class CartController extends Controller
      *        }
      * )
      */
-    public function deleteProduct(Product $product)
+    public function deleteProduct(Request $request, Product $product)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         if ($this->cartService->deleteProduct($product, auth('user-api')->user()->cart))
             return response()->json([
-                'message' => 'successfully delete product'
+                'message' => __('messages.product_delete_success')
             ], 200);
         else
             return response()->json([
-                'message' => 'failed'
+                'message' => __('messages.product_delete_failed')
             ], 400);
     }
 
@@ -211,6 +255,14 @@ class CartController extends Controller
      *       path="/carts/clearCart",
      *       summary="clear cart",
      *       tags={"Carts"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *        @OA\Response(
      *          response=201, description="Successful clear cart",
      *          @OA\JsonContent(
@@ -227,15 +279,18 @@ class CartController extends Controller
      *        }
      * )
      */
-    public function clearCart()
+    public function clearCart(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         if ($this->cartService->clearCart(auth('user-api')->user()->cart))
             return response()->json([
-                'message' => 'successfully clear cart'
+                'message' => __('messages.cart_clear_success')
             ], 200);
         else
             return response()->json([
-                'message' => 'failed'
+                'message' => __('messages.cart_clear_failed')
             ], 400);
     }
 

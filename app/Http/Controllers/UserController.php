@@ -33,6 +33,14 @@ class UserController extends Controller
      *     path="/users/register",
      *     summary="register users",
      *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -89,11 +97,14 @@ class UserController extends Controller
      */
     public function register(StoreUserRequest $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $validatedData = $request->validated();
         $user = $this->userService->findByNumber($validatedData['number']);
         if ($user && $user->number_verified_at) {
             return response([
-                'message' => 'this number already exist'
+                'message' => __('validation.unique', ['attribute' => __('messages.number')])
             ], 400);
         }
         $verificationCode = rand(100000, 999999);
@@ -107,17 +118,17 @@ class UserController extends Controller
             Mail::to($validatedData['email'])->send(new EmailVerify($user->first_name, $verificationCode));
             DB::commit();
         } catch (TransportException $e) {
-            return response()->json(['message' => 'Failed to send email.'], 400);
+            return response()->json(['message' => __('messages.email_send_failed')], 400);
         } catch (\Exception $e) {
             DB::rollBack();
             return $e;
             return response()->json([
-                'message' => 'register failed, check if the email address is correct and try again'
+                'message' => __('messages.register_failed')
             ], 400);
         }
 
         return response()->json([
-            'message' => 'Verification code sent',
+            'message' => __('messages.code_sent'),
             'id' => $user->id
         ], 200);
     }
@@ -127,6 +138,14 @@ class UserController extends Controller
      *     path="/users/verifyNumber",
      *     summary="verify users",
      *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -158,6 +177,9 @@ class UserController extends Controller
      */
     public function verifyNumber(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $data = Validator::make($request->all(), [
             'verify_code' => 'required|string',
             'id' => 'required'
@@ -165,7 +187,7 @@ class UserController extends Controller
 
         if ($data->fails()) {
             return response()->json([
-                'message' => 'Validation failed',
+                'message' => $data->errors()->first(),
                 'errors' => $data->errors(),
             ], 400);
         }
@@ -179,6 +201,14 @@ class UserController extends Controller
      *     path="/users/login",
      *     summary="login user",
      *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -220,13 +250,16 @@ class UserController extends Controller
      */
     public function login(LoginUserRequest $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $data = $request->validated();
 
         $user = $this->userService->findByNumber($data['number']);
 
         if (! Hash::check($data['password'], $user->password)) {
             return response()->json([
-                'message' => 'the password is not correct',
+                'message' => __('messages.login_password'),
             ], 400);
         }
 
@@ -235,7 +268,7 @@ class UserController extends Controller
             Cache::put('user_id_' . $user->id, $verificationCode, now()->addMinutes(5));
             Mail::to($user->email)->send(new EmailVerify($user->first_name, $verificationCode));
             return response()->json([
-                'message' => 'user not verified , verification code sent',
+                'message' => __('messages.user_not_verified'),
                 'id' => $user->id
             ], 200);
         }
@@ -253,6 +286,14 @@ class UserController extends Controller
      *     path="/users/logout",
      *     summary="logout user",
      *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(
      *      response=200, description="Successful logout",
      *       @OA\JsonContent(
@@ -269,17 +310,20 @@ class UserController extends Controller
      *     }
      * )
      */
-    public function logout()
+    public function logout(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         try {
             auth('user-api')->logout();
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'user logout failed'
+                'message' => __('messages.user_logout_failed')
             ], 400);
         }
         return response()->json([
-            'message' => 'user has been logout successfuly'
+            'message' => __('messages.user_logout_success')
         ], 200);
     }
 
@@ -288,6 +332,14 @@ class UserController extends Controller
      *     path="/users/forgetPassword",
      *     summary="send check code to user for forget password",
      *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -319,6 +371,9 @@ class UserController extends Controller
      */
     public function forgetPassword(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $data = Validator::make($request->all(), [
             'number' => 'required|exists:users,number'
         ]);
@@ -336,7 +391,7 @@ class UserController extends Controller
         Cache::put('user_id_' . $user->id, $verificationCode, now()->addMinutes(5));
         Mail::to($user->email)->send(new ResetPassword($user->first_name, $verificationCode));
         return response()->json([
-            'message' => 'Verification code sent',
+            'message' => __('messages.code_sent'),
             'id' => $user->id
         ], 200);
     }
@@ -346,6 +401,14 @@ class UserController extends Controller
      *     path="/users/verifyNewPassword",
      *     summary="verify user to set new password",
      *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -377,6 +440,9 @@ class UserController extends Controller
      */
     public function verifyNewPassword(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $data = Validator::make($request->all(), [
             'verify_code' => 'required|string|min:6|max:6',
             'id' => 'required',
@@ -398,6 +464,14 @@ class UserController extends Controller
      *     path="/users/uploadImage",
      *     summary="Upload user image",
      *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *       @OA\MediaType(
      *           mediaType="multipart/form-data",
@@ -429,6 +503,9 @@ class UserController extends Controller
      */
     public function uploadImage(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $data = Validator::make($request->all(), [
             'image' => 'required|image|file'
         ]);
@@ -443,11 +520,11 @@ class UserController extends Controller
 
         if ($this->userService->uploadImage(auth('user-api')->user(), $request->file('image')))
             return response()->json([
-                'message' => 'user has uploaded his image successfully.'
+                'message' => __('messages.success')
             ], 200);
 
         return response()->json([
-            'error' => 'No image uploaded.',
+            'message' => __('messages.failed'),
         ], 400);
     }
 
@@ -456,6 +533,14 @@ class UserController extends Controller
      *     path="/users/generateVerificationCode",
      *     summary="send check code to user",
      *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -487,6 +572,9 @@ class UserController extends Controller
      */
     public function generateVerificationCode(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $data = Validator::make($request->all(), [
             'number' => 'required|exists:users,number'
         ]);
@@ -504,7 +592,7 @@ class UserController extends Controller
         Cache::put('user_id_' . $user->id, $verificationCode, now()->addMinutes(5));
         Mail::to($user->email)->send(new EmailVerify($user->first_name, $verificationCode));
         return response()->json([
-            'message' => 'Verification code sent',
+            'message' => __('messages.code_sent'),
             'id' => $user->id
         ], 200);
     }
@@ -514,6 +602,14 @@ class UserController extends Controller
      *     path="/users/setPassword",
      *     summary="set new password",
      *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -550,6 +646,9 @@ class UserController extends Controller
      */
     public function setPassword(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $data = Validator::make($request->all(), [
             'password' => 'required|string|min:8|confirmed',
             'id' => 'required'
@@ -565,10 +664,10 @@ class UserController extends Controller
 
         if ($this->userService->changeUserPassword($data['id'], $data['password']))
             return response()->json([
-                'message' => 'new password set'
+                'message' => __('messages.new_password_set')
             ], 200);
         return response()->json([
-            'message' => 'failed'
+            'message' => __('messages.failed')
         ], 400);
     }
 
@@ -577,6 +676,14 @@ class UserController extends Controller
      *     path="/users/resetPassword",
      *     summary="reset password",
      *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -616,6 +723,9 @@ class UserController extends Controller
      */
     public function resetPassword(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $data = Validator::make($request->all(), [
             'old_password' => 'required|string|min:8',
             'new_password' => 'required|string|min:8|confirmed',
@@ -640,10 +750,10 @@ class UserController extends Controller
 
         if ($this->userService->changeUserPassword($user->id, $data['new_password']))
             return response()->json([
-                'message' => 'new password set'
+                'message' => __('messages.new_password_set')
             ], 200);
         return response()->json([
-            'message' => 'failed'
+            'message' => __('messages.failed')
         ], 400);
     }
 
@@ -652,6 +762,14 @@ class UserController extends Controller
      *     path="/users/editUser",
      *     summary="edit users",
      *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -696,6 +814,9 @@ class UserController extends Controller
      */
     public function edit(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $data = Validator::make($request->all(), [
             'first_name' => 'required|string|max:20',
             'last_name' => 'required|string|max:20',
@@ -714,11 +835,11 @@ class UserController extends Controller
 
         if ($user) {
             return response()->json([
-                'message' => 'updated done',
+                'message' => __('messages.success'),
                 'user' => $user
             ]);
         }
-        return response()->json(['message' => 'updated failed'], 400);
+        return response()->json(['message' => __('messages.failed')], 400);
     }
 
     /**
@@ -821,6 +942,14 @@ class UserController extends Controller
      *     path="/users/deleteImage",
      *     summary="delete user image",
      *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="Accept-Language",
+     *         in="header",
+     *         description="Set language parameter",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(
      *      response=200, description="delete the user image",@OA\JsonContent()),
      *     @OA\Response(response=400, description="Invalid request"),
@@ -829,10 +958,13 @@ class UserController extends Controller
      *     }
      * )
      */
-    public function deleteImage()
+    public function deleteImage(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         if ($this->userService->deleteImage(auth('user-api')->user()))
-            return response()->json(['message' => 'image deleted successfuly']);
-        return response()->json(['message' => 'image deleted failed'], 400);
+            return response()->json(['message' => __('messages.image_delete_success')], 200);
+        return response()->json(['message' => __('messages.image_delete_failed')], 400);
     }
 }

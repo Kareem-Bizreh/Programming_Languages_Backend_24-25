@@ -1033,6 +1033,14 @@
                 "operationId": "35be230c12b68571aac4f746361fff33",
                 "parameters": [
                     {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "product",
                         "in": "path",
                         "description": "product id",
@@ -1098,6 +1106,14 @@
                 "operationId": "0bfbecd23318724996cb308acddc1230",
                 "parameters": [
                     {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "product",
                         "in": "path",
                         "description": "product id",
@@ -1143,6 +1159,14 @@
                 "summary": "minus product count by one",
                 "operationId": "7b56ef1b22243e7113af03a7c98bd06a",
                 "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "product",
                         "in": "path",
@@ -1190,6 +1214,14 @@
                 "operationId": "fc84b3b978e3273cb00d3497e1f8f32a",
                 "parameters": [
                     {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "product",
                         "in": "path",
                         "description": "product id",
@@ -1234,6 +1266,16 @@
                 ],
                 "summary": "clear cart",
                 "operationId": "967729effa9202ebfc7369e9c99ee074",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Successful clear cart",
@@ -1391,6 +1433,16 @@
                 ],
                 "summary": "add new location",
                 "operationId": "7acbcf427d5bc898f7de567ffc816d91",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1554,6 +1606,14 @@
                 "summary": "delete location for user",
                 "operationId": "1376a1323958cff667929111fc73740b",
                 "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "location_id",
                         "in": "path",
@@ -2041,6 +2101,16 @@
                 ],
                 "summary": "create order",
                 "operationId": "0cdd0caa29a39c9ccb323f8f4abdaa6c",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -2097,6 +2167,14 @@
                 "summary": "edit order",
                 "operationId": "9f0344863938f3471ebc1190c87cafe7",
                 "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "order",
                         "in": "path",
@@ -2160,6 +2238,14 @@
                 "operationId": "8ac115c5ece56edbfcee40e5761757c9",
                 "parameters": [
                     {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "order",
                         "in": "path",
                         "description": "order id",
@@ -2205,6 +2291,14 @@
                 "summary": "delete product",
                 "operationId": "278489c439a6bd4659b060922f7685e0",
                 "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "order",
                         "in": "path",
@@ -2437,6 +2531,14 @@
                 "summary": "change status of favorite for user of some product",
                 "operationId": "bbd79da8ae0b3e88f4fe0df5862c3bd1",
                 "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "product",
                         "in": "path",
@@ -3899,6 +4001,16 @@
                 ],
                 "summary": "register users",
                 "operationId": "75ac4d6a6e8c8bdc865ea7806514679b",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -3977,6 +4089,16 @@
                 ],
                 "summary": "verify users",
                 "operationId": "e213881f3a5758ae59d6965201fe29b9",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -4031,6 +4153,16 @@
                 ],
                 "summary": "login user",
                 "operationId": "2bed00028ae8e20c4e21a4f7b8c6c281",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -4093,6 +4225,16 @@
                 ],
                 "summary": "logout user",
                 "operationId": "e04092d0d4e79aa59108004b0e614d75",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful logout",
@@ -4128,6 +4270,16 @@
                 ],
                 "summary": "send check code to user for forget password",
                 "operationId": "3f464d87b22f7850714525ccfd5629bb",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -4181,6 +4333,16 @@
                 ],
                 "summary": "verify user to set new password",
                 "operationId": "1b968624266059a87efa5b2051c6756e",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -4235,6 +4397,16 @@
                 ],
                 "summary": "Upload user image",
                 "operationId": "c4d33abb3d313290279e0891c57462cd",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
@@ -4285,6 +4457,16 @@
                 ],
                 "summary": "send check code to user",
                 "operationId": "0a3aac18254c1821f647a7efc156a294",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -4338,6 +4520,16 @@
                 ],
                 "summary": "set new password",
                 "operationId": "cd36662d3ba59dc825526afa280d35eb",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -4397,6 +4589,16 @@
                 ],
                 "summary": "reset password",
                 "operationId": "42de47313002e71652fb55c0f1616d5e",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -4461,6 +4663,16 @@
                 ],
                 "summary": "edit users",
                 "operationId": "cd188f8fc4d42354d95133ca32448619",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -4649,6 +4861,16 @@
                 ],
                 "summary": "delete user image",
                 "operationId": "c6adc2561bff7fda010d4ba7fe80f394",
+                "parameters": [
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "Set language parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "delete the user image",

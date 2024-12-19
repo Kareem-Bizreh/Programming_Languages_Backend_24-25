@@ -22,6 +22,14 @@ class LocationController extends Controller
      *       path="/locations/addLocation",
      *       summary="add new location",
      *       tags={"Locations"},
+     *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
      *        @OA\RequestBody(
      *           required=true,
      *           @OA\JsonContent(
@@ -71,12 +79,20 @@ class LocationController extends Controller
      */
     public function addLocation(StoreLocationRequest $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         $data = $request->validated();
         $data['user_id'] = auth('user-api')->id();
+        $location = $this->locationService->add($data);
+        if ($location)
+            return response()->json([
+                'message' => __('messages.location_add_success'),
+                'location' => $location
+            ], 200);
         return response()->json([
-            'message' => 'location added seccessfully',
-            'location' => $this->locationService->add($data)
-        ]);
+            'message' => __('messages.location_add_failed'),
+        ], 400);
     }
 
     /**
@@ -165,6 +181,14 @@ class LocationController extends Controller
      *       summary="delete location for user",
      *       tags={"Locations"},
      *       @OA\Parameter(
+     *           name="Accept-Language",
+     *           in="header",
+     *           description="Set language parameter",
+     *           @OA\Schema(
+     *               type="string"
+     *           )
+     *       ),
+     *       @OA\Parameter(
      *            name="location_id",
      *            in="path",
      *            required=true,
@@ -189,14 +213,17 @@ class LocationController extends Controller
      *        }
      * )
      */
-    public function deleteLocation(int $location_id)
+    public function deleteLocation(Request $request, int $location_id)
     {
+        $lang = $request->header('Accept-Language', 'en');
+        app()->setlocale($lang);
+
         if ($this->locationService->delete($location_id))
             return response()->json([
-                'message' => 'locations delete seccessfully'
-            ]);
+                'message' => __('messages.location_delete_success')
+            ], 200);
         return response()->json([
-            'message' => 'locations delete failed'
+            'message' => __('messages.location_delete_failed')
         ], 400);
     }
 }
