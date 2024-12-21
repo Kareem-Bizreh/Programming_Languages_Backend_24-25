@@ -510,6 +510,72 @@ class AdminController extends Controller
 
     /**
      * @OA\Get(
+     *       path="/admins/getMarketsByName",
+     *       summary="get markets by name",
+     *       tags={"Admins"},
+     *       @OA\Parameter(
+     *            name="perPage",
+     *            in="query",
+     *            required=true,
+     *            description="number of records per page",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *       @OA\Parameter(
+     *            name="page",
+     *            in="query",
+     *            required=true,
+     *            description="number of page",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *       @OA\Parameter(
+     *            name="market_name",
+     *            in="query",
+     *            required=true,
+     *            description="market name",
+     *            @OA\Schema(
+     *                type="string"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful get markets by name",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="successfully get markets by name"
+     *               ),
+     *               @OA\Property(
+     *                    property="markets",
+     *                    type="string",
+     *                     example="[]"
+     *                ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getMarketsByName(Request $request)
+    {
+        $market_name = $request->query('market_name');
+        if (!isset($market_name))
+            return response()->json(['message' => 'market name required'], 400);
+        $perPage = $request->query('perPage', 10);
+        $page = $request->query('page', 1);
+        return response()->json([
+            'message' => 'successfully get markets by name',
+            'markets' => $this->adminService->marketService->getMarketsByName($perPage, $page, $market_name, 'en')
+        ], 200);
+    }
+
+    /**
+     * @OA\Get(
      *       path="/admins/getProducts/{market}",
      *       summary="get all products for market",
      *       tags={"Admins"},
@@ -570,6 +636,73 @@ class AdminController extends Controller
             'products' => $this->adminService->marketService->getProductsForMarket($perPage, $page, $market)
         ], 200);
     }
+
+    /**
+     * @OA\Get(
+     *       path="/admins/getProductsByName",
+     *       summary="get products by name",
+     *       tags={"Admins"},
+     *       @OA\Parameter(
+     *            name="perPage",
+     *            in="query",
+     *            required=true,
+     *            description="number of records per page",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *       @OA\Parameter(
+     *            name="page",
+     *            in="query",
+     *            required=true,
+     *            description="number of page",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *       @OA\Parameter(
+     *            name="product_name",
+     *            in="query",
+     *            required=true,
+     *            description="product name",
+     *            @OA\Schema(
+     *                type="string"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful get products by name",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="successfully get products by name"
+     *               ),
+     *               @OA\Property(
+     *                    property="products",
+     *                    type="string",
+     *                     example="[]"
+     *                ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getProductsByName(Request $request)
+    {
+        $product_name = $request->query('product_name');
+        if (!isset($product_name))
+            return response()->json(['message' => 'product name required'], 400);
+        $perPage = $request->query('perPage', 10);
+        $page = $request->query('page', 1);
+        return response()->json([
+            'message' => 'successfully get products by name',
+            'products' => $this->adminService->productService->getProductsByName($perPage, $page, $product_name, 'en')
+        ], 200);
+    }
+
 
     /**
      * @OA\Get(

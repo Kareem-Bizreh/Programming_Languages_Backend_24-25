@@ -37,7 +37,7 @@ class LocationService
      */
     public function add(array $data)
     {
-        $location = null;
+        $data['cost'] = rand(1, 20) * 500;
         DB::beginTransaction();
         try {
             $location = Location::create($data);

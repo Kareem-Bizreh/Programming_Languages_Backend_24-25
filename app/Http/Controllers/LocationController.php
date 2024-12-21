@@ -176,6 +176,49 @@ class LocationController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *       path="/locations/cost/{location}",
+     *       summary="get cost of location",
+     *       tags={"Locations"},
+     *       @OA\Parameter(
+     *            name="location",
+     *            in="path",
+     *            required=true,
+     *            description="location id",
+     *            @OA\Schema(
+     *                type="integer"
+     *            )
+     *        ),
+     *        @OA\Response(
+     *          response=201, description="Successful get location",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="location get cost"
+     *               ),
+     *               @OA\Property(
+     *                   property="cost",
+     *                   type="integer",
+     *                   example=500
+     *                ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getCost(Request $request, Location $location)
+    {
+        return response()->json([
+            'message' => 'location get cost',
+            'cost' => $location->cost
+        ]);
+    }
+
+    /**
      * @OA\Delete(
      *       path="/locations/deleteLocation/{location_id}",
      *       summary="delete location for user",

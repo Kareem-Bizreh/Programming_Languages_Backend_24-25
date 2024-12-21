@@ -403,9 +403,19 @@ class OrderController extends Controller
      *                   example="order get seccessfully"
      *               ),
      *               @OA\Property(
-     *                   property="price",
+     *                   property="delivery_cost",
      *                   type="integer",
-     *                   example=50000
+     *                   example=500
+     *               ),
+     *               @OA\Property(
+     *                   property="products_cost",
+     *                   type="integer",
+     *                   example=20000
+     *               ),
+     *               @OA\Property(
+     *                   property="total_cost",
+     *                   type="integer",
+     *                   example=20500
      *               ),
      *               @OA\Property(
      *                   property="date",
@@ -438,7 +448,9 @@ class OrderController extends Controller
 
         return response()->json([
             'message' => 'order get successfully',
-            'price' => $order->total_cost,
+            'delivery_cost' => $order->location->cost,
+            'products_cost' => $order->total_cost,
+            'total_cost' => $order->location->cost + $order->total_cost,
             'date' => $order->date,
             'location_name' => $order->location->name,
             'markets' => $this->orderService->getOrder($order, $lang)

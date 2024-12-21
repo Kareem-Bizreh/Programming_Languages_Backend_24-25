@@ -65,6 +65,7 @@ Route::middleware('auth:user-api')->group(function () {
         Route::post('/addLocation', 'addLocation');
         Route::get('/getLocations', 'getLocations');
         Route::get('/getLocation/{location}', 'getLocation');
+        Route::get('/cost/{location}', 'getCost');
         Route::delete('/deleteLocation/{location_id}', 'deleteLocation');
     });
 
@@ -106,6 +107,7 @@ Route::controller(ManagerController::class)->prefix('managers')->group(function 
     Route::middleware('auth:manager-api')->group(function () {
         Route::post('/logout', 'logout');
         Route::put('/resetPassword', 'resetPassword');
+        Route::get('/currentManager', 'current');
         Route::get('/checkToken', 'checkToken');
     });
 });
@@ -119,7 +121,9 @@ Route::middleware('auth:manager-api')->group(function () {
         Route::delete('/deleteMarket/{manager}', 'deleteMarket');
         Route::delete('/delete/{product}', 'deleteProduct');
         Route::get('/getMarkets', 'getMarkets');
+        Route::get('/getMarketsByName', 'getMarketsByName');
         Route::get('/getProducts/{market}', 'getProductsForMarket');
+        Route::get('/getProductsByName', 'getProductsByName');
         Route::get('/getTopProducts', 'getTopProducts');
         Route::get('/getTopProducts/{market}', 'getTopProductsForMarket');
         Route::put('/completeOrder/{order}', 'completeOrder');

@@ -223,6 +223,25 @@ class ManagerController extends Controller
 
     /**
      * @OA\Get(
+     *     path="/managers/currentManager",
+     *     summary="current manager information",
+     *     tags={"Managers"},
+     *     @OA\Response(
+     *      response=200, description="return the manager",@OA\JsonContent()),
+     *     @OA\Response(response=400, description="Invalid request"),
+     *     security={
+     *         {"bearer": {}}
+     *     }
+     * )
+     */
+    public function current()
+    {
+        $manager = auth('manager-api')->user();
+        return response()->json(['manager' => $manager]);
+    }
+
+    /**
+     * @OA\Get(
      *     path="/managers/checkToken",
      *     summary="current manager authenticated",
      *     tags={"Managers"},

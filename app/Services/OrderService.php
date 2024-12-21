@@ -14,18 +14,20 @@ use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
-    protected $productService, $cartService, $statusRepositry, $categoryRepositry;
+    protected $productService, $cartService, $statusRepositry, $categoryRepositry, $locationService;
 
     public function __construct(
         ProductService $productService,
         CartService $cartService,
         StatusRepositry $statusRepositry,
-        CategoryRepositry $categoryRepositry
+        CategoryRepositry $categoryRepositry,
+        LocationService $locationService
     ) {
         $this->productService = $productService;
         $this->cartService = $cartService;
         $this->statusRepositry = $statusRepositry;
         $this->categoryRepositry = $categoryRepositry;
+        $this->locationService = $locationService;
     }
 
     /**
@@ -317,19 +319,26 @@ class OrderService
     public function getOrdersByStatus(int $status_id, int $user_id, string $lang, bool $market = false)
     {
         if (! $market)
-            $orders = Order::where('status_id', $status_id)
+            $orders = Order::with('location')
+                ->where('status_id', $status_id)
                 ->where('user_id', $user_id)
                 ->whereNull('global_order_id')
                 ->get();
         else
-            $orders = Order::where('status_id', $status_id)
+            $orders = Order::with('location')
+                ->where('status_id', $status_id)
                 ->where('market_id', $user_id)
                 ->get();
 
         $orders->transform(function ($order) use ($lang) {
+            $order->delivery_cost = $order->location->cost;
+            $order->products_cost = $order->total_cost;
+            unset($order->total_cost);
+            $order->total_cost = $order->delivery_cost + $order->products_cost;
             $order->status = $this->statusRepositry->getStatusById($order->status_id, $lang)->name;
             unset($order->status_id);
             unset($order->global_order_id);
+            unset($order->location);
             return $order;
         });
         return $orders;
@@ -343,14 +352,20 @@ class OrderService
     public function getOrdersForUser(User $user, string $lang)
     {
         $orders = $user->orders()
+            ->with('location')
             ->whereNull('global_order_id')
             ->get();
 
         $orders->transform(function ($order) use ($lang) {
+            $order->delivery_cost = $order->location->cost;
+            $order->products_cost = $order->total_cost;
+            unset($order->total_cost);
+            $order->total_cost = $order->delivery_cost + $order->products_cost;
             $order->status = $this->statusRepositry->getStatusById($order->status_id, $lang)->name;
             unset($order->market_id);
             unset($order->status_id);
             unset($order->global_order_id);
+            unset($order->location);
             return $order;
         });
 

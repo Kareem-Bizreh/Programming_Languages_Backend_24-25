@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('location');
             $table->string('street');
             $table->string('notes')->nullable();
+            $table->unsignedInteger('cost');
             $table->timestamps();
         });
     }

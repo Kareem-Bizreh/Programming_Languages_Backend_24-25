@@ -190,7 +190,7 @@ class MarketService
     public function getMarketsByName(int $perPage, int $page, string $name, string $lang)
     {
         $markets = Market::where("name_{$lang}", 'LIKE', "%{$name}%")
-            ->select('id', "name_{$lang} as name")
+            ->select('id', "name_{$lang} as name", 'image')
             ->paginate($perPage, ['*'], 'page', $page);
 
         return [

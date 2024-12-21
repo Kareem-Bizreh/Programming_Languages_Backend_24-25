@@ -519,6 +519,74 @@
                 ]
             }
         },
+        "/admins/getMarketsByName": {
+            "get": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "get markets by name",
+                "operationId": "611c86bc54d5198c4ae5c2979e5c3a09",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "market_name",
+                        "in": "query",
+                        "description": "market name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get markets by name",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get markets by name"
+                                        },
+                                        "markets": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/admins/getProducts/{market}": {
             "get": {
                 "tags": [
@@ -565,6 +633,74 @@
                                         "message": {
                                             "type": "string",
                                             "example": "successfully get all products for market"
+                                        },
+                                        "products": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/admins/getProductsByName": {
+            "get": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "get products by name",
+                "operationId": "0594bddeecb4965694f1381ee9122897",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "number of records per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "number of page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "product_name",
+                        "in": "query",
+                        "description": "product name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get products by name",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get products by name"
                                         },
                                         "products": {
                                             "type": "string",
@@ -1598,6 +1734,56 @@
                 ]
             }
         },
+        "/locations/cost/{location}": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "get cost of location",
+                "operationId": "672c96217d1c4980246480239bba9f60",
+                "parameters": [
+                    {
+                        "name": "location",
+                        "in": "path",
+                        "description": "location id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successful get location",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "location get cost"
+                                        },
+                                        "cost": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/locations/deleteLocation/{location_id}": {
             "delete": {
                 "tags": [
@@ -1834,6 +2020,33 @@
                                     },
                                     "type": "object"
                                 }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/managers/currentManager": {
+            "get": {
+                "tags": [
+                    "Managers"
+                ],
+                "summary": "current manager information",
+                "operationId": "9cfd604ead186d37a789c0ae73af9f7c",
+                "responses": {
+                    "200": {
+                        "description": "return the manager",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
                             }
                         }
                     },
@@ -2490,9 +2703,17 @@
                                             "type": "string",
                                             "example": "order get seccessfully"
                                         },
-                                        "price": {
+                                        "delivery_cost": {
                                             "type": "integer",
-                                            "example": 50000
+                                            "example": 500
+                                        },
+                                        "products_cost": {
+                                            "type": "integer",
+                                            "example": 20000
+                                        },
+                                        "total_cost": {
+                                            "type": "integer",
+                                            "example": 20500
                                         },
                                         "date": {
                                             "type": "string",
