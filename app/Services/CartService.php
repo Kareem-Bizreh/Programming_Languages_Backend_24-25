@@ -120,6 +120,7 @@ class CartService
                 'products.id',
                 "products.name_{$lang} as name",
                 'products.category_id',
+                'products.image',
                 'products.price',
                 'products.market_id'
             )
