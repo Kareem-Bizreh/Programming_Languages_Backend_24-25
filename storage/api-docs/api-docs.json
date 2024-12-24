@@ -587,6 +587,45 @@
                 ]
             }
         },
+        "/admins/getProducts": {
+            "get": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "get all products with their id, name, market name, image, category and price",
+                "operationId": "2a592f65fdcd56d7d4e3990683fa7cf4",
+                "responses": {
+                    "201": {
+                        "description": "Successful get products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "successfully get products"
+                                        },
+                                        "products": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/admins/getProducts/{market}": {
             "get": {
                 "tags": [
@@ -595,24 +634,6 @@
                 "summary": "get all products for market",
                 "operationId": "2b9c78bf6f540fc968da16aea24e19c3",
                 "parameters": [
-                    {
-                        "name": "perPage",
-                        "in": "query",
-                        "description": "number of records per page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "number of page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
                     {
                         "name": "market",
                         "in": "path",
@@ -664,24 +685,6 @@
                 "operationId": "0594bddeecb4965694f1381ee9122897",
                 "parameters": [
                     {
-                        "name": "perPage",
-                        "in": "query",
-                        "description": "number of records per page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "number of page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
                         "name": "product_name",
                         "in": "query",
                         "description": "product name",
@@ -730,26 +733,6 @@
                 ],
                 "summary": "get products order by number of purchases",
                 "operationId": "7f48626e032f05d4d114137107535b24",
-                "parameters": [
-                    {
-                        "name": "perPage",
-                        "in": "query",
-                        "description": "number of records per page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "number of page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
                 "responses": {
                     "201": {
                         "description": "Successful get products order by number of purchases",
@@ -790,24 +773,6 @@
                 "summary": "get products order by number of purchases for market",
                 "operationId": "bc65e94ce903ef24c21c79f4c39ad353",
                 "parameters": [
-                    {
-                        "name": "perPage",
-                        "in": "query",
-                        "description": "number of records per page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "number of page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
                     {
                         "name": "market",
                         "in": "path",
@@ -3827,26 +3792,6 @@
                 ],
                 "summary": "get all products for market",
                 "operationId": "eb001b786028f2278ff5f5b778c96f3e",
-                "parameters": [
-                    {
-                        "name": "perPage",
-                        "in": "query",
-                        "description": "number of records per page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "number of page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
                 "responses": {
                     "201": {
                         "description": "Successful get all products for market",
@@ -3886,26 +3831,6 @@
                 ],
                 "summary": "get products order by number of purchases for market",
                 "operationId": "1972c1d9e19bfe0d32b7f44d45ce3d32",
-                "parameters": [
-                    {
-                        "name": "perPage",
-                        "in": "query",
-                        "description": "number of records per page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "number of page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
                 "responses": {
                     "201": {
                         "description": "Successful get products order by number of purchases for market",

@@ -576,27 +576,43 @@ class AdminController extends Controller
 
     /**
      * @OA\Get(
+     *       path="/admins/getProducts",
+     *       summary="get all products with their id, name, market name, image, category and price",
+     *       tags={"Admins"},
+     *        @OA\Response(
+     *          response=201, description="Successful get products",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="successfully get products"
+     *               ),
+     *               @OA\Property(
+     *                    property="products",
+     *                    type="string",
+     *                     example="[]"
+     *                ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getProducts(Request $request)
+    {
+        return response()->json([
+            'message' => 'successfully get products',
+            'products' => $this->adminService->getProducts()
+        ], 200);
+    }
+
+    /**
+     * @OA\Get(
      *       path="/admins/getProducts/{market}",
      *       summary="get all products for market",
      *       tags={"Admins"},
-     *       @OA\Parameter(
-     *            name="perPage",
-     *            in="query",
-     *            required=true,
-     *            description="number of records per page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
-     *       @OA\Parameter(
-     *            name="page",
-     *            in="query",
-     *            required=true,
-     *            description="number of page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
      *       @OA\Parameter(
      *            name="market",
      *            in="path",
@@ -629,11 +645,9 @@ class AdminController extends Controller
      */
     public function getProductsForMarket(Request $request, Market $market)
     {
-        $perPage = $request->query('perPage', 10);
-        $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get all products for market',
-            'products' => $this->adminService->marketService->getProductsForMarket($perPage, $page, $market)
+            'products' => $this->adminService->marketService->getProductsForMarketAdmin($market)
         ], 200);
     }
 
@@ -642,24 +656,6 @@ class AdminController extends Controller
      *       path="/admins/getProductsByName",
      *       summary="get products by name",
      *       tags={"Admins"},
-     *       @OA\Parameter(
-     *            name="perPage",
-     *            in="query",
-     *            required=true,
-     *            description="number of records per page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
-     *       @OA\Parameter(
-     *            name="page",
-     *            in="query",
-     *            required=true,
-     *            description="number of page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
      *       @OA\Parameter(
      *            name="product_name",
      *            in="query",
@@ -695,11 +691,9 @@ class AdminController extends Controller
         $product_name = $request->query('product_name');
         if (!isset($product_name))
             return response()->json(['message' => 'product name required'], 400);
-        $perPage = $request->query('perPage', 10);
-        $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get products by name',
-            'products' => $this->adminService->productService->getProductsByName($perPage, $page, $product_name, 'en')
+            'products' => $this->adminService->getProductsByName($product_name)
         ], 200);
     }
 
@@ -709,24 +703,6 @@ class AdminController extends Controller
      *       path="/admins/getTopProducts",
      *       summary="get products order by number of purchases",
      *       tags={"Admins"},
-     *       @OA\Parameter(
-     *            name="perPage",
-     *            in="query",
-     *            required=true,
-     *            description="number of records per page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
-     *       @OA\Parameter(
-     *            name="page",
-     *            in="query",
-     *            required=true,
-     *            description="number of page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
      *        @OA\Response(
      *          response=201, description="Successful get products order by number of purchases",
      *          @OA\JsonContent(
@@ -750,11 +726,9 @@ class AdminController extends Controller
      */
     public function getTopProducts(Request $request)
     {
-        $perPage = $request->query('perPage', 10);
-        $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get products order by number of purchases',
-            'products' => $this->adminService->getTopProducts($perPage, $page)
+            'products' => $this->adminService->getTopProducts()
         ], 200);
     }
 
@@ -763,24 +737,6 @@ class AdminController extends Controller
      *       path="/admins/getTopProducts/{market}",
      *       summary="get products order by number of purchases for market",
      *       tags={"Admins"},
-     *       @OA\Parameter(
-     *            name="perPage",
-     *            in="query",
-     *            required=true,
-     *            description="number of records per page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
-     *       @OA\Parameter(
-     *            name="page",
-     *            in="query",
-     *            required=true,
-     *            description="number of page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
      *       @OA\Parameter(
      *            name="market",
      *            in="path",
@@ -813,11 +769,9 @@ class AdminController extends Controller
      */
     public function getTopProductsForMarket(Request $request, Market $market)
     {
-        $perPage = $request->query('perPage', 10);
-        $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get products order by number of purchases for market',
-            'products' => $this->adminService->marketService->getTopProducts($perPage, $page, $market, 'en')
+            'products' => $this->adminService->marketService->getTopProductsAdmin($market)
         ], 200);
     }
 

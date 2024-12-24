@@ -122,6 +122,7 @@ Route::middleware('auth:manager-api')->group(function () {
         Route::delete('/delete/{product}', 'deleteProduct');
         Route::get('/getMarkets', 'getMarkets');
         Route::get('/getMarketsByName', 'getMarketsByName');
+        Route::get('/getProducts', 'getProducts');
         Route::get('/getProducts/{market}', 'getProductsForMarket');
         Route::get('/getProductsByName', 'getProductsByName');
         Route::get('/getTopProducts', 'getTopProducts');

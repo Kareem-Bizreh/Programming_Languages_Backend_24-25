@@ -533,24 +533,6 @@ class SellerController extends Controller
      *       path="/sellers/getProducts",
      *       summary="get all products for market",
      *       tags={"Sellers"},
-     *       @OA\Parameter(
-     *            name="perPage",
-     *            in="query",
-     *            required=true,
-     *            description="number of records per page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
-     *       @OA\Parameter(
-     *            name="page",
-     *            in="query",
-     *            required=true,
-     *            description="number of page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
      *        @OA\Response(
      *          response=201, description="Successful get all products for market",
      *          @OA\JsonContent(
@@ -574,11 +556,9 @@ class SellerController extends Controller
      */
     public function getProductsForSeller(Request $request)
     {
-        $perPage = $request->query('perPage', 10);
-        $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get all products for market',
-            'products' => $this->marketService->getProductsForMarket($perPage, $page, auth('manager-api')->user()->market)
+            'products' => $this->marketService->getProductsForMarketAdmin(auth('manager-api')->user()->market)
         ], 200);
     }
 
@@ -587,24 +567,6 @@ class SellerController extends Controller
      *       path="/sellers/getTopProducts",
      *       summary="get products order by number of purchases for market",
      *       tags={"Sellers"},
-     *       @OA\Parameter(
-     *            name="perPage",
-     *            in="query",
-     *            required=true,
-     *            description="number of records per page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
-     *       @OA\Parameter(
-     *            name="page",
-     *            in="query",
-     *            required=true,
-     *            description="number of page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
      *        @OA\Response(
      *          response=201, description="Successful get products order by number of purchases for market",
      *          @OA\JsonContent(
@@ -628,11 +590,9 @@ class SellerController extends Controller
      */
     public function getTopProductsForSeller(Request $request)
     {
-        $perPage = $request->query('perPage', 10);
-        $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get products order by number of purchases for market',
-            'products' => $this->marketService->getTopProducts($perPage, $page, auth('manager-api')->user()->market, 'en')
+            'products' => $this->marketService->getTopProductsAdmin(auth('manager-api')->user()->market, 'en')
         ], 200);
     }
 

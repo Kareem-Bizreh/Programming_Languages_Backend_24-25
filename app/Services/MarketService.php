@@ -96,22 +96,18 @@ class MarketService
      * @param string $lang
      * @param Market $market
      */
-    public function getProductsForMarket(int $perPage, int $page, Market $market, string $lang = null)
+    public function getProductsForMarket(int $perPage, int $page, Market $market, string $lang)
     {
-        if ($lang)
-            $products = $market->products()->select(
-                'id',
-                "name_{$lang} as name",
-                'category_id',
-                'price',
-                'quantity',
-                'image',
-                "description_{$lang} as description",
-                'number_of_purchases'
-            )->paginate($perPage, ['*'], 'page', $page);
-        else
-            $products = $market->products()->paginate($perPage, ['*'], 'page', $page);
-
+        $products = $market->products()->select(
+            'id',
+            "name_{$lang} as name",
+            'category_id',
+            'price',
+            'quantity',
+            'image',
+            "description_{$lang} as description",
+            'number_of_purchases'
+        )->paginate($perPage, ['*'], 'page', $page);
 
         $products->transform(function ($product) use ($lang) {
             $product->category = $this->categoryRepositry->getById($product->category_id, $lang)->name;
@@ -126,6 +122,26 @@ class MarketService
             'currentPage' => $products->currentPage(),
             'lastPage' => $products->lastPage(),
         ];
+    }
+
+    /**
+     * get All products for market for admin
+     *
+     * @param Market $market
+     */
+    public function getProductsForMarketAdmin(Market $market)
+    {
+        $products = $market->products()->get();
+
+
+        $products->transform(function ($product) {
+            $product->category_en = $this->categoryRepositry->getById($product->category_id, 'en')->name;
+            $product->category_ar = $this->categoryRepositry->getById($product->category_id, 'ar')->name;
+            unset($product->category_id);
+            return $product;
+        });
+
+        return $products;
     }
 
     /**
@@ -156,6 +172,26 @@ class MarketService
             'currentPage' => $products->currentPage(),
             'lastPage' => $products->lastPage(),
         ];
+    }
+
+    /**
+     * get all products order by number of purchases in web
+     *
+     * @param Market $marke
+     */
+    public function getTopProductsAdmin(Market $market)
+    {
+        $products = $market->products()->orderBy('number_of_purchases', 'desc')->get();
+
+        $products->transform(function ($product) {
+            $product->category_en = $this->categoryRepositry->getById($product->category_id, 'en')->name;
+            $product->category_ar = $this->categoryRepositry->getById($product->category_id, 'ar')->name;
+            unset($product->market_id);
+            unset($product->category_id);
+            return $product;
+        });
+
+        return $products;
     }
 
     /**

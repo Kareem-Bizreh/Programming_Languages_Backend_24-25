@@ -7,19 +7,24 @@ use App\Models\Manager;
 use App\Models\Market;
 use App\Models\Order;
 use App\Models\Product;
+use App\Repositories\CategoryRepositry;
 use Illuminate\Support\Facades\DB;
 
 class AdminService
 {
-    public $marketService, $productService;
+    public $marketService, $productService, $categoryRepositry;
 
     /**
      * Create a new class instance.
      */
-    public function __construct(MarketService $marketService, ProductService $productService)
-    {
+    public function __construct(
+        MarketService $marketService,
+        ProductService $productService,
+        CategoryRepositry $categoryRepositry
+    ) {
         $this->marketService = $marketService;
         $this->productService = $productService;
+        $this->categoryRepositry = $categoryRepositry;
     }
 
     /**
@@ -96,21 +101,12 @@ class AdminService
     /**
      * get all products order by number of purchases
      *
-     * @param int $perPage
-     * @param int $page
      */
-    public function getTopProducts(int $perPage, int $page)
+    public function getTopProducts()
     {
-        $products = Product::orderBy('number_of_purchases', 'desc')
-            ->paginate($perPage, ['*'], 'page', $page);
+        $products = Product::orderBy('number_of_purchases', 'desc')->get();
 
-        return [
-            'currentPageItems' => $products->items(),
-            'total' => $products->total(),
-            'perPage' => $products->perPage(),
-            'currentPage' => $products->currentPage(),
-            'lastPage' => $products->lastPage(),
-        ];
+        return $products;
     }
 
     /**
@@ -189,5 +185,51 @@ class AdminService
             ->whereNull('global_order_id')
             ->get();
         return $orders;
+    }
+
+    /**
+     * get products by name
+     *
+     * @param string $name
+     */
+    public function getProductsByName(string $name)
+    {
+        $products = Product::with('market')
+            ->where('name_en', 'LIKE', "%{$name}%")
+            ->get();
+
+        $products->transform(function ($product) {
+            $product->market_name_en = $product->market['name_en'];
+            $product->market_name_ar = $product->market['name_ar'];
+            $product->category_en = $this->categoryRepositry->getById($product->category_id, 'en')->name;
+            $product->category_ar = $this->categoryRepositry->getById($product->category_id, 'ar')->name;
+            unset($product->market);
+            unset($product->market_id);
+            unset($product->category_id);
+            return $product;
+        });
+
+        return $products;
+    }
+
+    /**
+     * get all products with their id, name, market name, image, category and price
+     */
+    public function getProducts()
+    {
+        $products = Product::with('market')->get();
+
+        $products->transform(function ($product) {
+            $product->market_name_en = $product->market['name_en'];
+            $product->market_name_ar = $product->market['name_ar'];
+            $product->category_en = $this->categoryRepositry->getById($product->category_id, 'en')->name;
+            $product->category_ar = $this->categoryRepositry->getById($product->category_id, 'ar')->name;
+            unset($product->market);
+            unset($product->market_id);
+            unset($product->category_id);
+            return $product;
+        });
+
+        return $products;
     }
 }
