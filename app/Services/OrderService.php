@@ -313,22 +313,15 @@ class OrderService
      * get orders by status
      * @param int $status_id
      * @param int $user_id
-     * @param bool $market
      * @param string $lang
      */
-    public function getOrdersByStatus(int $status_id, int $user_id, string $lang, bool $market = false)
+    public function getOrdersByStatus(int $status_id, int $user_id, string $lang)
     {
-        if (! $market)
-            $orders = Order::with('location')
-                ->where('status_id', $status_id)
-                ->where('user_id', $user_id)
-                ->whereNull('global_order_id')
-                ->get();
-        else
-            $orders = Order::with('location')
-                ->where('status_id', $status_id)
-                ->where('market_id', $user_id)
-                ->get();
+        $orders = Order::with('location')
+            ->where('status_id', $status_id)
+            ->where('user_id', $user_id)
+            ->whereNull('global_order_id')
+            ->get();
 
         $orders->transform(function ($order) use ($lang) {
             $order->delivery_cost = $order->location->cost;
@@ -337,10 +330,51 @@ class OrderService
             $order->total_cost = $order->delivery_cost + $order->products_cost;
             $order->status = $this->statusRepositry->getStatusById($order->status_id, $lang)->name;
             unset($order->status_id);
+            unset($order->market_id);
             unset($order->global_order_id);
             unset($order->location);
             return $order;
         });
+        return $orders;
+    }
+
+    /**
+     * get orders by status
+     * @param int $status_id
+     * @param Market $market
+     */
+    public function getOrdersByStatusSeller(int $status_id, Market $market)
+    {
+        $orders = $market->orders()
+            ->with(['products' => function ($query) {
+                $query->select(
+                    'products.id',
+                    'products.name_en',
+                    'products.name_ar',
+                    'products.price',
+                    'order_product.quantity',
+                );
+            }])
+            ->where('status_id', $status_id)
+            ->select('id', 'date', 'status_id', 'total_cost')->get()
+            ->map(function ($order) {
+                return [
+                    'id' => $order->id,
+                    'products' => $order->products->map(function ($product) {
+                        return [
+                            'name_en' => $product->name_en,
+                            'name_ar' => $product->name_ar,
+                            'quantity' => $product->pivot->quantity,
+                            'price' => $product->price,
+                            'cost' => $product->price * $product->pivot->quantity
+                        ];
+                    }),
+                    'date' => $order->date,
+                    'status_id' => $order->status_id,
+                    'total_cost' => $order->total_cost
+                ];
+            });
+
         return $orders;
     }
 
@@ -373,15 +407,43 @@ class OrderService
     }
 
     /**
-     * get orders for market
+     * Get orders for a market
      * @param Market $market
      */
     public function getOrdersForMarket(Market $market)
     {
-        $orders = $market->orders()->get();
+        $orders = $market->orders()
+            ->with(['products' => function ($query) {
+                $query->select(
+                    'products.id',
+                    'products.name_en',
+                    'products.name_ar',
+                    'products.price',
+                    'order_product.quantity',
+                );
+            }])
+            ->select('id', 'date', 'status_id', 'total_cost')->get()
+            ->map(function ($order) {
+                return [
+                    'id' => $order->id,
+                    'products' => $order->products->map(function ($product) {
+                        return [
+                            'name_en' => $product->name_en,
+                            'name_ar' => $product->name_ar,
+                            'quantity' => $product->pivot->quantity,
+                            'price' => $product->price,
+                            'cost' => $product->price * $product->pivot->quantity
+                        ];
+                    }),
+                    'date' => $order->date,
+                    'status_id' => $order->status_id,
+                    'total_cost' => $order->total_cost
+                ];
+            });
 
         return $orders;
     }
+
 
     /**
      * complete order

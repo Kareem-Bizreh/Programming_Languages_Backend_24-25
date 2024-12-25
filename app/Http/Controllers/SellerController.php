@@ -719,10 +719,9 @@ class SellerController extends Controller
      */
     public function getOrdersByStatus(Request $request, int $status)
     {
-        $seller = auth('manager-api')->user();
         return response()->json([
             'message' => 'orders get successfully',
-            'orders' => $this->orderService->getOrdersByStatus($status, $seller->market->id, true)
+            'orders' => $this->orderService->getOrdersByStatusSeller($status, auth('manager-api')->user()->market)
         ], 200);
     }
 
