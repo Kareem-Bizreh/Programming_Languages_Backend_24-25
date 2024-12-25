@@ -467,26 +467,6 @@
                 ],
                 "summary": "get all markets",
                 "operationId": "c1c34979f8062140ccffda3800b486b1",
-                "parameters": [
-                    {
-                        "name": "perPage",
-                        "in": "query",
-                        "description": "number of records per page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "number of page",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
                 "responses": {
                     "201": {
                         "description": "Successful get all markets",
@@ -1107,6 +1087,53 @@
                                         "markets": {
                                             "type": "string",
                                             "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/admins/statistics": {
+            "get": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "get statistics",
+                "operationId": "81c0294d0453babfd95262f8938ede20",
+                "responses": {
+                    "201": {
+                        "description": "Successful get statistics",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "statistics get seccessfully"
+                                        },
+                                        "number_of_products": {
+                                            "type": "integer",
+                                            "example": "2"
+                                        },
+                                        "number_of_markets": {
+                                            "type": "integer",
+                                            "example": "3"
+                                        },
+                                        "number_of_orders": {
+                                            "type": "integer",
+                                            "example": "2"
                                         }
                                     },
                                     "type": "object"
@@ -4049,6 +4076,53 @@
                                         "order": {
                                             "type": "string",
                                             "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/sellers/statistics": {
+            "get": {
+                "tags": [
+                    "Sellers"
+                ],
+                "summary": "get statistics",
+                "operationId": "eaab4693b84a8af6497718108a053545",
+                "responses": {
+                    "201": {
+                        "description": "Successful get statistics",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "statistics get seccessfully"
+                                        },
+                                        "number_of_products": {
+                                            "type": "integer",
+                                            "example": "2"
+                                        },
+                                        "number_of_orders": {
+                                            "type": "integer",
+                                            "example": "2"
+                                        },
+                                        "salary": {
+                                            "type": "integer",
+                                            "example": "20000"
                                         }
                                     },
                                     "type": "object"

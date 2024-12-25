@@ -772,4 +772,54 @@ class SellerController extends Controller
             'products' => $this->orderService->getOrder($order, 'en')
         ], 200);
     }
+
+    /**
+     * @OA\Get(
+     *       path="/sellers/statistics",
+     *       summary="get statistics",
+     *       tags={"Sellers"},
+     *        @OA\Response(
+     *          response=201, description="Successful get statistics",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="statistics get seccessfully"
+     *               ),
+     *               @OA\Property(
+     *                   property="number_of_products",
+     *                   type="integer",
+     *                   example="2"
+     *               ),
+     *               @OA\Property(
+     *                   property="number_of_orders",
+     *                   type="integer",
+     *                   example="2"
+     *               ),
+     *               @OA\Property(
+     *                   property="salary",
+     *                   type="integer",
+     *                   example="20000"
+     *               ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getStatistics(Request $request)
+    {
+        $market = auth('manager-api')->user()->market;
+
+        return response()->json([
+            'message' => 'statistics get successfully',
+            'number_of_products' => count($this->marketService->getProductsForMarketAdmin($market)),
+            'number_of_orders' => count($this->orderService->getOrdersForMarket($market)),
+            'salary' => $this->orderService->getOrdersForMarket($market)->sum(function ($order) {
+                return $order['total_cost'];
+            }),
+        ], 200);
+    }
 }

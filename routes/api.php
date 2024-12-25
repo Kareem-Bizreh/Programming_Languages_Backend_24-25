@@ -136,6 +136,7 @@ Route::middleware('auth:manager-api')->group(function () {
         Route::get('/getOrders/{market}', 'getOrdersOfMarket');
         Route::get('/getOrdersByStatus/{status}', 'getOrdersByStatus');
         Route::get('/getOrder/{order}', 'getOrder');
+        Route::get('/statistics', 'getStatistics');
     });
 
     Route::controller(SellerController::class)->prefix('sellers')->middleware('role:seller')->group(function () {
@@ -155,5 +156,6 @@ Route::middleware('auth:manager-api')->group(function () {
         Route::get('/getOrders', 'getOrders');
         Route::get('/getOrdersByStatus/{status}', 'getOrdersByStatus');
         Route::get('/getOrder/{order}', 'getOrder');
+        Route::get('/statistics', 'getStatistics');
     });
 });

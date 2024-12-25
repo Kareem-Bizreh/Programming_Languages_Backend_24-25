@@ -72,20 +72,10 @@ class MarketService
     /**
      * get all markets
      *
-     * @param int $perPage
-     * @param int $page
      */
-    public function getAll(int $perPage, int $page)
+    public function getAll()
     {
-        $market = Market::paginate($perPage, ['*'], 'page', $page);
-
-        return [
-            'currentPageItems' => $market->items(),
-            'total' => $market->total(),
-            'perPage' => $market->perPage(),
-            'currentPage' => $market->currentPage(),
-            'lastPage' => $market->lastPage(),
-        ];
+        return Market::all();
     }
 
     /**

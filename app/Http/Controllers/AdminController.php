@@ -459,24 +459,6 @@ class AdminController extends Controller
      *       path="/admins/getMarkets",
      *       summary="get all markets",
      *       tags={"Admins"},
-     *       @OA\Parameter(
-     *            name="perPage",
-     *            in="query",
-     *            required=true,
-     *            description="number of records per page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
-     *       @OA\Parameter(
-     *            name="page",
-     *            in="query",
-     *            required=true,
-     *            description="number of page",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
      *        @OA\Response(
      *          response=201, description="Successful get all markets",
      *          @OA\JsonContent(
@@ -500,11 +482,9 @@ class AdminController extends Controller
      */
     public function getMarkets(Request $request)
     {
-        $perPage = $request->query('perPage', 10);
-        $page = $request->query('page', 1);
         return response()->json([
             'message' => 'successfully get all markets',
-            'markets' => $this->adminService->marketService->getAll($perPage, $page)
+            'markets' => $this->adminService->marketService->getAll()
         ], 200);
     }
 
@@ -1055,6 +1035,54 @@ class AdminController extends Controller
             'date' => $order->date,
             'location_name' => $order->location->name,
             'markets' => $this->orderService->getOrder($order, 'en')
+        ], 200);
+    }
+
+    /**
+     * @OA\Get(
+     *       path="/admins/statistics",
+     *       summary="get statistics",
+     *       tags={"Admins"},
+     *        @OA\Response(
+     *          response=201, description="Successful get statistics",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="statistics get seccessfully"
+     *               ),
+     *               @OA\Property(
+     *                   property="number_of_products",
+     *                   type="integer",
+     *                   example="2"
+     *               ),
+     *               @OA\Property(
+     *                   property="number_of_markets",
+     *                   type="integer",
+     *                   example="3"
+     *               ),
+     *               @OA\Property(
+     *                   property="number_of_orders",
+     *                   type="integer",
+     *                   example="2"
+     *               ),
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getStatistics(Request $request)
+    {
+        $market = auth('manager-api')->user()->market;
+
+        return response()->json([
+            'message' => 'statistics get successfully',
+            'number_of_products' => count($this->adminService->getProducts()),
+            'number_of_markets' => count($this->adminService->marketService->getAll()),
+            'number_of_orders' => count($this->adminService->getAllOrders()),
         ], 200);
     }
 }
