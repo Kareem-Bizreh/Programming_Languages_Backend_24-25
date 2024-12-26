@@ -130,12 +130,9 @@ Route::middleware('auth:manager-api')->group(function () {
         Route::put('/completeOrder/{order}', 'completeOrder');
         Route::put('/rejectOrder/{order}', 'rejectOrder');
         Route::put('/deliverOrder/{order}', 'deliverOrder');
-        Route::get('/getAllOrders', 'getAllOrders');
+        Route::get('/getOrders', 'getOrders');
         Route::get('/getMarketOrders/{order}', 'getMarketOrders');
-        Route::get('/getMarketOrdersByStatus/{order}/{status}', 'getMarketOrdersByStatus');
         Route::get('/getOrders/{market}', 'getOrdersOfMarket');
-        Route::get('/getOrdersByStatus/{status}', 'getOrdersByStatus');
-        Route::get('/getOrder/{order}', 'getOrder');
         Route::get('/statistics', 'getStatistics');
     });
 

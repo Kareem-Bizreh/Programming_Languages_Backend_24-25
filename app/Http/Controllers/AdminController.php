@@ -757,7 +757,7 @@ class AdminController extends Controller
 
     /**
      * @OA\Get(
-     *       path="/admins/getAllOrders",
+     *       path="/admins/getOrders",
      *       summary="get all orders",
      *       tags={"Admins"},
      *        @OA\Response(
@@ -781,11 +781,11 @@ class AdminController extends Controller
      *        }
      * )
      */
-    public function getAllOrders(Request $request)
+    public function getOrders(Request $request)
     {
         return response()->json([
             'message' => 'orders get successfully',
-            'orders' => $this->adminService->getAllOrders()
+            'orders' => $this->adminService->getOrders()
         ], 200);
     }
 
@@ -836,60 +836,6 @@ class AdminController extends Controller
 
     /**
      * @OA\Get(
-     *       path="/admins/getMarketOrdersByStatus/{order}/{status}",
-     *       summary="get all market orders of global order by status",
-     *       tags={"Admins"},
-     *       @OA\Parameter(
-     *            name="order",
-     *            in="path",
-     *            required=true,
-     *            description="order id",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
-     *       @OA\Parameter(
-     *            name="status",
-     *            in="path",
-     *            required=true,
-     *            description="status id",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
-     *        @OA\Response(
-     *          response=201, description="Successful get all orders",
-     *          @OA\JsonContent(
-     *               @OA\Property(
-     *                   property="message",
-     *                   type="string",
-     *                   example="orders get seccessfully"
-     *               ),
-     *               @OA\Property(
-     *                   property="orders",
-     *                   type="string",
-     *                   example="[]"
-     *               ),
-     *          )
-     *        ),
-     *        @OA\Response(response=400, description="Invalid request"),
-     *        security={
-     *            {"bearer": {}}
-     *        }
-     * )
-     */
-    public function getMarketOrdersByStatus(Request $request, Order $order, int $status)
-    {
-        if ($order->global_order_id)
-            return response()->json(['message' => 'Not Found'], 404);
-        return response()->json([
-            'message' => 'orders get successfully',
-            'orders' => $this->adminService->getMarketOrdersByStatus($order, $status)
-        ], 200);
-    }
-
-    /**
-     * @OA\Get(
      *       path="/admins/getOrders/{market}",
      *       summary="get all orders of market",
      *       tags={"Admins"},
@@ -927,114 +873,7 @@ class AdminController extends Controller
     {
         return response()->json([
             'message' => 'orders get successfully',
-            'orders' => $this->adminService->getOrdersOfMarket($market)
-        ], 200);
-    }
-
-    /**
-     * @OA\Get(
-     *       path="/admins/getOrdersByStatus/{status}",
-     *       summary="get orders by status",
-     *       tags={"Admins"},
-     *       @OA\Parameter(
-     *            name="status",
-     *            in="path",
-     *            required=true,
-     *            description="status id",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
-     *        @OA\Response(
-     *          response=201, description="Successful get orders",
-     *          @OA\JsonContent(
-     *               @OA\Property(
-     *                   property="message",
-     *                   type="string",
-     *                   example="orders get seccessfully"
-     *               ),
-     *               @OA\Property(
-     *                   property="orders",
-     *                   type="string",
-     *                   example="[]"
-     *               ),
-     *          )
-     *        ),
-     *        @OA\Response(response=400, description="Invalid request"),
-     *        security={
-     *            {"bearer": {}}
-     *        }
-     * )
-     */
-    public function getOrdersByStatus(Request $request, int $status)
-    {
-        return response()->json([
-            'message' => 'orders get successfully',
-            'orders' => $this->adminService->getOrdersByStatus($status)
-        ], 200);
-    }
-
-    /**
-     * @OA\Get(
-     *       path="/admins/getOrder/{order}",
-     *       summary="get order",
-     *       tags={"Admins"},
-     *       @OA\Parameter(
-     *            name="order",
-     *            in="path",
-     *            required=true,
-     *            description="order id",
-     *            @OA\Schema(
-     *                type="integer"
-     *            )
-     *        ),
-     *        @OA\Response(
-     *          response=201, description="Successful get order",
-     *          @OA\JsonContent(
-     *               @OA\Property(
-     *                   property="message",
-     *                   type="string",
-     *                   example="order get seccessfully"
-     *               ),
-     *               @OA\Property(
-     *                   property="price",
-     *                   type="integer",
-     *                   example=50000
-     *               ),
-     *               @OA\Property(
-     *                   property="date",
-     *                   type="string",
-     *                   example="20/12/2024"
-     *               ),
-     *               @OA\Property(
-     *                   property="location_name",
-     *                   type="string",
-     *                   example="potter"
-     *               ),
-     *               @OA\Property(
-     *                   property="markets",
-     *                   type="string",
-     *                   example="[]"
-     *               ),
-     *          )
-     *        ),
-     *        @OA\Response(response=400, description="Invalid request"),
-     *        security={
-     *            {"bearer": {}}
-     *        }
-     * )
-     */
-    public function getOrder(Request $request, Order $order)
-    {
-        if (auth('user-api')->id() != $order->user_id)
-            return response()->json(['message' => 'Forbidden'], 403);
-
-        return response()->json([
-            'message' => 'order get successfully',
-            'price' => $order->total_cost,
-            'date' => $order->date,
-            'location_name' => $order->location->name,
-            'markets' => $this->orderService->getOrder($order, 'en')
+            'orders' => $this->orderService->getOrdersForMarket($market)
         ], 200);
     }
 
@@ -1082,7 +921,7 @@ class AdminController extends Controller
             'message' => 'statistics get successfully',
             'number_of_products' => count($this->adminService->getProducts()),
             'number_of_markets' => count($this->adminService->marketService->getAll()),
-            'number_of_orders' => count($this->adminService->getAllOrders()),
+            'number_of_orders' => count($this->adminService->getOrders()),
         ], 200);
     }
 }

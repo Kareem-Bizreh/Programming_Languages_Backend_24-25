@@ -104,7 +104,18 @@ class AdminService
      */
     public function getTopProducts()
     {
-        $products = Product::orderBy('number_of_purchases', 'desc')->get();
+        $products = Product::with('market')->orderBy('number_of_purchases', 'desc')->get();
+
+        $products->transform(function ($product) {
+            $product->market_name_en = $product->market['name_en'];
+            $product->market_name_ar = $product->market['name_ar'];
+            $product->category_en = $this->categoryRepositry->getById($product->category_id, 'en')->name;
+            $product->category_ar = $this->categoryRepositry->getById($product->category_id, 'ar')->name;
+            unset($product->market);
+            unset($product->market_id);
+            unset($product->category_id);
+            return $product;
+        });
 
         return $products;
     }
@@ -139,9 +150,31 @@ class AdminService
     /**
      * get all global orders
      */
-    public function getAllOrders()
+    public function getOrders()
     {
-        return Order::whereNull('global_order_id')->get();
+        $orders = Order::whereNull('global_order_id')->select('id', 'date', 'status_id', 'total_cost')->get();
+
+        foreach ($orders as $order) {
+            $marketOrders = Order::with('market')->where('global_order_id', $order->id)->get();
+            $order['products'] = [];
+            foreach ($marketOrders as $marketOrder) {
+                $products = $marketOrder->products->map(function ($product) use ($marketOrder) {
+                    return [
+                        'name_en' => $product->name_en,
+                        'name_ar' => $product->name_ar,
+                        'market_name_en' => $marketOrder->market->name_en,
+                        'market_name_ar' => $marketOrder->market->name_ar,
+                        'quantity' => $product->pivot->quantity,
+                        'price' => $product->price,
+                        'cost' => $product->price * $product->pivot->quantity
+                    ];
+                });
+
+                $order['products'] = array_merge($order['products'], $products->toArray());
+            }
+        }
+
+        return $orders;
     }
 
     /**

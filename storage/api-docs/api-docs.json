@@ -795,13 +795,13 @@
                 ]
             }
         },
-        "/admins/getAllOrders": {
+        "/admins/getOrders": {
             "get": {
                 "tags": [
                     "Admins"
                 ],
                 "summary": "get all orders",
-                "operationId": "369c4f62b0649255416bb863a6cd405d",
+                "operationId": "c369ea3b75eb2f7e0ecdc5fee1786a16",
                 "responses": {
                     "201": {
                         "description": "Successful get all orders",
@@ -884,65 +884,6 @@
                 ]
             }
         },
-        "/admins/getMarketOrdersByStatus/{order}/{status}": {
-            "get": {
-                "tags": [
-                    "Admins"
-                ],
-                "summary": "get all market orders of global order by status",
-                "operationId": "b78acb9bad05ab2f9a597805bd40ac7e",
-                "parameters": [
-                    {
-                        "name": "order",
-                        "in": "path",
-                        "description": "order id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "status",
-                        "in": "path",
-                        "description": "status id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Successful get all orders",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "orders get seccessfully"
-                                        },
-                                        "orders": {
-                                            "type": "string",
-                                            "example": "[]"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
         "/admins/getOrders/{market}": {
             "get": {
                 "tags": [
@@ -973,118 +914,6 @@
                                             "example": "orders get seccessfully"
                                         },
                                         "orders": {
-                                            "type": "string",
-                                            "example": "[]"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/admins/getOrdersByStatus/{status}": {
-            "get": {
-                "tags": [
-                    "Admins"
-                ],
-                "summary": "get orders by status",
-                "operationId": "000994cb9b0e235eb2b0886252028d88",
-                "parameters": [
-                    {
-                        "name": "status",
-                        "in": "path",
-                        "description": "status id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Successful get orders",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "orders get seccessfully"
-                                        },
-                                        "orders": {
-                                            "type": "string",
-                                            "example": "[]"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/admins/getOrder/{order}": {
-            "get": {
-                "tags": [
-                    "Admins"
-                ],
-                "summary": "get order",
-                "operationId": "ef05f9cf6b0767e475b1deedfc3f9414",
-                "parameters": [
-                    {
-                        "name": "order",
-                        "in": "path",
-                        "description": "order id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Successful get order",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "order get seccessfully"
-                                        },
-                                        "price": {
-                                            "type": "integer",
-                                            "example": 50000
-                                        },
-                                        "date": {
-                                            "type": "string",
-                                            "example": "20/12/2024"
-                                        },
-                                        "location_name": {
-                                            "type": "string",
-                                            "example": "potter"
-                                        },
-                                        "markets": {
                                             "type": "string",
                                             "example": "[]"
                                         }

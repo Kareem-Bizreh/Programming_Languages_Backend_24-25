@@ -75,7 +75,13 @@ class MarketService
      */
     public function getAll()
     {
-        return Market::all();
+        $markets =  Market::with('manager:id,name')->get();
+        $markets->transform(function ($market) {
+            $market->manager_name = $market->manager->name;
+            unset($market->manager);
+            return $market;
+        });
+        return $markets;
     }
 
     /**
