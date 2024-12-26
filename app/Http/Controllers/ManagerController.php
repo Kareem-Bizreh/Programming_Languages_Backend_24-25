@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Role;
 use App\Http\Requests\LoginManagerRequest;
 use App\Services\ManagerService;
 use Illuminate\Http\Request;
@@ -237,6 +238,12 @@ class ManagerController extends Controller
     public function current()
     {
         $manager = auth('manager-api')->user();
+        if ($manager->role == Role::Seller->value) {
+            $market = $manager->market;
+            $manager->market_name_en = $market->name_en;
+            $manager->market_name_ar = $market->name_ar;
+            unset($manager->market);
+        }
         return response()->json(['manager' => $manager]);
     }
 
