@@ -329,7 +329,6 @@ class OrderService
             unset($order->total_cost);
             $order->total_cost = $order->delivery_cost + $order->products_cost;
             $order->status = $this->statusRepositry->getStatusById($order->status_id, $lang)->name;
-            unset($order->status_id);
             unset($order->market_id);
             unset($order->global_order_id);
             unset($order->location);
