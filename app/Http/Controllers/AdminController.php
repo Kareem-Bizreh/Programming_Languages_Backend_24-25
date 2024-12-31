@@ -270,7 +270,7 @@ class AdminController extends Controller
      */
     public function completeOrder(Order $order)
     {
-        if ($order->status_id >= 3)
+        if ($order->status_id != 2)
             return response()->json(['message' => 'Forbidden'], 403);
 
         if ($this->orderService->completeOrder($order, 3))
