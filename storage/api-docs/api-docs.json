@@ -981,6 +981,45 @@
                 ]
             }
         },
+        "/admins/admins": {
+            "get": {
+                "tags": [
+                    "Admins"
+                ],
+                "summary": "get admins",
+                "operationId": "f72e49b8ee5835c525f14e0c477a153b",
+                "responses": {
+                    "201": {
+                        "description": "Successful get admins",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "admins get seccessfully"
+                                        },
+                                        "admins": {
+                                            "type": "string",
+                                            "example": "[]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/carts/addProduct/{product}": {
             "post": {
                 "tags": [

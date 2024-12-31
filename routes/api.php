@@ -134,6 +134,7 @@ Route::middleware('auth:manager-api')->group(function () {
         Route::get('/getMarketOrders/{order}', 'getMarketOrders');
         Route::get('/getOrders/{market}', 'getOrdersOfMarket');
         Route::get('/statistics', 'getStatistics');
+        Route::get('/admins', 'getAdmins');
     });
 
     Route::controller(SellerController::class)->prefix('sellers')->middleware('role:seller')->group(function () {

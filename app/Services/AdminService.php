@@ -265,4 +265,9 @@ class AdminService
 
         return $products;
     }
+
+    public function getAdmins()
+    {
+        return Manager::where('role', Role::Admin->value)->get();
+    }
 }

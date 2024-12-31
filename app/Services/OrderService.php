@@ -448,20 +448,21 @@ class OrderService
      * complete order
      *
      * @param Order $order
+     * @param int $status_id
      * @return bool
      */
-    public function completeOrder(Order $order): bool
+    public function completeOrder(Order $order, int $status_id): bool
     {
         DB::beginTransaction();
         try {
             $data = [
-                'status_id' => 3
+                'status_id' => $status_id
             ];
             if (! $order->global_order_id) {
                 $marketOrders = Order::where('global_order_id', $order->id)->get();
                 foreach ($marketOrders as $marketOrder)
                     if ($marketOrder->status_id != 3)
-                        return new \Exception("order not completed");
+                        throw new \Exception("order not completed");
             }
             $order->update($data);
             DB::commit();

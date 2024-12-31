@@ -273,7 +273,7 @@ class AdminController extends Controller
         if ($order->status_id >= 3)
             return response()->json(['message' => 'Forbidden'], 403);
 
-        if ($this->orderService->completeOrder($order))
+        if ($this->orderService->completeOrder($order, 3))
             return response()->json([
                 'message' => 'order completed successfully'
             ], 200);
@@ -317,7 +317,7 @@ class AdminController extends Controller
         if ($order->status_id != 1)
             return response()->json(['message' => 'Forbidden'], 403);
 
-        if ($this->adminService->deliverOrder($order))
+        if ($this->orderService->completeOrder($order, 2))
             return response()->json([
                 'message' => 'order delivering'
             ], 200);
@@ -922,6 +922,40 @@ class AdminController extends Controller
             'number_of_products' => count($this->adminService->getProducts()),
             'number_of_markets' => count($this->adminService->marketService->getAll()),
             'number_of_orders' => count($this->adminService->getOrders()),
+        ], 200);
+    }
+
+    /**
+     * @OA\Get(
+     *       path="/admins/admins",
+     *       summary="get admins",
+     *       tags={"Admins"},
+     *        @OA\Response(
+     *          response=201, description="Successful get admins",
+     *          @OA\JsonContent(
+     *               @OA\Property(
+     *                   property="message",
+     *                   type="string",
+     *                   example="admins get seccessfully"
+     *               ),
+     *               @OA\Property(
+     *                   property="admins",
+     *                   type="string",
+     *                   example="[]"
+     *               )
+     *          )
+     *        ),
+     *        @OA\Response(response=400, description="Invalid request"),
+     *        security={
+     *            {"bearer": {}}
+     *        }
+     * )
+     */
+    public function getAdmins(Request $request)
+    {
+        return response()->json([
+            'message' => 'statistics get successfully',
+            'admins' => $this->adminService->getAdmins()
         ], 200);
     }
 }

@@ -372,7 +372,7 @@ class SellerController extends Controller
         if ($order->status_id >= 3 || $order->market != $seller->market)
             return response()->json(['message' => 'Forbidden'], 403);
 
-        if ($this->orderService->completeOrder($order))
+        if ($this->orderService->completeOrder($order, 3))
             return response()->json([
                 'message' => 'order completed successfully'
             ], 200);
