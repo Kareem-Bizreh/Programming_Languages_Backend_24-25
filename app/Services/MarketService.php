@@ -199,7 +199,7 @@ class MarketService
      */
     public function getMarkets(int $perPage, int $page, string $lang)
     {
-        $markets = Market::select('id', "name_{$lang} as name")
+        $markets = Market::select('id', "name_{$lang} as name", 'image')
             ->paginate($perPage, ['*'], 'page', $page);
 
         return [
