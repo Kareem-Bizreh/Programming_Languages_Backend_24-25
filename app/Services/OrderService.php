@@ -14,20 +14,22 @@ use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
-    protected $productService, $cartService, $statusRepositry, $categoryRepositry, $locationService;
+    protected $productService, $cartService, $statusRepositry, $categoryRepositry, $locationService, $fcmService;
 
     public function __construct(
         ProductService $productService,
         CartService $cartService,
         StatusRepositry $statusRepositry,
         CategoryRepositry $categoryRepositry,
-        LocationService $locationService
+        LocationService $locationService,
+        // FcmService $fcmService
     ) {
         $this->productService = $productService;
         $this->cartService = $cartService;
         $this->statusRepositry = $statusRepositry;
         $this->categoryRepositry = $categoryRepositry;
         $this->locationService = $locationService;
+        // $this->fcmService = $fcmService;
     }
 
     /**
@@ -269,7 +271,8 @@ class OrderService
                         "products.name_{$lang} as name",
                         'products.category_id',
                         'products.price',
-                        'products.market_id'
+                        'products.market_id',
+                        'products.image'
                     )->get();
             foreach ($order as $product)
                 $products[] = $product;
@@ -458,13 +461,14 @@ class OrderService
             $data = [
                 'status_id' => $status_id
             ];
+            $order->update($data);
             if (! $order->global_order_id) {
                 $marketOrders = Order::where('global_order_id', $order->id)->get();
                 foreach ($marketOrders as $marketOrder)
                     if ($marketOrder->status_id != 3)
                         throw new \Exception("order not completed");
+                //$this->fcmService->notifyUser($order);
             }
-            $order->update($data);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
