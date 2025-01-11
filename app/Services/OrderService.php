@@ -22,14 +22,14 @@ class OrderService
         StatusRepositry $statusRepositry,
         CategoryRepositry $categoryRepositry,
         LocationService $locationService,
-        // FcmService $fcmService
+        FcmService $fcmService
     ) {
         $this->productService = $productService;
         $this->cartService = $cartService;
         $this->statusRepositry = $statusRepositry;
         $this->categoryRepositry = $categoryRepositry;
         $this->locationService = $locationService;
-        // $this->fcmService = $fcmService;
+        $this->fcmService = $fcmService;
     }
 
     /**
@@ -467,7 +467,7 @@ class OrderService
                 foreach ($marketOrders as $marketOrder)
                     if ($marketOrder->status_id != 3)
                         throw new \Exception("order not completed");
-                //$this->fcmService->notifyUser($order);
+                $this->fcmService->notifyUser($order);
             }
             DB::commit();
         } catch (\Exception $e) {
