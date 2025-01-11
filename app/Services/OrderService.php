@@ -467,7 +467,7 @@ class OrderService
                 foreach ($marketOrders as $marketOrder)
                     if ($marketOrder->status_id != 3)
                         throw new \Exception("order not completed");
-                $this->fcmService->notifyUser($order);
+                $this->fcmService->notifyUser($order, $status_id);
             }
             DB::commit();
         } catch (\Exception $e) {

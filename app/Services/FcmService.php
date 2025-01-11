@@ -31,13 +31,18 @@ class FcmService
         return $this->messaging->send($message);
     }
 
-    public function notifyUser(Order $order)
+    public function notifyUser(Order $order, int $status)
     {
         $user = $order->user;
         if (! $user->fcm_token)
             return;
-        $title = 'Order is being delivered';
-        $body = 'Order has been placed for delivery.';
+        if ($status == 2) {
+            $title = 'Order delivered';
+            $body = 'Order has been placed for delivery.';
+        } elseif ($status == 3) {
+            $title = 'Order complete';
+            $body = 'Order has been completed.';
+        }
 
         $this->sendNotification($user->fcm_token, $title, $body, ['order_id' => $order->id]);
     }
