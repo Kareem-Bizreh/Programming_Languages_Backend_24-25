@@ -297,7 +297,7 @@ class OrderService
             $product->count = $product->pivot->quantity;
             $product->total = $product->price * $product->count;
             $product->category = $this->categoryRepositry->getById($product->category_id, $lang)->name;
-            if (!isset($markets[$product->id]))
+            if (!isset($markets[$product->market_id]))
                 $markets[$product->market_id] = [
                     'name' => $product->market['name_' . $lang],
                     'products' => []
