@@ -46,6 +46,9 @@ class OrderService
         try {
             $rejected = false;
             $products = $this->cartService->getCart($cart);
+            if (! $products->first()) {
+                throw new \Exception("cart is empty");
+            }
             $quantity = [];
             $globalOrder = Order::create([
                 'user_id' => $user_id,
