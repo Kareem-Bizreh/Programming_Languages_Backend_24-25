@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -18,7 +19,10 @@ class User extends Authenticatable implements JWTSubject
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'fcm_token',
+        'number',
         'email',
         'password',
     ];
@@ -33,6 +37,34 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+    public function locations()
+    {
+        return $this->hasMany(Location::class);
+    }
+
+    public function favorites()
+    {
+        return $this->belongsToMany(Product::class, 'favorites');
+    }
+
+    public function getImageAttribute($value)
+    {
+        if ($value) {
+            return config('app.url') . '/storage/' . $value;
+        }
+        return null;
+    }
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -41,7 +73,7 @@ class User extends Authenticatable implements JWTSubject
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
+            'number_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
