@@ -83,21 +83,13 @@ For more details about the project, you can refer to the following files:
     ```bash
     composer install
     ```
-
-### Set up the environment file
-
-````markdown
 3. **Set up the environment file**:
     ```bash
     cp .env.example .env
     php artisan key:generate
     ```
-````
-
-### Configure your email settings in `.env`
-
-````markdown
 4. **Configure your email settings in `.env`**:
+
     ```env
     MAIL_MAILER=smtp
     MAIL_HOST=your_smtp_host
@@ -108,28 +100,22 @@ For more details about the project, you can refer to the following files:
     MAIL_FROM_ADDRESS=your_email@example.com
     MAIL_FROM_NAME="Your App Name"
     ```
-````
 
-### Run migrations and seeders
-
-````markdown
 5. **Run migrations and seeders**:
+
     ```bash
     php artisan migrate:fresh --seed
     ```
-````
 
-### API Documentation
-
-```markdown
-7. **API Documentation**:
+6. **API Documentation**:
    API documentation is available via Swagger UI. Access it by running the project and visiting:
-   [http://127.0.0.1:8000/api/documentation](http://127.0.0.1:8000/api/documentation).
-```
+   http://127.0.0.1:8000/api/documentation.
 
 ## Closing Notes
 
 This project was developed as part of an academic initiative for Damascus University. It started as a set of ideas and evolved into a fully functional e-commerce backend. We hope you find this project enjoyable and useful! Feel free to explore, contribute, or use it as a foundation for your own applications.
+
+---
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
