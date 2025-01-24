@@ -8,17 +8,18 @@ This project is a robust Laravel backend for an e-commerce platform, developed a
 
 -   **E-Commerce Platform**: Backend for managing products, goods, and user interactions.
 -   **Shopping Cart**: Users can add products to their cart and place orders.
+-   **Favorite Functionality**: Users can add products to their **Favorites** for easy access later.
 -   **Order Management**:
     -   Orders are divided into sub-orders, each sent to the respective store.
     -   Sellers approve or reject sub-orders.
-    -   Once all sub-orders are approved, the admin marks the order as "Ready for Delivery."
-    -   After delivery, the order status is updated to "Delivered."
+    -   Once all sub-orders are approved, the admin marks the order as "Delivering."
+    -   After delivery, the order status is updated to "completed"
 -   **JWT Authentication**: Secure token-based authentication for users and admins.
 -   **Role-Based Access Control**: Two main roles - **User** and **Admin**.
     -   Admin role is further divided into **Seller** and **Admin**.
 -   **Multiauth System**: Separate authentication for different roles.
 -   **Custom Middleware & Roles**: Manual middleware and role management to differentiate between admin sections.
--   **Service Layer Architecture**: Logic is separated into a **Service Layer**, keeping controllers clean and focused.
+-   **Service Layer Architecture**: Logic and Database queries is separated into a **Service Layer** and **Repositry Layer** , keeping controllers clean and focused.
 -   **OTP Verification**: Send One-Time Passwords (OTP) via email for secure verification.
 -   **Image Uploads**: Image management with three categories:
     -   User images
@@ -28,6 +29,7 @@ This project is a robust Laravel backend for an e-commerce platform, developed a
 -   **Route Groups**: Organized API routes using **Route Groups** in `api.php`.
 -   **Firebase Notifications**: Real-time notifications using **Firebase**.
 -   **Localization**: Full application translation, including custom validation messages.
+-   **Clean Code**: Variables, functions, and classes are named descriptively to enhance readability and maintainability.
 -   **API Documentation**: Comprehensive API documentation generated using **Swagger UI**.
 
 ---
@@ -36,12 +38,39 @@ This project is a robust Laravel backend for an e-commerce platform, developed a
 
 ### User Flow
 
-1. **Browse Products**: Users can browse products and add them to their shopping cart.
-2. **Place Order**: Users can place an order, which is then divided into sub-orders for each store.
-3. **Order Status**:
-    - Sub-orders are sent to respective sellers for approval.
-    - Once all sub-orders are approved, the admin marks the order as "Ready for Delivery."
-    - After delivery, the order status is updated to "Delivered."
+1. **Register**:
+
+    - The user registers by providing their email and other required details.
+    - A confirmation code is sent to the registered email, valid for **5 minutes**.
+    - The user must enter the code within this period to confirm their account.
+
+2. **Personal Account**:
+
+    - After confirming the account, the user can log in using their credentials.
+    - The user can update their personal information or upload a profile picture.
+
+3. **Browse Products**:
+
+    - The user can browse all available products or view their favorite products.
+    - The user can search for products by **name** or filter them by **category**.
+    - The user can view **detailed information** about each product and added to their **Favorites**.
+
+4. **Browse Stores**:
+
+    - The user can search for stores by **name**.
+
+5. **Add to Cart**:
+
+    - The user can add products to their shopping cart.
+
+6. **Place Order**:
+
+    - The user can place an order after selecting a delivery location.
+    - The order will be **automatically rejected** if there is insufficient stock for any of the selected products.
+
+7. **Manage Orders**:
+    - The user can cancel an order by changing its status to **Cancelled**.
+    - If the order is **not yet completed**, the user can update the delivery location.
 
 ### Admin Flow
 
